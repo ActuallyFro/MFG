@@ -16,10 +16,10 @@ int main(){
 	getStartCoords(&x,&y,&z);
 
 	if(buildingType==1){
-		createSquare(consoleORchat,x, y, z, buildingMaterial, 0, 0, 0, 0);
+		createSquare(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap);
 	}
 	else if(buildingType==2){
-		createRectangle(consoleORchat,x, y, z, buildingMaterial, 0, 0, 0, 0);
+		createRectangle(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap);
 	}
 	printf("\n\n");
 	return EXIT_SUCCESS;

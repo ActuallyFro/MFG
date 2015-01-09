@@ -1,14 +1,25 @@
-#define initVars() 			\
-	int x,y,z;			\
-	int buildingType=0;		\
+#define HEIGHT_MAX 255
+#define VIEW_MAX 176
+#define NORTH 1
+#define SOUTH -1
+#define EAST 1
+#define WEST -1
+#define NoBaseOffset 0
+#define NoCeilingCap 0
+
+#define initVars() 				\
+	int x,y,z;					\
+	int buildingType=0;			\
 	char buildingMaterial[50];	\
 	int consoleORchat=0;		\
-	int MaxHeight=255;		\
-	int MinHeight=0;		\
-	int HeightOffset=0;		\
-	int HeightStop=0;		\
-	int Hollow=0;			\
-	int EdgesOnly=0;		\
+	int MaxHeight=HEIGHT_MAX;	\
+	int MinHeight=0;			\
+	int HeightOffset=0;			\
+	int HeightStop=0;			\
+	int Hollow=0;				\
+	int EdgesOnly=0;			\
+	int Direction_NorthSouth;	\
+	int Direction_WestEast;		\
 	int shapesTotal=9
 
 int getShape(int *Type, int TotalShapes){
@@ -59,8 +70,8 @@ int printShapes(){
 	return EXIT_SUCCESS;
 }
 
-int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[], int direction, int rotation, int pointStart, int pointStop){
-	int Length, Width, Height;
+int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
+	int Width, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,j,k;
@@ -69,37 +80,47 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	yStart=y;
 	zStart=z;
 
-	printf("\n\nPlease Enter a Length: ");
-		scanf("%i",&Length);
-
-		if(Length>180 || Length < 1){
-			printf("[WARNING] Size %i is out of bounds (greater than 180 or less than 1) attempting to correct size...",Length);
-			Length=Length%180;
+	do{
+		printf("\n\nPlease Enter a Width: ");
+		scanf("%i",&Width);
+		if((Width*Width)>=32768){
+			printf("\n[WARNING] The Width of the Cube is out of bounds! Width*Width=%i > 2^15",Width*Width);
 		}
 
-		//These never change
-		xStart=x;
-		zStart=z;
-
-		printf("\n\nCopy and paste this into your console/chat:");
-		for(i=0;i<Length;i++){
-			yStart=i+y;
-			xStop=xStart+Length;
-			yStop=yStart;
-			zStop=zStart-Length; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
-
-			if(consoleORchat==0){
-				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
-			}
-			else{
-				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
-			}
+		if((Width+y)> HEIGHT_MAX){
+			printf("\n[ERROR] The Width of the Cube is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
+			Width=HEIGHT_MAX-y;
 		}
+
+		if(Width>VIEW_MAX){
+			printf("\n[WARNING] Your shape is very long and may not render!");
+		}
+
+	}while((Width*Width)>=32768);
+
+	//These never change
+	xStart=x;
+	zStart=z;
+
+	printf("\n\nCopy and paste this into your console/chat:");
+	for(i=(0+heightStart);i<(Width-heightStop);i++){
+		yStart=i+y;
+		xStop=xStart+(Width-1)*Direction_NorthSouth;
+		yStop=yStart;
+		zStop=zStart-(Width-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+
+		if(consoleORchat==0){
+			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+		}
+		else{
+			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+		}
+	}
 	return EXIT_SUCCESS;
 }
 
-int createRectangle(int consoleORchat, int x, int y, int z, char buildingMaterial[], int direction, int rotation, int pointStart, int pointStop){
-	int Length, Width, Height;
+int createRectangle(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
+	int Width, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,j,k;
@@ -108,41 +129,39 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 	yStart=y;
 	zStart=z;
 
-	printf("\n\nPlease Enter a Length: ");
-		scanf("%i",&Length);
-
-		if(Length>180 || Length < 1){
-			printf("[WARNING] Size %i is out of bounds (greater than 180 or less than 1) attempting to correct size...",Length);
-			Length=Length%180;
-		}
-
-	printf("\n\nPlease Enter a Width: ");
+	do{
+		printf("\n\nPlease Enter a Width: ");
 		scanf("%i",&Width);
+		
+		printf("\n\nPlease Enter a Depth: ");
+		scanf("%i",&Depth);
 
-		if(Width>180 || Width < 1){
-			printf("[WARNING] Size %i is out of bounds (greater than 180 or less than 1) attempting to correct size...",Width);
-			Width=Width%180;
-		}
-
-	printf("\n\nPlease Enter a Height: ");
+		printf("\n\nPlease Enter a Height: ");
 		scanf("%i",&Height);
 
-		if(Height>180 || Height < 1){
-			printf("[WARNING] Size %i is out of bounds (greater than 180 or less than 1) attempting to correct size...",Height);
-			Height=Height%180;
+		if((Width*Depth)>=32768){
+			printf("\n[WARNING] Width and Depth are TOO GREAT (Width*Depth= %i >2^15)!",Width*Depth);
 		}
-
+		if((Height+y)> HEIGHT_MAX){
+			printf("\n[ERROR] The Height of the Rectangle is out of the map! Forcing Height to be: %i",HEIGHT_MAX-y);
+			Height=HEIGHT_MAX-y;
+		}
+		if(Width>VIEW_MAX || Depth>VIEW_MAX){
+			printf("\n[WARNING] Your shape is very long and may not render!");
+		}
+	}while((Width*Depth)>=32768 || Height>HEIGHT_MAX);
+		
 		//These Never Change
 		xStart=x;
 		zStart=z;
 
 		printf("\n\nCopy and paste this into your console/chat:");
-		for(i=0;i<Height;i++){
+		for(i=(0+heightStart);i<(Height-heightStop);i++){
 			yStart=i+y;
 
-			xStop=xStart+Length;
-			yStop=yStart+i;
-			zStop=zStart-Width; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+			xStop=xStart+(Width-1)*Direction_NorthSouth;
+			yStop=yStart;
+			zStop=zStart-(Depth-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 			if(consoleORchat==0){
 				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
@@ -153,3 +172,73 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 		}
 	return EXIT_SUCCESS;
 }
+
+
+
+//Sphere:
+// 
+// Go Layer by layer from outside top + bottom to center
+// Fill 0 to pi/4 + mirror and p/2 to p/4 VIA trans pose
+// e.g. if radius is 10: and x,y,z are 0,0,0
+//    the first fill is: fill -10 10 0 10 10 0 <blah> fill 0 10 -10 0 10 10 <blah> ... this makes an X
+//    the second fill is: fill -9 100 1 9 100 1 <blah>, fill 1 100 -9 1 100 9 <blah>, fill -9 100 -1 9 100 -1 <blah>, fill -1 100 -9 -1 100 9 <blah>
+
+//  |     --------+
+//  |               \
+//  |                 \
+//  |                    \
+//  |                      [X,Y] = r cos(theta) , r sine (theta)
+//  |                         |
+//  |                          \
+//  |                            |
+//  |                             \
+//  |                               |
+//  |                                \
+//  |                                  |
+//  + ----------------------------------------  
+//
+// //* sin example */
+// #include <stdio.h>      /* printf */
+// #include <math.h>       /* sin */
+
+// #define PI 3.14159265
+
+// int main ()
+// {
+  // double param, result;
+  // param = 30.0;
+  // result = sin (param*PI/180);
+  // printf ("The sine of %f degrees is %f.\n", param, result );
+  // return 0;
+// } 
+// go 0-45 or 0 tp pi/4 ---> mirrors both horizon + vert.
+// 1= cos(theta)^2 + sine (theta)^2
+// 
+// 
+//
+// 
+//
+// 
+//
+// 
+//
+// 
+//
+// 
+//
+// 
+//
+// 
+//
+// 
+//
+// 
+//
+// 
+//
+// 
+//
+// 
+//
+// 
+//
