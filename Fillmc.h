@@ -88,7 +88,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		}
 
 		if((Width+y)> HEIGHT_MAX){
-			printf("\n[ERROR] The Width of the Cube is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
+			printf("\n[ERROR] The Height of the Cube is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
 			Width=HEIGHT_MAX-y;
 		}
 
@@ -170,6 +170,56 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 			}
 		}
+	return EXIT_SUCCESS;
+}
+
+
+int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
+	int Width, Depth, Height;
+	int xStart,yStart,zStart;
+	int xStop,yStop,zStop;
+	int i,j,k;
+
+	xStart=x;
+	yStart=y;
+	zStart=z;
+
+	do{
+		printf("\n\nPlease Enter a Base Length: ");
+		scanf("%i",&Width);
+		if((Width*Width)>=32768){
+			printf("\n[WARNING] The Width of the Cube is out of bounds! Width*Width=%i > 2^15",Width*Width);
+		}
+
+		if((Width+y)> HEIGHT_MAX){
+			printf("\n[ERROR] The Height of the Pyramid is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
+			Width=HEIGHT_MAX-y;
+		}
+
+		if(Width>VIEW_MAX){
+			printf("\n[WARNING] Your shape is very long and may not render!");
+		}
+
+	}while((Width*Width)>=32768);
+
+	//These never change
+	xStart=x;
+	zStart=z;
+
+	printf("\n\nCopy and paste this into your console/chat:");
+	for(i=(0+heightStart);i<(Width-heightStop);i++){
+		yStart=i+y;
+		xStop=xStart+(Width-1)*Direction_NorthSouth;
+		yStop=yStart;
+		zStop=zStart-(Width-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+
+		if(consoleORchat==0){
+			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+		}
+		else{
+			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+		}
+	}
 	return EXIT_SUCCESS;
 }
 
