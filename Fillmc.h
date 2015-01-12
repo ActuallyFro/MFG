@@ -1,5 +1,6 @@
 #define HEIGHT_MAX 255
 #define VIEW_MAX 176
+#define LAYER_MAX_SIZE 32768
 #define NORTH 1
 #define SOUTH -1
 #define EAST 1
@@ -7,17 +8,17 @@
 #define NoBaseOffset 0
 #define NoCeilingCap 0
 
-#define initVars() 				\
-	int x,y,z;					\
-	int buildingType=0;			\
+#define initVars() 			\
+	int x,y,z;			\
+	int buildingType=0;		\
 	char buildingMaterial[50];	\
 	int consoleORchat=0;		\
 	int MaxHeight=HEIGHT_MAX;	\
-	int MinHeight=0;			\
-	int HeightOffset=0;			\
-	int HeightStop=0;			\
-	int Hollow=0;				\
-	int EdgesOnly=0;			\
+	int MinHeight=0;		\
+	int HeightOffset=0;		\
+	int HeightStop=0;		\
+	int Hollow=0;			\
+	int EdgesOnly=0;		\
 	int Direction_NorthSouth;	\
 	int Direction_WestEast;		\
 	int shapesTotal=9
@@ -83,7 +84,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	do{
 		printf("\n\nPlease Enter a Width: ");
 		scanf("%i",&Width);
-		if((Width*Width)>=32768){
+		if((Width*Width)>=LAYER_MAX_SIZE){
 			printf("\n[WARNING] The Width of the Cube is out of bounds! Width*Width=%i > 2^15",Width*Width);
 		}
 
@@ -96,7 +97,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
 
-	}while((Width*Width)>=32768);
+	}while((Width*Width)>=LAYER_MAX_SIZE);
 
 	//These never change
 	xStart=x;
@@ -132,14 +133,14 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 	do{
 		printf("\n\nPlease Enter a Width: ");
 		scanf("%i",&Width);
-		
+
 		printf("\n\nPlease Enter a Depth: ");
 		scanf("%i",&Depth);
 
 		printf("\n\nPlease Enter a Height: ");
 		scanf("%i",&Height);
 
-		if((Width*Depth)>=32768){
+		if((Width*Depth)>=LAYER_MAX_SIZE){
 			printf("\n[WARNING] Width and Depth are TOO GREAT (Width*Depth= %i >2^15)!",Width*Depth);
 		}
 		if((Height+y)> HEIGHT_MAX){
@@ -149,8 +150,8 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 		if(Width>VIEW_MAX || Depth>VIEW_MAX){
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
-	}while((Width*Depth)>=32768 || Height>HEIGHT_MAX);
-		
+	}while((Width*Depth)>=LAYER_MAX_SIZE || Height>HEIGHT_MAX);
+
 		//These Never Change
 		xStart=x;
 		zStart=z;
@@ -185,10 +186,10 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	zStart=z;
 
 	do{
-		printf("\n\nPlease Enter a Base Length: ");
+		printf("\n\nPlease Enter a Base Width: ");
 		scanf("%i",&Width);
-		if((Width*Width)>=32768){
-			printf("\n[WARNING] The Width of the Cube is out of bounds! Width*Width=%i > 2^15",Width*Width);
+		if((Width*Width)>=LAYER_MAX_SIZE){
+			printf("\n[WARNING] The Width of the Base is out of bounds! Width*Width=%i > 2^15",Width*Width);
 		}
 
 		if((Width+y)> HEIGHT_MAX){
@@ -200,18 +201,17 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
 
-	}while((Width*Width)>=32768);
+	}while((Width*Width)>=LAYER_MAX_SIZE);
 
-	//These never change
-	xStart=x;
-	zStart=z;
 
 	printf("\n\nCopy and paste this into your console/chat:");
-	for(i=(0+heightStart);i<(Width-heightStop);i++){
+	for(i=(0+heightStart);i<(Width-heightStop)/2;i++){
+		xStart=x+i*Direction_NorthSouth;
 		yStart=i+y;
-		xStop=xStart+(Width-1)*Direction_NorthSouth;
+		zStart=z-i*Direction_WestEast;
+		xStop=xStart+(Width-i-i)*Direction_NorthSouth;
 		yStop=yStart;
-		zStop=zStart-(Width-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+		zStop=zStart-(Width-i-i)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 		if(consoleORchat==0){
 			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
