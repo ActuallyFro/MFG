@@ -205,7 +205,7 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 
 
 	printf("\n\nCopy and paste this into your console/chat:");
-	for(i=(0+heightStart);i<(Width-heightStop)/2;i++){
+	for(i=(0+heightStart);i<=(Width-heightStop)/2;i++){
 		xStart=x+i*Direction_NorthSouth;
 		yStart=i+y;
 		zStart=z-i*Direction_WestEast;
