@@ -1,3 +1,5 @@
+#include <math.h>
+
 #define HEIGHT_MAX 255
 #define VIEW_MAX 176
 #define LAYER_MAX_SIZE 32768
@@ -7,6 +9,9 @@
 #define WEST -1
 #define NoBaseOffset 0
 #define NoCeilingCap 0
+
+#define PI 3.14159265
+#define Sqrt_2 1.41421356
 
 #define initVars() 			\
 	int x,y,z;			\
@@ -249,13 +254,9 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 //
 // //* sin example */
 // #include <stdio.h>      /* printf */
-// #include <math.h>       /* sin */
-
-// #define PI 3.14159265
 
 // int main ()
 // {
-  // double param, result;
   // param = 30.0;
   // result = sin (param*PI/180);
   // printf ("The sine of %f degrees is %f.\n", param, result );
@@ -266,9 +267,76 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 // 
 // 
 //
-// 
-//
-// 
+int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
+	int Width, Depth, Height;
+	int xStart,yStart,zStart;
+	int xStop,yStop,zStop;
+	int i,j,k;
+
+	xStart=x;
+	yStart=y;
+	zStart=z;
+
+	do{
+		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
+		scanf("%i",&Width);
+		if((Width*2)>=LAYER_MAX_SIZE){
+			printf("\n[WARNING] The Diameter of the Sphere is out of bounds! Radius*2=%i > 2^15",Width*Width);
+		}
+
+		if((Width*2+y)> HEIGHT_MAX){
+			printf("\n[ERROR] The Height of the Sphere is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
+			Width=HEIGHT_MAX-y;
+		}
+
+		if(Width*2>VIEW_MAX){
+			printf("\n[WARNING] Your shape is very long and may not render!");
+		}
+
+	}while((Width*2)>=LAYER_MAX_SIZE);
+
+
+
+	printf("\n\nCopy and paste this into your console/chat:");
+	//for(i=(0+heightStart);i<((Width-heightStop +2-1)/2);i++){ //Round up in C == Add the divisor less one
+//	int isEven;
+//	isEven=Width%2;
+	int Radius;
+	Radius=Width/2;
+	int LayerWidth;
+	//double param, result;
+	printf("\n[DEBUGGING] Radius: %i, Diameter:%i\n",Radius,Width);
+	for(i=(1+heightStart);i<=(Width-heightStop);i++){ //Round up in C == Add the divisor less one
+		LayerWidth=(int)((double)Width*sin(PI*(double)i/(double)Width));
+		if(LayerWidth==0){
+			if(i%Width==0){
+				LayerWidth=1;
+			}
+		}
+		printf("\n\n[DEBUGGING] LayerWidth[%i]: %i, Degrees: %f",i,LayerWidth,180.0*(double)i/(double)Width);
+		yStart=i+y;
+		xStart=x;
+		zStart=z;
+//		printf("\nTest Point[%i]: <%i,%i,%i>",i,xStart,yStart,zStart);
+		//if(i!=((Width-heightStop +2-1)/2)){
+//		if(isEven==0){
+//			printf(" has mirror...");
+//		}
+
+		xStop=xStart+(Width-1)*Direction_NorthSouth;
+		yStop=yStart;
+		zStop=zStart-(Width-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+
+		if(consoleORchat==0){
+			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+		}
+		else{
+			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+		}
+	}
+	return EXIT_SUCCESS;
+}
+
 //
 // 
 //
