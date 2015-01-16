@@ -306,14 +306,14 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	int LayerWidth;
 	//double param, result;
 	printf("\n[DEBUGGING] Radius: %i, Diameter:%i\n",Radius,Width);
-	for(i=(1+heightStart);i<=(Width-heightStop);i++){ //Round up in C == Add the divisor less one
-		LayerWidth=(int)((double)Width*sin(PI*(double)i/(double)Width));
+	for(i=(1+heightStart);i<=(Width-heightStop)+1;i++){ //Round up in C == Add the divisor less one
+		LayerWidth=(int)((double)Width*sin(PI*(double)i/((double)Width+1.0)));
 		if(LayerWidth==0){
 			if(i%Width==0){
 				LayerWidth=1;
 			}
 		}
-		printf("\n\n[DEBUGGING] LayerWidth[%i]: %i, Degrees: %f",i,LayerWidth,180.0*(double)i/(double)Width);
+		printf("\n\n[DEBUGGING] LayerWidth[%i]: %i, Degrees: %f",i,LayerWidth,180.0*(double)i/((double)Width+1.0));
 		yStart=i+y;
 		xStart=x;
 		zStart=z;
