@@ -12,7 +12,7 @@
 
 #define PI 3.14159265
 #define Sqrt_2 1.41421356
-
+#define Sqrt_2_over_2 0.70710678
 #define initVars() 			\
 	int x,y,z;			\
 	int buildingType=0;		\
@@ -69,7 +69,7 @@ int printShapes(){
 	printf("\n[4] Pyramid");
 	printf("\n[5] Sphere");
 	printf("\n[6] Cylinder");
-	printf("\n[7] Sphere");
+	printf("\n[7] Diamond");
 	printf("\n[8] Cone");
 	printf("\n[9] Doughnut");
 
@@ -272,6 +272,8 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,j,k;
+	int residue;
+	int offset;
 
 	xStart=x;
 	yStart=y;
@@ -280,6 +282,7 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	do{
 		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
 		scanf("%i",&Width);
+		Width++;//Need to account for exception handling of sin/cos predictions
 		if((Width*2)>=LAYER_MAX_SIZE){
 			printf("\n[WARNING] The Diameter of the Sphere is out of bounds! Radius*2=%i > 2^15",Width*Width);
 		}
@@ -301,19 +304,47 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	//for(i=(0+heightStart);i<((Width-heightStop +2-1)/2);i++){ //Round up in C == Add the divisor less one
 //	int isEven;
 //	isEven=Width%2;
-	int Radius;
-	Radius=Width/2;
-	int LayerWidth;
+	double Radius;
+	Radius=(double)(Width-1)/2.0;
+	double LayerRadius;
+	double LayerDiameter;
+	int voxelDiameter;
 	//double param, result;
-	printf("\n[DEBUGGING] Radius: %i, Diameter:%i\n",Radius,Width);
-	for(i=(1+heightStart);i<=(Width-heightStop)+1;i++){ //Round up in C == Add the divisor less one
-		LayerWidth=(int)((double)Width*sin(PI*(double)i/((double)Width+1.0)));
-		if(LayerWidth==0){
+	printf("\n[DEBUGGING] Radius: %f, Diameter:%i\n",Radius,Width);
+	for(i=(1+heightStart);i<(Width-heightStop);i++){ //Round up in C == Add the divisor less one
+		LayerRadius=Radius*sin(PI*(double)i/(double)Width);
+		LayerDiameter=LayerRadius*2;
+		residue=(int)(LayerDiameter);
+ 
+		printf("\n\n[DEBUGGING] Layer, non-residue Diameter: %i; LayerDiameter: %f",(int)LayerDiameter, LayerDiameter);
+		if((LayerDiameter-residue)>0.000000 && (LayerDiameter-residue)<Sqrt_2_over_2){
+			offset=0;
+			printf("\n[DEBUGGING] \tNo residue!");
+		}
+		else{
+			offset=1;
+			printf("\n[DEBUGGING] \tResidue: present!");
+		}
+		voxelDiameter=LayerDiameter+offset;
+		printf("\n\tvoxelDiameter: %i",voxelDiameter);
+		/*		
+		if(LayerRadius==0){
 			if(i%Width==0){
-				LayerWidth=1;
+				LayerRadius=1;
 			}
 		}
-		printf("\n\n[DEBUGGING] LayerWidth[%i]: %i, Degrees: %f",i,LayerWidth,180.0*(double)i/((double)Width+1.0));
+		*/
+
+		printf("\n[DEBUGGING] LayerRadius[%i]: %f (%i), Degrees: %f",i,LayerRadius,(int)LayerRadius+offset,180.0*(double)i/((double)Width));
+		printf("\n[DEBUGGING] Checking residue ... Integer portion:%i, residue portion: %f",residue,LayerRadius-residue);
+
+/*
+float Point;
+int Value;
+Point=Radius*sin(PI*((float)i+1.0)/((float)Width));
+Value=(int)(Point*((Point-1.0)/(Point))); 
+printf("\n\n[DEBUGGING] Point[%i]: %f, Value: %f",i,Point,Value);
+*/
 		yStart=i+y;
 		xStart=x;
 		zStart=z;
@@ -333,12 +364,56 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		else{
 			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 		}
-	}
+	}		
 	return EXIT_SUCCESS;
 }
 
-//
-// 
+
+int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
+		int Width, Depth, Height;
+	int xStart,yStart,zStart;
+	int xStop,yStop,zStop;
+	int i,j,k;
+	int residue;
+	int offset;
+
+	xStart=x;
+	yStart=y;
+	zStart=z;
+
+	do{
+		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
+		scanf("%i",&Width);
+		//Width++;//Need to account for exception handling of sin/cos predictions
+		if((Width*2)>=LAYER_MAX_SIZE){
+			printf("\n[WARNING] The Diameter of the Sphere is out of bounds! Radius*2=%i > 2^15",Width*Width);
+		}
+
+		if((Width*2+y)> HEIGHT_MAX){
+			printf("\n[ERROR] The Height of the Sphere is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
+			Width=HEIGHT_MAX-y;
+		}
+
+		if(Width*2>VIEW_MAX){
+			printf("\n[WARNING] Your shape is very long and may not render!");
+		}
+
+	}while((Width*2)>=LAYER_MAX_SIZE);
+
+//	for(i=0;i<Width;i++){
+	j=Width%2;
+	if(j==0){j=2;}
+
+	do{
+		printf("\n%i",j);	
+	}while((j+=2)<Width);	
+	do{
+		printf("\n%i",j);		
+	}while((j-=2)>0);
+		
+	return EXIT_SUCCESS;
+}
+
 //
 // 
 //

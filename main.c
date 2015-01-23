@@ -30,6 +30,9 @@ int main(){
 	else if(buildingType==5){
 		createSphere(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap);
 	}
+	else if(buildingType==7){
+		createDiamond(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap);
+	}
 	printf("\n\n");
 	return EXIT_SUCCESS;
 }
