@@ -282,7 +282,7 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	do{
 		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
 		scanf("%i",&Width);
-		Width++;//Need to account for exception handling of sin/cos predictions
+//		Width++;//Need to account for exception handling of sin/cos predictions
 		if((Width*2)>=LAYER_MAX_SIZE){
 			printf("\n[WARNING] The Diameter of the Sphere is out of bounds! Radius*2=%i > 2^15",Width*Width);
 		}
@@ -298,36 +298,49 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 
 	}while((Width*2)>=LAYER_MAX_SIZE);
 
-
-
 	printf("\n\nCopy and paste this into your console/chat:");
 	//for(i=(0+heightStart);i<((Width-heightStop +2-1)/2);i++){ //Round up in C == Add the divisor less one
 //	int isEven;
 //	isEven=Width%2;
 	double Radius;
-	Radius=(double)(Width-1)/2.0;
-	double LayerRadius;
+	Radius=(double)(Width)/2.0;
+	double LayerRadius,LayerRadius2;
 	double LayerDiameter;
 	int voxelDiameter;
 	//double param, result;
 	printf("\n[DEBUGGING] Radius: %f, Diameter:%i\n",Radius,Width);
-	for(i=(1+heightStart);i<(Width-heightStop);i++){ //Round up in C == Add the divisor less one
-		LayerRadius=Radius*sin(PI*(double)i/(double)Width);
+	int startPosition;
+	startPosition=0;
+/*
+	if(Width%2==0){
+		printf("\n[DEBUGGING] The diameter is even! -- skipping middle row!"); //bug? seems backwards
+		startPosition++;
+	}
+*/
+	for(i=(0+heightStart);i<=(Width-heightStop-startPosition)/2;i++){ //Round up in C == Add the divisor less one
+		LayerRadius=Radius*cos(PI*(double)i/(double)Width);
+		LayerRadius2=Radius*sin(PI*(double)i/(double)Width);
 		LayerDiameter=LayerRadius*2;
-		residue=(int)(LayerDiameter);
- 
-		printf("\n\n[DEBUGGING] Layer, non-residue Diameter: %i; LayerDiameter: %f",(int)LayerDiameter, LayerDiameter);
-		if((LayerDiameter-residue)>0.000000 && (LayerDiameter-residue)<Sqrt_2_over_2){
+		residue=(int)(LayerRadius);
+		//printf("\n\n[DEBUGGING] Layer, non-residue Diameter: %i; LayerDiameter: %f",(int)LayerDiameter, LayerDiameter);
+		
+		
+	printf("\n\n\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
+//		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius2,LayerRadius,(int)LayerRadius2,(int)LayerRadius,180.0*(double)i/((double)Width));
+		//if((LayerDiameter-residue)>0.000000 && (LayerDiameter-residue)<Sqrt_2_over_2){
+		if((LayerRadius-residue)>0.000000 && (LayerRadius-residue)<1.000000){
+			offset=1;
+			printf("\n[DEBUGGING] \tResidue(%f - %i): %f present!",LayerRadius,residue,LayerRadius-residue);
+			LayerRadius+=1.0;
+		}
+		else{
 			offset=0;
 			printf("\n[DEBUGGING] \tNo residue!");
 		}
-		else{
-			offset=1;
-			printf("\n[DEBUGGING] \tResidue: present!");
-		}
+		/*
 		voxelDiameter=LayerDiameter+offset;
 		printf("\n\tvoxelDiameter: %i",voxelDiameter);
-		/*		
+				
 		if(LayerRadius==0){
 			if(i%Width==0){
 				LayerRadius=1;
@@ -335,16 +348,18 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		}
 		*/
 
-		printf("\n[DEBUGGING] LayerRadius[%i]: %f (%i), Degrees: %f",i,LayerRadius,(int)LayerRadius+offset,180.0*(double)i/((double)Width));
-		printf("\n[DEBUGGING] Checking residue ... Integer portion:%i, residue portion: %f",residue,LayerRadius-residue);
+//		printf("\n[DEBUGGING] LayerRadius[%i]: %f (%i), Degrees: %f",i,LayerRadius,(int)LayerRadius+offset,180.0*(double)i/((double)Width));
+		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
+//		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius2,LayerRadius,(int)LayerRadius2,(int)LayerRadius,180.0*(double)i/((double)Width));
+		//printf("\n[DEBUGGING] Checking residue ... Integer portion:%i, residue portion: %f",residue,LayerRadius-residue);
 
-/*
-float Point;
-int Value;
-Point=Radius*sin(PI*((float)i+1.0)/((float)Width));
-Value=(int)(Point*((Point-1.0)/(Point))); 
-printf("\n\n[DEBUGGING] Point[%i]: %f, Value: %f",i,Point,Value);
-*/
+	/*
+	float Point;
+	int Value;
+	Point=Radius*sin(PI*((float)i+1.0)/((float)Width));
+	Value=(int)(Point*((Point-1.0)/(Point))); 
+	printf("\n\n[DEBUGGING] Point[%i]: %f, Value: %f",i,Point,Value);
+	*/
 		yStart=i+y;
 		xStart=x;
 		zStart=z;
@@ -364,6 +379,7 @@ printf("\n\n[DEBUGGING] Point[%i]: %f, Value: %f",i,Point,Value);
 		else{
 			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 		}
+	
 	}		
 	return EXIT_SUCCESS;
 }
