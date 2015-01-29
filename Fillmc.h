@@ -318,10 +318,10 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	}
 */
 	for(i=(0+heightStart);i<=(Width-heightStop-startPosition)/2;i++){ //Round up in C == Add the divisor less one
-//		LayerRadius=Radius*cos(PI*(double)i/(double)Width);
-//		LayerRadius2=Radius*sin(PI*(double)i/(double)Width);
-		LayerRadius=(int)Radius*cos(PI*(double)i/(double)Width);
-		LayerRadius2=(int)Radius*sin(PI*(double)i/(double)Width);
+		LayerRadius=Radius*cos(PI*(double)i/(double)Width);
+		LayerRadius2=Radius*sin(PI*(double)i/(double)Width);
+//		LayerRadius=(int)Radius*cos(PI*(double)i/(double)Width);
+//		LayerRadius2=(int)Radius*sin(PI*(double)i/(double)Width);
 		LayerDiameter=LayerRadius*2;
 		residue=(int)(LayerRadius);
 
@@ -330,7 +330,8 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		offset=0;
 //		if((LayerRadius-residue)>0.000000 && (LayerRadius-residue)<1.000000){ // ANY residue rounds up!
 //		if((LayerRadius-residue)>0.000000 && (LayerRadius-residue)<0.500000){ // Only round up if < .5
-		if((LayerRadius-residue)>0.500000 && (LayerRadius-residue)<1.000000){ // Only round up if > .5
+//		if((LayerRadius-residue)>0.500000 && (LayerRadius-residue)<1.000000){ // Only round up if > .5
+		if((LayerRadius-residue)>0.250000 && (LayerRadius-residue)<1.000000){ // Only round up if > .5
 			offset=1;
 			printf("\n[DEBUGGING] \tResidue(%f - %i): %f present!",LayerRadius,residue,LayerRadius-residue);
 			LayerRadius+=1.0;
