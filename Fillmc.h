@@ -318,56 +318,29 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	}
 */
 	for(i=(0+heightStart);i<=(Width-heightStop-startPosition)/2;i++){ //Round up in C == Add the divisor less one
-		LayerRadius=Radius*cos(PI*(double)i/(double)Width);
-		LayerRadius2=Radius*sin(PI*(double)i/(double)Width);
+//		LayerRadius=Radius*cos(PI*(double)i/(double)Width);
+//		LayerRadius2=Radius*sin(PI*(double)i/(double)Width);
+		LayerRadius=(int)Radius*cos(PI*(double)i/(double)Width);
+		LayerRadius2=(int)Radius*sin(PI*(double)i/(double)Width);
 		LayerDiameter=LayerRadius*2;
 		residue=(int)(LayerRadius);
-		//printf("\n\n[DEBUGGING] Layer, non-residue Diameter: %i; LayerDiameter: %f",(int)LayerDiameter, LayerDiameter);
+
+		printf("\n\n\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
 		
-		
-	printf("\n\n\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
-//		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius2,LayerRadius,(int)LayerRadius2,(int)LayerRadius,180.0*(double)i/((double)Width));
-		//if((LayerDiameter-residue)>0.000000 && (LayerDiameter-residue)<Sqrt_2_over_2){
-		if((LayerRadius-residue)>0.000000 && (LayerRadius-residue)<1.000000){
+		offset=0;
+//		if((LayerRadius-residue)>0.000000 && (LayerRadius-residue)<1.000000){ // ANY residue rounds up!
+//		if((LayerRadius-residue)>0.000000 && (LayerRadius-residue)<0.500000){ // Only round up if < .5
+		if((LayerRadius-residue)>0.500000 && (LayerRadius-residue)<1.000000){ // Only round up if > .5
 			offset=1;
 			printf("\n[DEBUGGING] \tResidue(%f - %i): %f present!",LayerRadius,residue,LayerRadius-residue);
 			LayerRadius+=1.0;
 		}
-		else{
-			offset=0;
-			printf("\n[DEBUGGING] \tNo residue!");
-		}
-		/*
-		voxelDiameter=LayerDiameter+offset;
-		printf("\n\tvoxelDiameter: %i",voxelDiameter);
-				
-		if(LayerRadius==0){
-			if(i%Width==0){
-				LayerRadius=1;
-			}
-		}
-		*/
 
-//		printf("\n[DEBUGGING] LayerRadius[%i]: %f (%i), Degrees: %f",i,LayerRadius,(int)LayerRadius+offset,180.0*(double)i/((double)Width));
 		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
-//		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius2,LayerRadius,(int)LayerRadius2,(int)LayerRadius,180.0*(double)i/((double)Width));
-		//printf("\n[DEBUGGING] Checking residue ... Integer portion:%i, residue portion: %f",residue,LayerRadius-residue);
 
-	/*
-	float Point;
-	int Value;
-	Point=Radius*sin(PI*((float)i+1.0)/((float)Width));
-	Value=(int)(Point*((Point-1.0)/(Point))); 
-	printf("\n\n[DEBUGGING] Point[%i]: %f, Value: %f",i,Point,Value);
-	*/
 		yStart=i+y;
 		xStart=x;
 		zStart=z;
-//		printf("\nTest Point[%i]: <%i,%i,%i>",i,xStart,yStart,zStart);
-		//if(i!=((Width-heightStop +2-1)/2)){
-//		if(isEven==0){
-//			printf(" has mirror...");
-//		}
 
 		xStop=xStart+(Width-1)*Direction_NorthSouth;
 		yStop=yStart;
@@ -386,7 +359,7 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 
 
 int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
-		int Width, Depth, Height;
+	int Width, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,j,k;
@@ -430,6 +403,88 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	return EXIT_SUCCESS;
 }
 
+// <-------------D------------->     9  == ODD
+// <------R-----> <-----R------> 4.5 / 4.5 [INT R = 4]
+//  <~~~~~~~~~~~ | ~~~~~~~~~~~> Fill Direction -- Inside out
+// +--+--+--+--+-|-+--+--+--+--+
+// |00|01|02|03|0|4|05|06|07|08|
+// +--+--+--+--+-|-+--+--+--+--+
+//               |
+//   Left Side        Right Side
+//             CENTER
+//         --unevenly split
+
+
+// <--------------D-------------->   10  == EVEN
+// <------R------> <------R------>  5 / 5 [INT R = 5-1 == 4]
+//  <~~~~~~~~~~~~ | ~~~~~~~~~~~~> Fill Direction -- Inside out (Left - i[N]=R-1-i && Right - i[N]=R+i -- for i=0 to i<R)
+// +--+--+--+--+--|--+--+--+--+--+
+// |00|01|02|03|04|05|06|07|08|09|  (For loop -- i index --runs for i=0; i<R ==> iMAX==R-1)
+// +--+--+--+--+--|--+--+--+--+--+
+//   ^-N0    N1-^ | ^-N2     N3-^     Min/Max Indices: N0=R-1-i==R-1-(R-1)== 0; N1=R-1-i=R-1-0==R-1; N2=R+i == R+0 = R; N3= R+i = R+R-1 = 2R-1; 
+//   Left Side        Right Side
+//             CENTER
+//        --equally split
+
+// we start at some random <x(0),y(0),z(0)> and wish to process through and D (diameter) circle having an R (radius)
+// the 0-ith case will differ for even or odd diameters: Even diameters need to have a double thick diameter
+//
+// When the odd diameter is rounded down to the nearest INT, and the even diameter has one subtracted from its radius (and the 0-ith case is dealt with),
+// then the same procedure for "left side of the center" and the "right side of the center" can be used.
+
+int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
+	
+	int Width, Depth, Height;
+	int xStart,yStart,zStart;
+	int x_leftOFcenter,y_leftOFcenter,z_leftOFcenter;
+	int x_rightOFcenter,y_rightOFcenter,z_rightOFcenter;
+	//int xStart_mirrored,yStart_mirrored,zStart_mirrored;
+	//int xStop_mirrored,yStop_mirrored,zStop_mirrored;
+	int i,j,k;
+	int residue;
+	int offset;
+	
+	do{
+		printf("\n\nPlease Enter a the Cylinder Diameter (Width): ");
+		scanf("%i",&Width);
+		//Width++;//Need to account for exception handling of sin/cos predictions
+		if((Width*2)>=LAYER_MAX_SIZE){
+			printf("\n[WARNING] The Diameter of the Sphere is out of bounds! Radius*2=%i > 2^15",Width*Width);
+		}
+
+		if((Width*2+y)> HEIGHT_MAX){
+			printf("\n[ERROR] The Height of the Sphere is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
+			Width=HEIGHT_MAX-y;
+		}
+
+		if(Width*2>VIEW_MAX){
+			printf("\n[WARNING] Your shape is very long and may not render!");
+		}
+
+	}while((Width*2)>=LAYER_MAX_SIZE);
+
+	printf("\n\nPlease Enter a the Cylinder Height: ");
+	scanf("%i",&Height);
+
+
+	for(i=(0+heightStart);i<=(Height-heightStop);i++){
+		x_leftOFcenter=x+i*Direction_NorthSouth;
+		y_leftOFcenter=i+y;
+		z_leftOFcenter=z-i*Direction_WestEast;
+		//xStop=xStart+(Width-i-i)*Direction_NorthSouth;
+		//yStop=yStart;
+		//zStop=zStart-(Width-i-i)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+/*
+		if(consoleORchat==0){
+			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+		}
+		else{
+			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+		}
+*/
+	}
+	return EXIT_SUCCESS;
+}
 //
 // 
 //
