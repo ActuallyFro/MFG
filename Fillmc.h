@@ -283,19 +283,19 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
 		scanf("%i",&Width);
 		
-		printf("\n\nPlease Enter a Height: ");
-		scanf("%i",&Height);
+//		printf("\n\nPlease Enter a Height: ");
+//		scanf("%i",&Height);
 //		Width++;//Need to account for exception handling of sin/cos predictions
 /*
 		if((Width*2)>=LAYER_MAX_SIZE){
 			printf("\n[WARNING] The Diameter of the Sphere is out of bounds! Radius*2=%i > 2^15",Width*Width);
 		}
-*/
+
 		if(Height > HEIGHT_MAX){
 			printf("\n[ERROR] The Height of the Sphere is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
 			Height=HEIGHT_MAX-y;
 		}
-/*
+
 		if(Width*2>VIEW_MAX){
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
@@ -343,34 +343,34 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		startPosition++;
 	}
 */
-	for(j=(0+heightStart);j<Height;j++){ //Round up in C == Add the divisor less one
+	for(j=(0+heightStart);j<Radius;j++){ //Round up in C == Add the divisor less one
+		LayerRadius=Radius*sin(acos((Radius-(double)j-1.0)/(double)Radius));
+
 		for(i=(0+heightStart);i<=(Width-heightStop-startPosition)/2;i++){ //Round up in C == Add the divisor less one
 		if(i==0){
-			LayerRadius=Radius;
-			LayerRadius2=1;
+			LayerRadius2=LayerRadius;
 		}
 		else{
-			LayerRadius=Radius*cos(asin((double)i/Radius));
-			LayerRadius2=Radius*sin(PI*(double)i/(double)Width);
+			LayerRadius2=LayerRadius*cos(asin((double)i/LayerRadius));
 		}
-		LayerDiameter=LayerRadius*2;
-		residue=(int)(LayerRadius);
-		//printf("\n\n\n[DEBUGGING] Radius-i: %f",(Radius-i));
-		//		printf("\n\n\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
+		LayerDiameter=LayerRadius2*2;
+		residue=(int)(LayerRadius2);
+		//printf("\n\n\n[DEBUGGING] LayerRadius-i: %f",(LayerRadius-i));
+		//		printf("\n\n\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius2,LayerRadius22,(int)LayerRadius2,(int)LayerRadius22,180.0*(double)i/((double)Width));
 
 		offset=0;
-		if((LayerRadius-residue)>0.000000 && (LayerRadius-residue)<1.000000){ // ANY residue rounds up!
+		if((LayerRadius2-residue)>0.000000 && (LayerRadius2-residue)<1.000000){ // ANY residue rounds up!
 			offset=1;
-			//			printf("\n[DEBUGGING] \tResidue(%f - %i): %f present!",LayerRadius,residue,LayerRadius-residue);
-			LayerRadius+=1.0;
+			//			printf("\n[DEBUGGING] \tResidue(%f - %i): %f present!",LayerRadius2,residue,LayerRadius2-residue);
+			LayerRadius2+=1.0;
 		}
-		//		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
-		xStart=x-(int)LayerRadius;
+		//		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius2,LayerRadius22,(int)LayerRadius2,(int)LayerRadius22,180.0*(double)i/((double)Width));
+		xStart=x-(int)LayerRadius2;
 		yStart=y+j; //goes up for 'height' ONLY
-		zStart=z+i;//-(int)LayerRadius;
-		xStop=x+(int)LayerRadius*Direction_NorthSouth;
+		zStart=z+i;//-(int)LayerRadius2;
+		xStop=x+(int)LayerRadius2*Direction_NorthSouth;
 		yStop=yStart;
-		zStop=z+i;//+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+		zStop=z+i;//+(int)LayerRadius2*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 		if(consoleORchat==0){
 			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
@@ -379,8 +379,8 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 		}
 		if(i!=0 || Width%2==0){
-			zStart=z-i;//-(int)LayerRadius;	
-			zStop=z-i;//+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+			zStart=z-i;//-(int)LayerRadius2;	
+			zStop=z-i;//+(int)LayerRadius2*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 			if(consoleORchat==0){
 				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 			}
@@ -545,15 +545,16 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 		startPosition++;
 	}
 */
+// 4 - 6 - 6 - 6 - 4
 	for(j=(0+heightStart);j<Height;j++){ //Round up in C == Add the divisor less one
 		for(i=(0+heightStart);i<=(Width-heightStop-startPosition)/2;i++){ //Round up in C == Add the divisor less one
 		if(i==0){
 			LayerRadius=Radius;
-			LayerRadius2=1;
+			//LayerRadius2=1;
 		}
 		else{
 			LayerRadius=Radius*cos(asin((double)i/Radius));
-			LayerRadius2=Radius*sin(PI*(double)i/(double)Width);
+			//LayerRadius2=Radius*sin(PI*(double)i/(double)Width);
 		}
 		LayerDiameter=LayerRadius*2;
 		residue=(int)(LayerRadius);
@@ -567,12 +568,13 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 			LayerRadius+=1.0;
 		}
 		//		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
-		xStart=x-(int)LayerRadius;
+		xStart=x+i;
 		yStart=y+j; //goes up for 'height' ONLY
-		zStart=z+i;//-(int)LayerRadius;
-		xStop=x+(int)LayerRadius*Direction_NorthSouth;
+		zStart=z-((int)LayerRadius-1)*Direction_NorthSouth;//-(int)LayerRadius;
+
+		xStop=x+i;
 		yStop=yStart;
-		zStop=z+i;//+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+		zStop=z+((int)LayerRadius-1)*Direction_NorthSouth;//+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 		if(consoleORchat==0){
 			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
@@ -580,14 +582,28 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 		else{
 			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 		}
-		if(i!=0 || Width%2==0){
-			zStart=z-i;//-(int)LayerRadius;	
-			zStop=z-i;//+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+		if(Width%2==0){//if EVEN Width 
+			//printf("\n\n[DEBUGGING] EVEN WIDTH!\n");
+			xStart=x-i-1;//-(int)LayerRadius;	
+			xStop=x-i-1;//+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 			if(consoleORchat==0){
 				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 			}
 			else{
 				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
+		}
+		else{ //if ODD Width 
+			if(i!=0){
+			//	printf("\n\n[DEBUGGING] ODD WIDTH!\n");
+				xStart=x-i;//-(int)LayerRadius;	
+				xStop=x-i;//+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+				if(consoleORchat==0){
+					printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				}
+				else{
+					printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				}				
 			}
 		}
 
