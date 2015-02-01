@@ -77,10 +77,10 @@ int printShapes(){
 }
 
 int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
-	int Width, Depth, Height;
+	int Width;//, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
-	int i,j,k;
+	int i;//,j,k;
 
 	xStart=x;
 	yStart=y;
@@ -129,7 +129,7 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 	int Width, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
-	int i,j,k;
+	int i;//,j,k;
 
 	xStart=x;
 	yStart=y;
@@ -181,10 +181,10 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 
 
 int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
-	int Width, Depth, Height;
+	int Width;//, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
-	int i,j,k;
+	int i;//,j,k;
 
 	xStart=x;
 	yStart=y;
@@ -228,45 +228,6 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	return EXIT_SUCCESS;
 }
 
-
-
-//Sphere:
-// 
-// Go Layer by layer from outside top + bottom to center
-// Fill 0 to pi/4 + mirror and p/2 to p/4 VIA trans pose
-// e.g. if radius is 10: and x,y,z are 0,0,0
-//    the first fill is: fill -10 10 0 10 10 0 <blah> fill 0 10 -10 0 10 10 <blah> ... this makes an X
-//    the second fill is: fill -9 100 1 9 100 1 <blah>, fill 1 100 -9 1 100 9 <blah>, fill -9 100 -1 9 100 -1 <blah>, fill -1 100 -9 -1 100 9 <blah>
-
-//  |     --------+
-//  |               \
-//  |                 \
-//  |                    \
-//  |                      [X,Y] = r cos(theta) , r sine (theta)
-//  |                         |
-//  |                          \
-//  |                            |
-//  |                             \
-//  |                               |
-//  |                                \
-//  |                                  |
-//  + ----------------------------------------  
-//
-// //* sin example */
-// #include <stdio.h>      /* printf */
-
-// int main ()
-// {
-  // param = 30.0;
-  // result = sin (param*PI/180);
-  // printf ("The sine of %f degrees is %f.\n", param, result );
-  // return 0;
-// } 
-// go 0-45 or 0 tp pi/4 ---> mirrors both horizon + vert.
-// 1= cos(theta)^2 + sine (theta)^2
-// 
-// 
-//
 int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
 	int Width, Depth, Height;
 	int xStart,yStart,zStart;
@@ -333,16 +294,10 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	double LayerRadius,LayerRadius2;
 	double LayerDiameter;
 	int voxelDiameter;
-	//double param, result;
-//	printf("\n[DEBUGGING] Radius: %f, Diameter:%i\n",Radius,Width);
+
 	int startPosition;
 	startPosition=0;
-/*
-	if(Width%2==0){
-		printf("\n[DEBUGGING] The diameter is even! -- skipping middle row!"); //bug? seems backwards
-		startPosition++;
-	}
-*/
+
 	for(j=(0+heightStart);j<Radius;j++){ //Round up in C == Add the divisor less one
 		LayerRadius=Radius*sin(acos((Radius-(double)j-1.0)/(double)Radius));
 
@@ -439,35 +394,6 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 		
 	return EXIT_SUCCESS;
 }
-
-// <-------------D------------->     9  == ODD
-// <------R-----> <-----R------> 4.5 / 4.5 [INT R = 4]
-//  <~~~~~~~~~~~ | ~~~~~~~~~~~> Fill Direction -- Inside out
-// +--+--+--+--+-|-+--+--+--+--+
-// |00|01|02|03|0|4|05|06|07|08|
-// +--+--+--+--+-|-+--+--+--+--+
-//               |
-//   Left Side        Right Side
-//             CENTER
-//         --unevenly split
-
-
-// <--------------D-------------->   10  == EVEN
-// <------R------> <------R------>  5 / 5 [INT R = 5-1 == 4]
-//  <~~~~~~~~~~~~ | ~~~~~~~~~~~~> Fill Direction -- Inside out (Left - i[N]=R-1-i && Right - i[N]=R+i -- for i=0 to i<R)
-// +--+--+--+--+--|--+--+--+--+--+
-// |00|01|02|03|04|05|06|07|08|09|  (For loop -- i index --runs for i=0; i<R ==> iMAX==R-1)
-// +--+--+--+--+--|--+--+--+--+--+
-//   ^-N0    N1-^ | ^-N2     N3-^     Min/Max Indices: N0=R-1-i==R-1-(R-1)== 0; N1=R-1-i=R-1-0==R-1; N2=R+i == R+0 = R; N3= R+i = R+R-1 = 2R-1; 
-//   Left Side        Right Side
-//             CENTER
-//        --equally split
-
-// we start at some random <x(0),y(0),z(0)> and wish to process through and D (diameter) circle having an R (radius)
-// the 0-ith case will differ for even or odd diameters: Even diameters need to have a double thick diameter
-//
-// When the odd diameter is rounded down to the nearest INT, and the even diameter has one subtracted from its radius (and the 0-ith case is dealt with),
-// then the same procedure for "left side of the center" and the "right side of the center" can be used.
 
 int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
 	int Width, Depth, Height;
