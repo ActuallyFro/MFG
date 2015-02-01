@@ -26,19 +26,40 @@
 	int EdgesOnly=0;		\
 	int Direction_NorthSouth;	\
 	int Direction_WestEast;		\
-	int shapesTotal=9
+	int shapesTotal=9;			\
+	int Width;					\
+	int Depth;					\
+	int Height
 
 int getShape(int *Type, int TotalShapes){
-        do{
-                printf("\n\nWhat Type of shape would you like to create? " );
-                scanf("%i",Type);
-        }while(0>Type && *Type>TotalShapes);
-        return EXIT_SUCCESS;
+	do{
+		printf("\n\nWhat Type of shape would you like to create? " );
+		scanf("%i",Type);
+	}while(0>Type && *Type>TotalShapes);
+	return EXIT_SUCCESS;
 }
 
 int getStartCoords(int *x,int *y,int *z){
 	printf("Please enter a starting <x> <y> <z>: ");
 	scanf("%i %i %i",x,y,z);
+	return EXIT_SUCCESS;
+}
+
+int getHeight(char *name,int *Height){
+	printf("What is the %s's height: ",name);
+	scanf("%i",Height);
+	return EXIT_SUCCESS;
+}
+
+int getWidth(char *name,int *Width){
+	printf("What is the %s's width: ",name);
+	scanf("%i",Width);
+	return EXIT_SUCCESS;
+}
+
+int getDepth(char *name,int *Depth){
+	printf("What is the %s's depth: ",name);
+	scanf("%i",Depth);
 	return EXIT_SUCCESS;
 }
 
@@ -395,8 +416,10 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	return EXIT_SUCCESS;
 }
 
-int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
-	int Width, Depth, Height;
+
+
+
+int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Height, int Width){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,j,k;
@@ -407,71 +430,16 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 	yStart=y;
 	zStart=z;
 
-	do{
-		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
-		scanf("%i",&Width);
-		
-		printf("\n\nPlease Enter a Height: ");
-		scanf("%i",&Height);
-//		Width++;//Need to account for exception handling of sin/cos predictions
-/*
-		if((Width*2)>=LAYER_MAX_SIZE){
-			printf("\n[WARNING] The Diameter of the Sphere is out of bounds! Radius*2=%i > 2^15",Width*Width);
-		}
-*/
-		if(Height > HEIGHT_MAX){
-			printf("\n[ERROR] The Height of the Sphere is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
-			Height=HEIGHT_MAX-y;
-		}
-/*
-		if(Width*2>VIEW_MAX){
-			printf("\n[WARNING] Your shape is very long and may not render!");
-		}
-*/
-	}while((Width*2)>=LAYER_MAX_SIZE || Height>HEIGHT_MAX);
-/*
-	do{
-		printf("\n\nPlease Enter a Width: ");
-		scanf("%i",&Width);
 
-		printf("\n\nPlease Enter a Depth: ");
-		scanf("%i",&Depth);
-
-		printf("\n\nPlease Enter a Height: ");
-		scanf("%i",&Height);
-
-		if((Width*Depth)>=LAYER_MAX_SIZE){
-			printf("\n[WARNING] Width and Depth are TOO GREAT (Width*Depth= %i >2^15)!",Width*Depth);
-		}
-		if((Height+y)> HEIGHT_MAX){
-			printf("\n[ERROR] The Height of the Rectangle is out of the map! Forcing Height to be: %i",HEIGHT_MAX-y);
-			Height=HEIGHT_MAX-y;
-		}
-		if(Width>VIEW_MAX || Depth>VIEW_MAX){
-			printf("\n[WARNING] Your shape is very long and may not render!");
-		}
-	}while((Width*Depth)>=LAYER_MAX_SIZE || Height>HEIGHT_MAX);
-*/
-	printf("\n\nCopy and paste this into your console/chat:");
-	//for(i=(0+heightStart);i<((Width-heightStop +2-1)/2);i++){ //Round up in C == Add the divisor less one
-//	int isEven;
-//	isEven=Width%2;
 	double Radius;
 	Radius=(double)(Width)/2.0;
 	double LayerRadius,LayerRadius2;
 	double LayerDiameter;
 	int voxelDiameter;
-	//double param, result;
-//	printf("\n[DEBUGGING] Radius: %f, Diameter:%i\n",Radius,Width);
+
 	int startPosition;
 	startPosition=0;
-/*
-	if(Width%2==0){
-		printf("\n[DEBUGGING] The diameter is even! -- skipping middle row!"); //bug? seems backwards
-		startPosition++;
-	}
-*/
-// 4 - 6 - 6 - 6 - 4
+
 	for(j=(0+heightStart);j<Height;j++){ //Round up in C == Add the divisor less one
 		for(i=(0+heightStart);i<=(Width-heightStop-startPosition)/2;i++){ //Round up in C == Add the divisor less one
 		if(i==0){
