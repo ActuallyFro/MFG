@@ -291,6 +291,15 @@ if(TL_help){   \
 	else if (TL_Initial_Argc == ExceptionN){		\
 		TL_Enforce_Exception_Occured=1;	break;\
 	}
+#define TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_LESS_THAN_N(ExceptionN)	\
+	else if ( TL_Initial_Argc < ExceptionN ){							\
+		TL_Enforce_Exception_Occured=1;	break;						\
+	}
+
+#define TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_GREATER_THAN_N(ExceptionN)			\
+	else if (TL_Initial_Argc > ExceptionN){		\
+		TL_Enforce_Exception_Occured=1;	break;\
+	}
 	
 #if WINDOWS
 	#include <io.h>

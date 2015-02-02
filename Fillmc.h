@@ -1,6 +1,8 @@
 #include <math.h>
 
 #define HEIGHT_MAX 255
+#define HEIGHT_MIN 0
+#define COORD_MAX 9999999
 #define VIEW_MAX 176
 #define LAYER_MAX_SIZE 32768
 #define NORTH 1
@@ -13,17 +15,20 @@
 #define PI 3.14159265
 #define Sqrt_2 1.41421356
 #define Sqrt_2_over_2 0.70710678
-#define initVars() 			\
-	int x,y,z;			\
-	int buildingType=0;		\
+
+#define initVars() 				\
+	int x=COORD_MAX; 			\
+	int y=HEIGHT_MIN;			\
+	int z=COORD_MAX;			\
+	int buildingType=0;			\
 	char buildingMaterial[50];	\
 	int consoleORchat=0;		\
 	int MaxHeight=HEIGHT_MAX;	\
-	int MinHeight=0;		\
-	int HeightOffset=0;		\
-	int HeightStop=0;		\
-	int Hollow=0;			\
-	int EdgesOnly=0;		\
+	int MinHeight=0;			\
+	int HeightOffset=0;			\
+	int HeightStop=0;			\
+	int Hollow=0;				\
+	int EdgesOnly=0;			\
 	int Direction_NorthSouth;	\
 	int Direction_WestEast;		\
 	int shapesTotal=9;			\
@@ -40,8 +45,10 @@ int getShape(int *Type, int TotalShapes){
 }
 
 int getStartCoords(int *x,int *y,int *z){
-	printf("Please enter a starting <x> <y> <z>: ");
-	scanf("%i %i %i",x,y,z);
+	if(&x!=COORD_MAX && &y < HEIGHT_MAX && &y > HEIGHT_MIN && &z!=COORD_MAX){
+		printf("Please enter a starting <x> <y> <z>: ");
+		scanf("%i %i %i",x,y,z);
+	}
 	return EXIT_SUCCESS;
 }
 

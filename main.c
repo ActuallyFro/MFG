@@ -1,19 +1,19 @@
 #define TL_HELP_MESSAGE		\
 "\n Minecraft Fill Tool (v0.1)\
 \n ==========================\
-\n To Receive a File:\
-\n ------------------\
-\n %s [--output <\"Name\">]\
+\n This program is designed to help generate 'simple' geometric shapes	 \
+\n in Minecraft. The output of the program will be the '/fll' commands   \
+\n needed to render the specified shapes, and can be manually entered in \
+\n the chat window in game or bulk pasted into the server's console. 	 \
 \n\
-\n  --output: Override the default output file name (ncp.out)\
-\n Release Notes:\
-\n --------------\
-\n  By default this program will run in listening mode, and will wait for a\
-\n  client to send a file. The default output file is ncp.out, and can be \
-\n  overriden by the --output argument.\
+\n The tool supports both commandline passing of fields for shapes or it can \
+\n executed without fields to run in an interactive, Q&A mode.\
 \n\
-\n  No attempts at security nor reliability have been made with respect to the\
-\n  development of this software.\
+\n Example Commandline Excecution:\
+\n -------------------------------\
+\n %s --shape Cylinder -x 0 -y 100 -z 0 \
+\n\t\t\t\t --Height 3 --Width 10\
+\n\
 \n\n                                                  ActuallyFro - Feb 2015\
 \n\n",TL_ProgName
 
@@ -29,25 +29,43 @@ int main(int argc, char **argv){
 	int		IP_Port=1337;
 	char	OutputFile[500]="ncp.out";
 	//Parse Args Vars
-	char	*IP_Input_Dest = NULL;
+	char	*Passed_Shape = NULL;
 	char	*IP_Input_Port = NULL;
 	char	*File_Input = NULL;
 	char	*File_Output = NULL;
-
+	initVars();
+	
 	TL_PARSEARGS_INSTALL();
+	
 	TL_PARSEARGS_START(argc, argv,TL_ENFORCEPARSING_ON)
-		TL_PARSEARGS_ADD_STR("--input",File_Input)
-		TL_PARSEARGS_ADD_STR("--output",File_Output)
-		TL_PARSEARGS_ADD_STR("--ip",IP_Input_Dest)
-		TL_PARSEARGS_ADD_STR("--port",IP_Input_Port)
+		TL_PARSEARGS_ADD_INT("-x",x)
+		TL_PARSEARGS_ADD_INT("-y",y)
+		TL_PARSEARGS_ADD_INT("-z",z)
+		TL_PARSEARGS_ADD_STR("--shape",Passed_Shape)
 		TL_PARSEARGS_ADD_STR("-p",IP_Input_Port)
 		TL_PARSEARGS_ADD_FLAG("-v", Verbose, 1)
 		TL_PARSEARGS_ADD_FLAG("--verbose", Verbose, 1)
-		TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_EQUALS_N(3)
 	TL_PARSEARGS_STOP
-	
-	initVars();
 
+	//		TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_GREATER_THAN_N(2)
+
+	if(argc>1){
+		printf("\nVariables Passed!");
+		return EXIT_SUCCESS;
+	}
+	
+	if(Passed_Shape!=NULL){
+		printf("\n");
+		return EXIT_SUCCESS;
+	}
+
+	/*
+	if( x!=0 || y!=0 || z!=0 ){
+		printf("Passed <x,y,z>: <%i,%i,%i>",x,y,z);
+		return EXIT_SUCCESS;
+	}
+	*/
+	
 	printBanner();
 	getbuildingMaterial(buildingMaterial);
 
