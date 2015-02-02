@@ -12,7 +12,7 @@
 \n Example Commandline Excecution:\
 \n -------------------------------\
 \n %s --shape Cylinder -x 0 -y 100 -z 0 \
-\n\t\t\t\t --Height 3 --Width 10\
+\n\t\t\t\t --height 3 --width 10\
 \n\
 \n\n                                                  ActuallyFro - Feb 2015\
 \n\n",TL_ProgName
@@ -45,6 +45,8 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_INT("-dy2",HeightOffsetStop)
 		TL_PARSEARGS_ADD_INT("-h",Height)
 		TL_PARSEARGS_ADD_INT("-w",Width)
+		TL_PARSEARGS_ADD_INT("--height",Height)
+		TL_PARSEARGS_ADD_INT("--width",Width)
 		TL_PARSEARGS_ADD_STR("--shape",Passed_Shape)
 		TL_PARSEARGS_ADD_STR("--I",IP_Input_Port)
 		TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
@@ -68,7 +70,6 @@ int main(int argc, char **argv){
 
 	getconsoleORchat(&consoleORchat);
 
-	printShapes();
 	getShape(&buildingType,shapesTotal);
 
 	getStartCoords(&x,&y,&z,TL_PARSEARGS_OCCURED);
@@ -96,19 +97,26 @@ int main(int argc, char **argv){
 	printf("\n\nCopy and paste this into your console/chat:");
 */	
 	if(buildingType==1){
-		createSquare(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap);
+		getWidth("Square",&Width);
+		createSquare(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
 	}
 	else if(buildingType==2){
-		createRectangle(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap);
+		getHeight("Rectangle",&Height);
+		getDepth("Rectangle",&Height);
+		getWidth("Rectangle",&Width);
+		createRectangle(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Depth, Width);
 	}
 	//else if(buildingType==3){
-	//	createTriangularPrism(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap);
+	//	createTriangularPrism(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width);
 	//}
 	else if(buildingType==4){
-		createPyramid(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap);
+		getWidth("Pyramid",&Width);
+		createPyramid(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
 	}
 	else if(buildingType==5){
-		createSphere(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap);
+//		getHeight("Sphere",&Height);
+		getWidth("Sphere",&Width);
+		createSphere(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
 	}
 	else if(buildingType==6){
 		getHeight("Cylinder",&Height);
@@ -116,7 +124,8 @@ int main(int argc, char **argv){
 		createCylinder(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width);
 	}
 	else if(buildingType==7){
-		createDiamond(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap);
+		getWidth("Diamond",&Width);
+		createDiamond(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
 	}
 	printf("\n\n");
 	return EXIT_SUCCESS;

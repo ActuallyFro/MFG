@@ -37,6 +37,17 @@
 	int Height
 
 int getShape(int *Type, int TotalShapes){
+	printf("\n");
+	printf("\n[1] Square");
+	printf("\n[2] Rectangle");
+	printf("\n[3] Triangular Prism");
+	printf("\n[4] Pyramid");
+	printf("\n[5] Sphere");
+	printf("\n[6] Cylinder");
+	printf("\n[7] Diamond");
+	printf("\n[8] Cone");
+	printf("\n[9] Doughnut");
+
 	do{
 		printf("\n\nWhat Type of shape would you like to create? " );
 		scanf("%i",Type);
@@ -95,23 +106,8 @@ int printBanner(){
 	return EXIT_SUCCESS;
 }
 
-int printShapes(){
-	printf("\n");
-	printf("\n[1] Square");
-	printf("\n[2] Rectangle");
-	printf("\n[3] Triangular Prism");
-	printf("\n[4] Pyramid");
-	printf("\n[5] Sphere");
-	printf("\n[6] Cylinder");
-	printf("\n[7] Diamond");
-	printf("\n[8] Cone");
-	printf("\n[9] Doughnut");
-
-	return EXIT_SUCCESS;
-}
-
-int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
-	int Width;//, Depth, Height;
+int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
+	//int Width;//, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i;//,j,k;
@@ -159,8 +155,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	return EXIT_SUCCESS;
 }
 
-int createRectangle(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
-	int Width, Depth, Height;
+int createRectangle(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int Depth, int Height){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i;//,j,k;
@@ -214,8 +209,8 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 }
 
 
-int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
-	int Width;//, Depth, Height;
+int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
+	//int Width;//, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i;//,j,k;
@@ -262,8 +257,8 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	return EXIT_SUCCESS;
 }
 
-int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
-	int Width, Depth, Height;
+int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
+	//int Width, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,j,k;
@@ -295,7 +290,7 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
 */
-	}while((Width*2)>=LAYER_MAX_SIZE || Height>HEIGHT_MAX);
+	}while((Width*2)>=LAYER_MAX_SIZE);// || Height>HEIGHT_MAX);
 /*
 	do{
 		printf("\n\nPlease Enter a Width: ");
@@ -384,8 +379,8 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 }
 
 
-int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop){
-	int Width, Depth, Height;
+int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
+	//int Width, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,j,k;
@@ -428,9 +423,6 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 		
 	return EXIT_SUCCESS;
 }
-
-
-
 
 int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Height, int Width){
 	int xStart,yStart,zStart;
@@ -491,8 +483,8 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 		}
 		if(Width%2==0){//if EVEN Width 
 			//printf("\n\n[DEBUGGING] EVEN WIDTH!\n");
-			xStart=x-i-1;//-(int)LayerRadius;	
-			xStop=x-i-1;//+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+			xStart=x-i-1; //-(int)LayerRadius;	
+			xStop=x-i-1;  //+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 			if(consoleORchat==0){
 				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 			}
