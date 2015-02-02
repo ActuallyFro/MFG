@@ -18,15 +18,15 @@
 
 #define initVars() 				\
 	int x=COORD_MAX; 			\
-	int y=HEIGHT_MIN;			\
+	int y=HEIGHT_MIN-1;			\
 	int z=COORD_MAX;			\
 	int buildingType=0;			\
 	char buildingMaterial[50];	\
 	int consoleORchat=0;		\
 	int MaxHeight=HEIGHT_MAX;	\
 	int MinHeight=0;			\
-	int HeightOffset=0;			\
-	int HeightStop=0;			\
+	int HeightOffsetStart=0;			\
+	int HeightOffsetStop=0;			\
 	int Hollow=0;				\
 	int EdgesOnly=0;			\
 	int Direction_NorthSouth;	\
@@ -44,8 +44,14 @@ int getShape(int *Type, int TotalShapes){
 	return EXIT_SUCCESS;
 }
 
-int getStartCoords(int *x,int *y,int *z){
-	if(&x!=COORD_MAX && &y < HEIGHT_MAX && &y > HEIGHT_MIN && &z!=COORD_MAX){
+int getStartCoords(int *x,int *y,int *z, int Args_Parsed){
+	int val_x=*x;
+	int val_y=*y;
+	int val_z=*z;
+	if(val_x==COORD_MAX || val_y<HEIGHT_MIN || val_y>HEIGHT_MAX || val_z==COORD_MAX){
+		if(Args_Parsed==TRUE){
+				printf("\n[WARNING] A passed value for x, y, or z <%i,%i,%i> is not valid!\n",val_x,val_y,val_z);
+		}
 		printf("Please enter a starting <x> <y> <z>: ");
 		scanf("%i %i %i",x,y,z);
 	}

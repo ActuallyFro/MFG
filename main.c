@@ -22,7 +22,7 @@
 
 
 int main(int argc, char **argv){
-	int	Verbose=0;
+	int	Rotate=0;
 	int	MODE=0;
 	char	IP_Dest[50]="127.0.0.1";
 	char	IP_Port_Str[10];
@@ -41,10 +41,14 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_INT("-x",x)
 		TL_PARSEARGS_ADD_INT("-y",y)
 		TL_PARSEARGS_ADD_INT("-z",z)
+		TL_PARSEARGS_ADD_INT("-dy1",HeightOffsetStart)
+		TL_PARSEARGS_ADD_INT("-dy2",HeightOffsetStop)
+		TL_PARSEARGS_ADD_INT("-h",Height)
+		TL_PARSEARGS_ADD_INT("-w",Width)
 		TL_PARSEARGS_ADD_STR("--shape",Passed_Shape)
-		TL_PARSEARGS_ADD_STR("-p",IP_Input_Port)
-		TL_PARSEARGS_ADD_FLAG("-v", Verbose, 1)
-		TL_PARSEARGS_ADD_FLAG("--verbose", Verbose, 1)
+		TL_PARSEARGS_ADD_STR("--I",IP_Input_Port)
+		TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
+		TL_PARSEARGS_ADD_FLAG("-r", Rotate, 1)
 	TL_PARSEARGS_STOP
 
 	//		TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_GREATER_THAN_N(2)
@@ -58,13 +62,6 @@ int main(int argc, char **argv){
 		printf("\n");
 		return EXIT_SUCCESS;
 	}
-
-	/*
-	if( x!=0 || y!=0 || z!=0 ){
-		printf("Passed <x,y,z>: <%i,%i,%i>",x,y,z);
-		return EXIT_SUCCESS;
-	}
-	*/
 	
 	printBanner();
 	getbuildingMaterial(buildingMaterial);
@@ -74,7 +71,8 @@ int main(int argc, char **argv){
 	printShapes();
 	getShape(&buildingType,shapesTotal);
 
-	getStartCoords(&x,&y,&z);
+	getStartCoords(&x,&y,&z,TL_PARSEARGS_OCCURED);
+
 /*
 	getHeight(&Height);
 	getWidth(&Width);

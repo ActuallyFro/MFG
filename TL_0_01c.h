@@ -32,17 +32,6 @@
 	==> OPEN() WORKS on *Nix/BSD. Windows simply needs the O_BINARY flag set for open to work appropriately!
 */
 
-/*
-#if WINDOWS
-	#define TL_FILE_OPEN_READ_FLAGS O_RDONLY | O_BINARY 
-	#define TL_FILE_OPEN_WRITE_NEWFILE_FLAGS O_WRONLY | O_CREAT | O_BINARY
-	#define TL_FILE_OPEN_WRITE_APPENDFILE_FLAGS O_WRONLY | O_APPEND | O_BINARY
-#else
-	#define TL_FILE_OPEN_READ_FLAGS O_RDONLY
-	#define TL_FILE_OPEN_WRITE_NEWFILE_FLAGS O_WRONLY | O_CREAT
-	#define TL_FILE_OPEN_WRITE_APPENDFILE_FLAGS O_WRONLY | O_APPEND
-#endif
-*/
 	#include <inttypes.h>
 	#include <limits.h>
 	#include <stdio.h>
@@ -174,7 +163,7 @@
 #endif
 
 int TL_DEBUGGING=0;
-#define TL_DEBUGF(...)			\
+#define TL_DEBUGF(...)		\
 	if(TL_DEBUGGING==1)		\
 		fprintf(__VA_ARGS__)
 
@@ -233,26 +222,27 @@ int TL_Default_Set_Array_j;
 #define TL_ENFORCEPARSING_ON 1
 #define TL_ENFORCEPARSING_OFF 0
 
-#define TL_PARSEARGS_INSTALL()	\
-	int TL_help=0;				\
-	int EnforceParsing;			\
-	char TL_ProgName[500];		\
-	int TL_Initial_Argc = 0;	\
+#define TL_PARSEARGS_INSTALL()		\
+	int TL_help=0;					\
+	int EnforceParsing;				\
+	char TL_ProgName[500];			\
+	int TL_Initial_Argc = 0;		\
+	int TL_PARSEARGS_OCCURED=FALSE;	\
 	int TL_Enforce_Exception_Occured
 
 #if !defined(TL_HELP_MESSAGE)
     #define TL_HELP_MESSAGE "\nUsage: %s [-file <filename>] [-double <arg>] [-int <arg>] [-flag]\n",TL_ProgName
 #endif
 	
-#define TL_PARSEARGS_START(argc,argv,Enforce)		\
-	EnforceParsing=Enforce;			\
+#define TL_PARSEARGS_START(argc,argv,Enforce)	\
+	EnforceParsing=Enforce;						\
 	TL_Initial_Argc = argc;						\
-	TL_Enforce_Exception_Occured=0;\
-	strcpy(TL_ProgName,argv[0]);		\
-	argc--; argv++;				\
-	while(argc > 0){			\
-		if(!strcmp(*argv, "--help")){	\
-		argv++; argc--; TL_help=1;		\
+	TL_Enforce_Exception_Occured=0;				\
+	strcpy(TL_ProgName,argv[0]);				\
+	argc--; argv++;								\
+	while(argc > 0){							\
+		if(!strcmp(*argv, "--help")){			\
+		argv++; argc--; TL_help=1;				\
 		}
         
 #define TL_PARSEARGS_STOP													\
@@ -270,27 +260,29 @@ if(TL_help){   \
 
 #define TL_PARSEARGS_ADD_INT(x,y)					\
 	else if (!strcmp(*argv, x)){			\
-		argv++; argc--; y = atoi(*argv);	\
+		argv++; argc--; y = atoi(*argv); TL_PARSEARGS_OCCURED=TRUE;	\
 	}
 
-#define TL_PARSEARGS_ADD_FLOAT(x,y)				\
-	else if (!strcmp(*argv, x)){			\
-		argv++; argc--; y = atof(*argv);	\
+#define TL_PARSEARGS_ADD_FLOAT(x,y)									\
+	else if (!strcmp(*argv, x)){									\
+		argv++; argc--; y = atof(*argv); TL_PARSEARGS_OCCURED=TRUE;	\
 		}
 
-#define TL_PARSEARGS_ADD_STR(x,y)				\
-	else if (!strcmp(*argv, x)){		\
-		argv++; argc--; y = *argv;	\
+#define TL_PARSEARGS_ADD_STR(x,y)								\
+	else if (!strcmp(*argv, x)){								\
+		argv++; argc--; y = *argv; TL_PARSEARGS_OCCURED=TRUE;	\
 	}
 
-#define TL_PARSEARGS_ADD_FLAG(x,y,Value)			\
-	else if (!strcmp(*argv, x)){		\
-		y = Value;			\
+#define TL_PARSEARGS_ADD_FLAG(x,y,Value)		\
+	else if (!strcmp(*argv, x)){				\
+		y = Value;TL_PARSEARGS_OCCURED=TRUE;	\
 	}
+	
 #define TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_EQUALS_N(ExceptionN)			\
 	else if (TL_Initial_Argc == ExceptionN){		\
 		TL_Enforce_Exception_Occured=1;	break;\
 	}
+
 #define TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_LESS_THAN_N(ExceptionN)	\
 	else if ( TL_Initial_Argc < ExceptionN ){							\
 		TL_Enforce_Exception_Occured=1;	break;						\
@@ -1116,13 +1108,25 @@ listen(NAME, NUM)
 		Port_Dest[strlen(TL_IPv4_Parsing_Port_Ptr)]='\0';																					\
 	}
 
-int TL_FILE_Check_exists(char * fileName){
+#if WINDOWS
+	#define TL_FILE_FLAGS_OPEN_READ O_RDONLY
+	#define TL_FILE_FLAGS_OPEN_READ_BINARY O_RDONLY | O_BINARY 
+	#define TL_FILE_FLAGS_OPEN_WRITE_NEWFILE O_WRONLY | O_CREAT | O_BINARY
+	#define TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE O_WRONLY | O_APPEND | O_BINARY
+#else
+	#define TL_FILE_FLAGS_OPEN_READ O_RDONLY
+	#define TL_FILE_FLAGS_OPEN_READ_BINARY O_RDONLY
+	#define TL_FILE_FLAGS_OPEN_WRITE_NEWFILE O_WRONLY | O_CREAT
+	#define TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE O_WRONLY | O_APPEND
+#endif
+	
+int TL_FILE_CHECK_EXISTS(char * fileName){
    struct stat buf;
    int i = stat ( fileName, &buf );
      /* File found */
      if ( i == 0 ){
-     	return 1;
+     	return TRUE;
      }
-     return 0;
+     return FALSE;
 }
 
