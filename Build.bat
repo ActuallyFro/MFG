@@ -1,1 +1,1 @@
-gcc main.c -o Minecraft_BuildingGenerator.exe 
+gcc main.c -o MFSG.exe 

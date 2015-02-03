@@ -1,1 +1,1 @@
-gcc main.c -o Minecraft_BuildingGenerator
+gcc main.c -o MFSG

@@ -1,9 +1,12 @@
 #include <math.h>
 
 #define HEIGHT_MAX 255
-#define HEIGHT_MIN 0
+#define HEIGHT_MIN 1
 #define COORD_MAX 9999999
-#define VIEW_MAX 176
+#define WIDTH_MAX 176
+#define WIDTH_MIN 1
+#define DEPTH_MAX 176
+#define DEPTH_MIN 1
 #define LAYER_MAX_SIZE 32768
 #define NORTH 1
 #define SOUTH -1
@@ -20,38 +23,49 @@
 	int x=COORD_MAX; 			\
 	int y=HEIGHT_MIN-1;			\
 	int z=COORD_MAX;			\
-	int buildingType=0;			\
+	int shapeType=0;			\
 	char buildingMaterial[50];	\
 	int consoleORchat=0;		\
 	int MaxHeight=HEIGHT_MAX;	\
 	int MinHeight=0;			\
-	int HeightOffsetStart=0;			\
-	int HeightOffsetStop=0;			\
+	int HeightOffsetStart=0;	\
+	int HeightOffsetStop=0;		\
 	int Hollow=0;				\
 	int EdgesOnly=0;			\
 	int Direction_NorthSouth;	\
 	int Direction_WestEast;		\
 	int shapesTotal=9;			\
-	int Width;					\
-	int Depth;					\
-	int Height
+	int Width=0;				\
+	int Depth=0;				\
+	int printshapes=FALSE;		\
+	int Height=0
 
-int getShape(int *Type, int TotalShapes){
-	printf("\n");
-	printf("\n[1] Square");
-	printf("\n[2] Rectangle");
-	printf("\n[3] Triangular Prism");
-	printf("\n[4] Pyramid");
-	printf("\n[5] Sphere");
-	printf("\n[6] Cylinder");
-	printf("\n[7] Diamond");
-	printf("\n[8] Cone");
-	printf("\n[9] Doughnut");
+int getShape(int *Type, int TotalShapes, int Args_Parsed){
+	int shape=*Type;
+//	printf("\n\n[DEBUGGING] shape:%i Total shapes:%i\n",shape,TotalShapes);
+	if(shape<1 || shape>TotalShapes){
+		printf("\n");
+		printf("\n[1] Square");
+		printf("\n[2] Rectangle");
+		printf("\n[3] Triangular Prism");
+		printf("\n[4] Pyramid");
+		printf("\n[5] Sphere");
+		printf("\n[6] Cylinder");
+		printf("\n[7] Diamond");
+		printf("\n[8] Cone");
+		printf("\n[9] Doughnut");
+		printf("\n");
+	}
 
-	do{
-		printf("\n\nWhat Type of shape would you like to create? " );
-		scanf("%i",Type);
-	}while(0>Type && *Type>TotalShapes);
+	if(shape<-1 || shape==0 || shape>TotalShapes){
+		if(Args_Parsed==TRUE && shape!=0){
+			printf("\n[WARNING] The passed value for shape (%i) is not valid!\n",shape);
+		}
+		do{
+			printf("\n\nWhat Type of shape would you like to create? " );
+			scanf("%i",Type);
+		}while(0>Type && *Type>TotalShapes);
+	}
 	return EXIT_SUCCESS;
 }
 
@@ -61,7 +75,7 @@ int getStartCoords(int *x,int *y,int *z, int Args_Parsed){
 	int val_z=*z;
 	if(val_x==COORD_MAX || val_y<HEIGHT_MIN || val_y>HEIGHT_MAX || val_z==COORD_MAX){
 		if(Args_Parsed==TRUE){
-				printf("\n[WARNING] A passed value for x, y, or z <%i,%i,%i> is not valid!\n",val_x,val_y,val_z);
+			printf("\n[WARNING] A passed value for x, y, or z <%i,%i,%i> is not valid!\n",val_x,val_y,val_z);
 		}
 		printf("Please enter a starting <x> <y> <z>: ");
 		scanf("%i %i %i",x,y,z);
@@ -69,22 +83,39 @@ int getStartCoords(int *x,int *y,int *z, int Args_Parsed){
 	return EXIT_SUCCESS;
 }
 
-int getHeight(char *name,int *Height){
-	printf("What is the %s's height: ",name);
-	scanf("%i",Height);
+int getHeight(char *name,int *Height, int Args_Parsed){
+	int val=*Height;
+	if(val < HEIGHT_MIN || val > HEIGHT_MAX){
+		if(Args_Parsed==TRUE && val!=0){
+			printf("\n[WARNING] The passed value for height (%i) is not valid!\n",val);	
+		}
+		printf("What is the %s's height: ",name);
+		scanf("%i",Height);
+	}
 	return EXIT_SUCCESS;
 }
 
-int getWidth(char *name,int *Width){
-	printf("What is the %s's width: ",name);
-	scanf("%i",Width);
+int getWidth(char *name,int *Width, int Args_Parsed){
+	int val=*Width;
+	if(val < HEIGHT_MIN || val > HEIGHT_MAX){
+		if(Args_Parsed==TRUE && val != 0){
+			printf("\n[WARNING] The passed value for width (%i) is not valid!\n",val);	
+		}
+		printf("What is the %s's width: ",name);
+		scanf("%i",Width);
+	}
 	return EXIT_SUCCESS;
 }
 
-int getDepth(char *name,int *Depth){
-	printf("What is the %s's depth: ",name);
-	scanf("%i",Depth);
-	return EXIT_SUCCESS;
+int getDepth(char *name,int *Depth, int Args_Parsed){
+	int val=*Depth;
+	if(val < HEIGHT_MIN || val > HEIGHT_MAX){
+		if(Args_Parsed==TRUE){
+			printf("\n[WARNING] The passed value for height (%i) is not valid!\n",val);	
+		}	printf("What is the %s's depth: ",name);
+		scanf("%i",Depth);
+		return EXIT_SUCCESS;
+	}
 }
 
 int getbuildingMaterial(char *array){
@@ -128,7 +159,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 			Width=HEIGHT_MAX-y;
 		}
 
-		if(Width>VIEW_MAX){
+		if(Width>WIDTH_MAX){
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
 
@@ -181,7 +212,7 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 			printf("\n[ERROR] The Height of the Rectangle is out of the map! Forcing Height to be: %i",HEIGHT_MAX-y);
 			Height=HEIGHT_MAX-y;
 		}
-		if(Width>VIEW_MAX || Depth>VIEW_MAX){
+		if(Width>WIDTH_MAX || Depth>WIDTH_MAX){
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
 	}while((Width*Depth)>=LAYER_MAX_SIZE || Height>HEIGHT_MAX);
@@ -231,7 +262,7 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 			Width=HEIGHT_MAX-y;
 		}
 
-		if(Width>VIEW_MAX){
+		if(Width>WIDTH_MAX){
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
 
@@ -286,7 +317,7 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 			Height=HEIGHT_MAX-y;
 		}
 
-		if(Width*2>VIEW_MAX){
+		if(Width*2>WIDTH_MAX){
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
 */
@@ -309,7 +340,7 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 			printf("\n[ERROR] The Height of the Rectangle is out of the map! Forcing Height to be: %i",HEIGHT_MAX-y);
 			Height=HEIGHT_MAX-y;
 		}
-		if(Width>VIEW_MAX || Depth>VIEW_MAX){
+		if(Width>WIDTH_MAX || Depth>WIDTH_MAX){
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
 	}while((Width*Depth)>=LAYER_MAX_SIZE || Height>HEIGHT_MAX);
@@ -404,7 +435,7 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 			Width=HEIGHT_MAX-y;
 		}
 
-		if(Width*2>VIEW_MAX){
+		if(Width*2>WIDTH_MAX){
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
 

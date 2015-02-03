@@ -241,7 +241,7 @@ int TL_Default_Set_Array_j;
 	strcpy(TL_ProgName,argv[0]);				\
 	argc--; argv++;								\
 	while(argc > 0){							\
-		if(!strcmp(*argv, "--help")){			\
+		if(!strcmp(*argv, "--help") || !strcmp(*argv, "/?")){\
 		argv++; argc--; TL_help=1;				\
 		}
         

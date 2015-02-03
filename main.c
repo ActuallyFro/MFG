@@ -1,20 +1,20 @@
 #define TL_HELP_MESSAGE		\
-"\n Minecraft Fill Tool (v0.1)\
-\n ==========================\
-\n This program is designed to help generate 'simple' geometric shapes	 \
-\n in Minecraft. The output of the program will be the '/fll' commands   \
-\n needed to render the specified shapes, and can be manually entered in \
-\n the chat window in game or bulk pasted into the server's console. 	 \
+"\n Minecraft Fill Shape Generator (v0.1)\
+\n =====================================\
+\n This program is designed to help generate 'simple' geometric shapes\
+\n in Minecraft. The output of the program will be the '/fill' commands\
+\n needed to render the specified shapes, and can be manually entered in\
+\n the chat window in game or bulk pasted into the server's console.\
 \n\
-\n The tool supports both commandline passing of fields for shapes or it can \
+\n The tool supports both commandline passing of fields for shapes or it can\
 \n executed without fields to run in an interactive, Q&A mode.\
+\n\
+\n                                                ActuallyFro - Feb 2015		\
 \n\
 \n Example Commandline Excecution:\
 \n -------------------------------\
-\n %s --shape Cylinder -x 0 -y 100 -z 0 \
-\n\t\t\t\t --height 3 --width 10\
+\n %s --shape 6 -x 0 -y 100 -z 0 --height 3 --width 10\
 \n\
-\n\n                                                  ActuallyFro - Feb 2015\
 \n\n",TL_ProgName
 
 #include "TL_0_01d.h"
@@ -47,7 +47,8 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_INT("-w",Width)
 		TL_PARSEARGS_ADD_INT("--height",Height)
 		TL_PARSEARGS_ADD_INT("--width",Width)
-		TL_PARSEARGS_ADD_STR("--shape",Passed_Shape)
+		TL_PARSEARGS_ADD_INT("--shape",shapeType)
+		TL_PARSEARGS_ADD_FLAG("--printshapes",printshapes,TRUE)
 		TL_PARSEARGS_ADD_STR("--I",IP_Input_Port)
 		TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
 		TL_PARSEARGS_ADD_FLAG("-r", Rotate, 1)
@@ -60,8 +61,9 @@ int main(int argc, char **argv){
 		return EXIT_SUCCESS;
 	}
 	
-	if(Passed_Shape!=NULL){
-		printf("\n");
+	if(printshapes==TRUE){
+		shapeType=-1;
+		getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
 		return EXIT_SUCCESS;
 	}
 	
@@ -70,7 +72,7 @@ int main(int argc, char **argv){
 
 	getconsoleORchat(&consoleORchat);
 
-	getShape(&buildingType,shapesTotal);
+	getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
 
 	getStartCoords(&x,&y,&z,TL_PARSEARGS_OCCURED);
 
@@ -96,35 +98,35 @@ int main(int argc, char **argv){
 
 	printf("\n\nCopy and paste this into your console/chat:");
 */	
-	if(buildingType==1){
-		getWidth("Square",&Width);
+	if(shapeType==1){
+		getWidth("Square",&Width,TL_PARSEARGS_OCCURED);
 		createSquare(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
 	}
-	else if(buildingType==2){
-		getHeight("Rectangle",&Height);
-		getDepth("Rectangle",&Height);
-		getWidth("Rectangle",&Width);
+	else if(shapeType==2){
+		getHeight("Rectangle",&Height,TL_PARSEARGS_OCCURED);
+		getDepth("Rectangle",&Height,TL_PARSEARGS_OCCURED);
+		getWidth("Rectangle",&Width,TL_PARSEARGS_OCCURED);
 		createRectangle(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Depth, Width);
 	}
-	//else if(buildingType==3){
+	//else if(shapeType==3){
 	//	createTriangularPrism(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width);
 	//}
-	else if(buildingType==4){
-		getWidth("Pyramid",&Width);
+	else if(shapeType==4){
+		getWidth("Pyramid",&Width,TL_PARSEARGS_OCCURED);
 		createPyramid(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
 	}
-	else if(buildingType==5){
+	else if(shapeType==5){
 //		getHeight("Sphere",&Height);
-		getWidth("Sphere",&Width);
+		getWidth("Sphere",&Width,TL_PARSEARGS_OCCURED);
 		createSphere(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
 	}
-	else if(buildingType==6){
-		getHeight("Cylinder",&Height);
-		getWidth("Cylinder",&Width);
+	else if(shapeType==6){
+		getHeight("Cylinder",&Height,TL_PARSEARGS_OCCURED);
+		getWidth("Cylinder",&Width,TL_PARSEARGS_OCCURED);
 		createCylinder(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width);
 	}
-	else if(buildingType==7){
-		getWidth("Diamond",&Width);
+	else if(shapeType==7){
+		getWidth("Diamond",&Width,TL_PARSEARGS_OCCURED);
 		createDiamond(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
 	}
 	printf("\n\n");
