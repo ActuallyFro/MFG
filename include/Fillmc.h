@@ -25,7 +25,7 @@
 	int z=COORD_MAX;			\
 	int shapeType=0;			\
 	char buildingMaterial[50];	\
-	int consoleORchat=0;		\
+	int consoleORchat=-1;		\
 	int MaxHeight=HEIGHT_MAX;	\
 	int MinHeight=0;			\
 	int HeightOffsetStart=0;	\
@@ -38,6 +38,7 @@
 	int Width=0;				\
 	int Depth=0;				\
 	int printshapes=FALSE;		\
+	int quiet=FALSE;			\
 	int Height=0
 
 int getShape(int *Type, int TotalShapes, int Args_Parsed){
@@ -75,7 +76,9 @@ int getStartCoords(int *x,int *y,int *z, int Args_Parsed){
 	int val_z=*z;
 	if(val_x==COORD_MAX || val_y<HEIGHT_MIN || val_y>HEIGHT_MAX || val_z==COORD_MAX){
 		if(Args_Parsed==TRUE){
-			printf("\n[WARNING] A passed value for x, y, or z <%i,%i,%i> is not valid!\n",val_x,val_y,val_z);
+			if(val_x!=COORD_MAX || val_y!=HEIGHT_MIN || val_z!=COORD_MAX){
+				printf("\n[WARNING] A passed value for x, y, or z <%i,%i,%i> is not valid!\n",val_x,val_y,val_z);
+			}
 		}
 		printf("Please enter a starting <x> <y> <z>: ");
 		scanf("%i %i %i",x,y,z);
@@ -126,9 +129,16 @@ int getbuildingMaterial(char *array){
 }
 
 int getconsoleORchat(int *var){
-        printf("\n");
-        printf("\nConsole or Chat (0/1)?: ");
-        scanf("%i",var);
+	int val=*var;
+	if(val!=0 && val!=1){
+		do{
+			printf("\n");
+			printf("\nConsole or Chat (0/1)?: ");
+			scanf("%i",var);
+			val=*var;
+		}while(val!=0 || val!=1);
+	}
+	return EXIT_SUCCESS;	
 }
 
 int printBanner(){

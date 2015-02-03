@@ -52,14 +52,19 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_STR("--I",IP_Input_Port)
 		TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
 		TL_PARSEARGS_ADD_FLAG("-r", Rotate, 1)
+		TL_PARSEARGS_ADD_FLAG("--console", consoleORchat, 0)
+		TL_PARSEARGS_ADD_FLAG("--chat", consoleORchat, 1)
+		TL_PARSEARGS_ADD_FLAG("--quiet", quiet, TRUE)
 	TL_PARSEARGS_STOP
 
 	//		TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_GREATER_THAN_N(2)
 
+	/*
 	if(argc>1){
 		printf("\nVariables Passed!");
 		return EXIT_SUCCESS;
 	}
+	*/
 	
 	if(printshapes==TRUE){
 		shapeType=-1;

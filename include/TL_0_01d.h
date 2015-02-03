@@ -1,4 +1,4 @@
-//Trojan Lib v 0.01c -- 2014-10-29
+//Transit Lib v 0.01d -- 2015-02-02
 
 /*So mingw uses its printf not msvcrt \*/
 #define _ISOC99_SOURCE
