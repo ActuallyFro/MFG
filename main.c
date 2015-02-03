@@ -17,8 +17,8 @@
 \n\
 \n\n",TL_ProgName
 
-#include "TL_0_01d.h"
-#include "Fillmc.h"
+#include "include/TL_0_01d.h"
+#include "include/Fillmc.h"
 
 
 int main(int argc, char **argv){
