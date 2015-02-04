@@ -122,21 +122,26 @@ int getDepth(char *name,int *Depth, int Args_Parsed){
 }
 
 int getbuildingMaterial(char *array){
+//	char *testnull=a;
+//	testnull[1]='\0';
+//	char teststring[100];
+//	strcpy(teststring,array);
+//	printf("\n\n[DEBUGGING] material: %s\n",array);
+//	if(strcmp(teststring,testnull)==0){
+	//if(!array){
 	printf("\nPlease enter a Material (e.g. minecraft:brick_block:");
 	scanf("%50[^\n]", array);
-
+	//}
 	return EXIT_SUCCESS;
 }
 
 int getconsoleORchat(int *var){
-	int val=*var;
-	if(val!=0 && val!=1){
+	if(*var!=0 && *var!=1){
 		do{
 			printf("\n");
 			printf("\nConsole or Chat (0/1)?: ");
 			scanf("%i",var);
-			val=*var;
-		}while(val!=0 || val!=1);
+		}while(*var!=0 && *var!=1);
 	}
 	return EXIT_SUCCESS;	
 }

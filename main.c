@@ -30,11 +30,11 @@ int main(int argc, char **argv){
 	char	OutputFile[500]="ncp.out";
 	//Parse Args Vars
 	char	*Passed_Shape = NULL;
-	char	*IP_Input_Port = NULL;
+	char	*parsedmaterial = NULL;
 	char	*File_Input = NULL;
 	char	*File_Output = NULL;
 	initVars();
-	
+
 	TL_PARSEARGS_INSTALL();
 	
 	TL_PARSEARGS_START(argc, argv,TL_ENFORCEPARSING_ON)
@@ -48,8 +48,10 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_INT("--height",Height)
 		TL_PARSEARGS_ADD_INT("--width",Width)
 		TL_PARSEARGS_ADD_INT("--shape",shapeType)
+		TL_PARSEARGS_ADD_INT("-s",shapeType)
 		TL_PARSEARGS_ADD_FLAG("--printshapes",printshapes,TRUE)
-		TL_PARSEARGS_ADD_STR("--I",IP_Input_Port)
+		TL_PARSEARGS_ADD_STR("--material",parsedmaterial)
+		TL_PARSEARGS_ADD_STR("-m",parsedmaterial)
 		TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
 		TL_PARSEARGS_ADD_FLAG("-r", Rotate, 1)
 		TL_PARSEARGS_ADD_FLAG("--console", consoleORchat, 0)
@@ -73,8 +75,14 @@ int main(int argc, char **argv){
 	}
 	
 	printBanner();
-	getbuildingMaterial(buildingMaterial);
 
+	if(parsedmaterial != NULL && parsedmaterial[0] != '\0'){
+		strcpy(buildingMaterial,parsedmaterial);
+	}
+	else{
+		getbuildingMaterial(buildingMaterial);
+	}
+	
 	getconsoleORchat(&consoleORchat);
 
 	getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
