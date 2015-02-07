@@ -24,9 +24,7 @@
 int main(int argc, char **argv){
 	int	Rotate=0;
 	int	MODE=0;
-	char	IP_Dest[50]="127.0.0.1";
-	char	IP_Port_Str[10];
-	int		IP_Port=1337;
+
 	char	OutputFile[500]="ncp.out";
 	//Parse Args Vars
 	char	*Passed_Shape = NULL;
@@ -58,15 +56,7 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_FLAG("--chat", consoleORchat, 1)
 		TL_PARSEARGS_ADD_FLAG("--quiet", quiet, TRUE)
 	TL_PARSEARGS_STOP
-
-	//		TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_GREATER_THAN_N(2)
-
-	/*
-	if(argc>1){
-		printf("\nVariables Passed!");
-		return EXIT_SUCCESS;
-	}
-	*/
+	//	TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_GREATER_THAN_N(2)
 	
 	if(printshapes==TRUE){
 		shapeType=-1;
@@ -82,35 +72,10 @@ int main(int argc, char **argv){
 	else{
 		getbuildingMaterial(buildingMaterial);
 	}
-	
 	getconsoleORchat(&consoleORchat);
-
 	getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
-
 	getStartCoords(&x,&y,&z,TL_PARSEARGS_OCCURED);
 
-/*
-	getHeight(&Height);
-	getWidth(&Width);
-	getDepth(&Depth);
-*/
-
-/*
-	do{
-		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
-		scanf("%i",&Width);
-		
-		printf("\n\nPlease Enter a Height: ");
-		scanf("%i",&Height);
-
-		if(Height > HEIGHT_MAX){
-			printf("\n[ERROR] The Height of the Sphere is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
-			Height=HEIGHT_MAX-y;
-		}
-	}while((Width*2)>=LAYER_MAX_SIZE || Height>HEIGHT_MAX);
-
-	printf("\n\nCopy and paste this into your console/chat:");
-*/	
 	if(shapeType==1){
 		getWidth("Square",&Width,TL_PARSEARGS_OCCURED);
 		createSquare(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);

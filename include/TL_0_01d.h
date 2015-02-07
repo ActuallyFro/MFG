@@ -962,12 +962,13 @@ listen(NAME, NUM)
 		close(TL_IPv4_SOCKET_TCP_NCP_FILE_RETCODE);\
 		TL_IPv4_SOCKET_TCP_RECEIVE(SOCKET_SEND, TL_IPv4_SOCKET_TCP_NCP_BUFFER, sizeof(TL_IPv4_SOCKET_TCP_NCP_BUFFER))
 #endif
-	//		TL_DEBUGF(stdout,"\n\tRead in: %i bytes, Sent: %i\n",TL_IPv4_SOCKET_TCP_NCP_RETCODE, SOCKET_SEND##_retcode);		\
 
+//		TL_DEBUGF(stdout,"\n\tRead in: %i bytes, Sent: %i\n",TL_IPv4_SOCKET_TCP_NCP_RETCODE, SOCKET_SEND##_retcode);
 	
 //	
-//	fseek(TL_IPv4_SOCKET_TCP_NCP_FILE , 0 , SEEK_END); TL_IPv4_SOCKET_TCP_NCP_FILE_SIZE = (long long)ftell(TL_IPv4_SOCKET_TCP_NCP_FILE); fseek (TL_IPv4_SOCKET_TCP_NCP_FILE , 0 , SEEK_SET);	\
+//	fseek(TL_IPv4_SOCKET_TCP_NCP_FILE , 0 , SEEK_END); TL_IPv4_SOCKET_TCP_NCP_FILE_SIZE = (long long)ftell(TL_IPv4_SOCKET_TCP_NCP_FILE); fseek (TL_IPv4_SOCKET_TCP_NCP_FILE , 0 , SEEK_SET);
 //
+
 #if WINDOWS
 	#define	TL_IPv4_SOCKET_TCP_NCP_RECV(SOCKET_RECV,PASSED_OUTPUT_NAME)																			\
 		TL_IPv4_SOCKET_TCP_NCP_FILE_COUNTER=0;																												\
@@ -1003,7 +1004,7 @@ listen(NAME, NUM)
 #endif
 
 
-	//		TL_DEBUGF(stdout,"\n\tReceived: %20jd bytes\n",(off_t)SOCKET_RECV##_retcode);		\
+	//		TL_DEBUGF(stdout,"\n\tReceived: %20jd bytes\n",(off_t)SOCKET_RECV##_retcode);
 	
 //Because lol:
 // https://www.securecoding.cert.org/confluence/display/seccode/FIO19-C.+Do+not+use+fseek()+and+ftell()+to+compute+the+size+of+a+regular+file
@@ -1108,6 +1109,25 @@ listen(NAME, NUM)
 		Port_Dest[strlen(TL_IPv4_Parsing_Port_Ptr)]='\0';																					\
 	}
 
+	
+/* From fcntl.h:
+#define O_RDONLY _O_RDONLY
+#define O_WRONLY _O_WRONLY
+#define O_RDWR _O_RDWR
+#define O_APPEND _O_APPEND
+#define O_CREAT _O_CREAT
+#define O_TRUNC _O_TRUNC
+#define O_EXCL _O_EXCL
+#define O_TEXT _O_TEXT
+#define O_BINARY _O_BINARY
+#define O_RAW _O_BINARY
+#define O_TEMPORARY _O_TEMPORARY
+#define O_NOINHERIT _O_NOINHERIT
+#define O_SEQUENTIAL _O_SEQUENTIAL
+#define O_RANDOM _O_RANDOM
+#define O_ACCMODE _O_ACCMODE
+
+Thus the below code is moot:
 #if WINDOWS
 	#define TL_FILE_FLAGS_OPEN_READ O_RDONLY
 	#define TL_FILE_FLAGS_OPEN_READ_BINARY O_RDONLY | O_BINARY 
@@ -1119,6 +1139,10 @@ listen(NAME, NUM)
 	#define TL_FILE_FLAGS_OPEN_WRITE_NEWFILE O_WRONLY | O_CREAT
 	#define TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE O_WRONLY | O_APPEND
 #endif
+
+-- TL currently uses POSIX open() vs. windows calls SINCE POSIX is 'cross platform' thanks to MinGW && -w64
+*/
+
 	
 int TL_FILE_CHECK_EXISTS(char * fileName){
    struct stat buf;

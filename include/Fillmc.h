@@ -74,14 +74,39 @@ int getStartCoords(int *x,int *y,int *z, int Args_Parsed){
 	int val_x=*x;
 	int val_y=*y;
 	int val_z=*z;
-	if(val_x==COORD_MAX || val_y<HEIGHT_MIN || val_y>HEIGHT_MAX || val_z==COORD_MAX){
-		if(Args_Parsed==TRUE){
-			if(val_x!=COORD_MAX || val_y!=HEIGHT_MIN || val_z!=COORD_MAX){
-				printf("\n[WARNING] A passed value for x, y, or z <%i,%i,%i> is not valid!\n",val_x,val_y,val_z);
-			}
+
+	/*
+	if(Args_Parsed==TRUE && val_x!=COORD_MAX){
+		if(val_x>WIDTH_MAX){
+			printf("\n[WARNING] x (%i) is larger than the typical maximum view distance (%i)!\n",val_x,WIDTH_MAX);
 		}
-		printf("Please enter a starting <x> <y> <z>: ");
-		scanf("%i %i %i",x,y,z);
+	}
+	*/
+	if(val_x==COORD_MAX){
+		printf("Please enter a value for x: ");
+		scanf("%i",x);
+	}
+	
+	if(Args_Parsed==TRUE && val_y!=COORD_MAX){
+		if(val_y>HEIGHT_MAX || val_y < HEIGHT_MIN){
+			printf("\n[WARNING] y (%i) is out of bounds(%i-%i)!\n",val_y,HEIGHT_MIN,HEIGHT_MAX);
+			val_y=HEIGHT_MIN-1;
+		}
+	}
+	if(val_y==(HEIGHT_MIN-1)){
+		printf("Please enter a value for y: ");
+		scanf("%i",y);
+	}
+	/*
+	if(Args_Parsed==TRUE && val_z!=COORD_MAX){
+		if(val_z>WIDTH_MAX){
+			printf("\n[WARNING] z (%i) is larger than the typical maximum view distance (%i)!\n",val_z,WIDTH_MAX);
+		}
+	}
+	*/
+	if(val_z==COORD_MAX){
+		printf("Please enter a value for z: ");
+		scanf("%i",z);
 	}
 	return EXIT_SUCCESS;
 }
@@ -100,13 +125,16 @@ int getHeight(char *name,int *Height, int Args_Parsed){
 
 int getWidth(char *name,int *Width, int Args_Parsed){
 	int val=*Width;
-	if(val < HEIGHT_MIN || val > HEIGHT_MAX){
-		if(Args_Parsed==TRUE && val != 0){
-			printf("\n[WARNING] The passed value for width (%i) is not valid!\n",val);	
+	if(val < WIDTH_MIN ){
+		if(Args_Parsed==TRUE){
+			printf("\n[WARNING] The passed value for width (%i) is not valid and is smaller than the minimum value (%i)!\n",val,WIDTH_MIN);	
 		}
 		printf("What is the %s's width: ",name);
 		scanf("%i",Width);
 	}
+	if(val > WIDTH_MAX){
+		printf("\n[WARNING] The passed value for width (%i) is larger that typical view distance(%i)!\n",val,WIDTH_MAX);	
+	}	
 	return EXIT_SUCCESS;
 }
 
@@ -122,16 +150,9 @@ int getDepth(char *name,int *Depth, int Args_Parsed){
 }
 
 int getbuildingMaterial(char *array){
-//	char *testnull=a;
-//	testnull[1]='\0';
-//	char teststring[100];
-//	strcpy(teststring,array);
-//	printf("\n\n[DEBUGGING] material: %s\n",array);
-//	if(strcmp(teststring,testnull)==0){
-	//if(!array){
 	printf("\nPlease enter a Material (e.g. minecraft:brick_block:");
 	scanf("%50[^\n]", array);
-	//}
+
 	return EXIT_SUCCESS;
 }
 
@@ -307,9 +328,9 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	//int Width, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
-	int i,j,k;
+	int i,j;//,k;
 	int residue;
-	int offset;
+//	int offset;
 
 	xStart=x;
 	yStart=y;
@@ -367,8 +388,8 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	double Radius;
 	Radius=(double)(Width)/2.0;
 	double LayerRadius,LayerRadius2;
-	double LayerDiameter;
-	int voxelDiameter;
+	//double LayerDiameter;
+	//int voxelDiameter;
 
 	int startPosition;
 	startPosition=0;
@@ -383,14 +404,14 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		else{
 			LayerRadius2=LayerRadius*cos(asin((double)i/LayerRadius));
 		}
-		LayerDiameter=LayerRadius2*2;
+//		LayerDiameter=LayerRadius2*2;
 		residue=(int)(LayerRadius2);
 		//printf("\n\n\n[DEBUGGING] LayerRadius-i: %f",(LayerRadius-i));
 		//		printf("\n\n\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius2,LayerRadius22,(int)LayerRadius2,(int)LayerRadius22,180.0*(double)i/((double)Width));
 
-		offset=0;
+		//offset=0;
 		if((LayerRadius2-residue)>0.000000 && (LayerRadius2-residue)<1.000000){ // ANY residue rounds up!
-			offset=1;
+			//offset=1;
 			//			printf("\n[DEBUGGING] \tResidue(%f - %i): %f present!",LayerRadius2,residue,LayerRadius2-residue);
 			LayerRadius2+=1.0;
 		}
@@ -427,15 +448,15 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 
 int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
 	//int Width, Depth, Height;
-	int xStart,yStart,zStart;
-	int xStop,yStop,zStop;
-	int i,j,k;
-	int residue;
-	int offset;
+//	int xStart,yStart,zStart;
+//	int xStop,yStop,zStop;
+	int i;//,j,k;
+//	int residue;
+//	int offset;
 
-	xStart=x;
-	yStart=y;
-	zStart=z;
+//	xStart=x;
+//	yStart=y;
+//	zStart=z;
 
 	do{
 		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
@@ -457,15 +478,15 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	}while((Width*2)>=LAYER_MAX_SIZE);
 
 //	for(i=0;i<Width;i++){
-	j=Width%2;
-	if(j==0){j=2;}
+	i=Width%2;
+	if(i==0){i=2;}
 
 	do{
-		printf("\n%i",j);	
-	}while((j+=2)<Width);	
+		printf("\n%i",i);	
+	}while((i+=2)<Width);	
 	do{
-		printf("\n%i",j);		
-	}while((j-=2)>0);
+		printf("\n%i",i);		
+	}while((i-=2)>0);
 		
 	return EXIT_SUCCESS;
 }
@@ -486,7 +507,7 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 	Radius=(double)(Width)/2.0;
 	double LayerRadius,LayerRadius2;
 	double LayerDiameter;
-	int voxelDiameter;
+//	int voxelDiameter;
 
 	int startPosition;
 	startPosition=0;

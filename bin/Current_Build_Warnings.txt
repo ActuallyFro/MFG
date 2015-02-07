@@ -1,72 +1,15 @@
-In file included from main.c:20:0:
-include/TL_0_01d.h:965:2: warning: multi-line comment [-Wcomment]
-  //  TL_DEBUGF(stdout,"\n\tRead in: %i bytes, Sent: %i\n",TL_IPv4_SOCKET_TCP_NCP_RETCODE, SOCKET_SEND##_retcode);  \
-  ^
-include/TL_0_01d.h:969:1: warning: multi-line comment [-Wcomment]
- // fseek(TL_IPv4_SOCKET_TCP_NCP_FILE , 0 , SEEK_END); TL_IPv4_SOCKET_TCP_NCP_FILE_SIZE = (long long)ftell(TL_IPv4_SOCKET_TCP_NCP_FILE); fseek (TL_IPv4_SOCKET_TCP_NCP_FILE , 0 , SEEK_SET); \
- ^
-include/TL_0_01d.h:1006:2: warning: multi-line comment [-Wcomment]
-  //  TL_DEBUGF(stdout,"\n\tReceived: %20jd bytes\n",(off_t)SOCKET_RECV##_retcode);  \
-  ^
 In file included from main.c:21:0:
-include/Fillmc.h: In function 'createSphere':
-include/Fillmc.h:356:6: warning: unused variable 'voxelDiameter' [-Wunused-variable]
-  int voxelDiameter;
-      ^
-include/Fillmc.h:355:9: warning: variable 'LayerDiameter' set but not used [-Wunused-but-set-variable]
-  double LayerDiameter;
-         ^
-include/Fillmc.h:297:6: warning: variable 'offset' set but not used [-Wunused-but-set-variable]
-  int offset;
-      ^
-include/Fillmc.h:295:10: warning: unused variable 'k' [-Wunused-variable]
-  int i,j,k;
-          ^
-include/Fillmc.h: In function 'createDiamond':
-include/Fillmc.h:419:6: warning: unused variable 'offset' [-Wunused-variable]
-  int offset;
-      ^
-include/Fillmc.h:418:6: warning: unused variable 'residue' [-Wunused-variable]
-  int residue;
-      ^
-include/Fillmc.h:417:10: warning: unused variable 'k' [-Wunused-variable]
-  int i,j,k;
-          ^
-include/Fillmc.h:417:6: warning: unused variable 'i' [-Wunused-variable]
-  int i,j,k;
-      ^
-include/Fillmc.h:416:18: warning: unused variable 'zStop' [-Wunused-variable]
-  int xStop,yStop,zStop;
-                  ^
-include/Fillmc.h:416:12: warning: unused variable 'yStop' [-Wunused-variable]
-  int xStop,yStop,zStop;
-            ^
-include/Fillmc.h:416:6: warning: unused variable 'xStop' [-Wunused-variable]
-  int xStop,yStop,zStop;
-      ^
-include/Fillmc.h:415:20: warning: variable 'zStart' set but not used [-Wunused-but-set-variable]
-  int xStart,yStart,zStart;
-                    ^
-include/Fillmc.h:415:13: warning: variable 'yStart' set but not used [-Wunused-but-set-variable]
-  int xStart,yStart,zStart;
-             ^
-include/Fillmc.h:415:6: warning: variable 'xStart' set but not used [-Wunused-but-set-variable]
-  int xStart,yStart,zStart;
-      ^
 include/Fillmc.h: In function 'createCylinder':
-include/Fillmc.h:474:6: warning: unused variable 'voxelDiameter' [-Wunused-variable]
-  int voxelDiameter;
-      ^
-include/Fillmc.h:473:9: warning: variable 'LayerDiameter' set but not used [-Wunused-but-set-variable]
+include/Fillmc.h:509:9: warning: variable 'LayerDiameter' set but not used [-Wunused-but-set-variable]
   double LayerDiameter;
          ^
-include/Fillmc.h:472:21: warning: unused variable 'LayerRadius2' [-Wunused-variable]
+include/Fillmc.h:508:21: warning: unused variable 'LayerRadius2' [-Wunused-variable]
   double LayerRadius,LayerRadius2;
                      ^
-include/Fillmc.h:463:6: warning: variable 'offset' set but not used [-Wunused-but-set-variable]
+include/Fillmc.h:499:6: warning: variable 'offset' set but not used [-Wunused-but-set-variable]
   int offset;
       ^
-include/Fillmc.h:461:10: warning: unused variable 'k' [-Wunused-variable]
+include/Fillmc.h:497:10: warning: unused variable 'k' [-Wunused-variable]
   int i,j,k;
           ^
 In file included from main.c:20:0:
@@ -74,87 +17,81 @@ main.c: In function 'main':
 include/TL_0_01d.h:231:6: warning: variable 'TL_Enforce_Exception_Occured' set but not used [-Wunused-but-set-variable]
   int TL_Enforce_Exception_Occured
       ^
-main.c:38:2: note: in expansion of macro 'TL_PARSEARGS_INSTALL'
+main.c:36:2: note: in expansion of macro 'TL_PARSEARGS_INSTALL'
   TL_PARSEARGS_INSTALL();
   ^
 include/TL_0_01d.h:229:6: warning: variable 'TL_Initial_Argc' set but not used [-Wunused-but-set-variable]
   int TL_Initial_Argc = 0;  \
       ^
-main.c:38:2: note: in expansion of macro 'TL_PARSEARGS_INSTALL'
+main.c:36:2: note: in expansion of macro 'TL_PARSEARGS_INSTALL'
   TL_PARSEARGS_INSTALL();
   ^
 In file included from main.c:21:0:
+include/Fillmc.h:41:6: warning: variable 'quiet' set but not used [-Wunused-but-set-variable]
+  int quiet=FALSE;   \
+      ^
+main.c:34:2: note: in expansion of macro 'initVars'
+  initVars();
+  ^
 include/Fillmc.h:36:6: warning: unused variable 'Direction_WestEast' [-Wunused-variable]
   int Direction_WestEast;  \
       ^
-main.c:36:2: note: in expansion of macro 'initVars'
+main.c:34:2: note: in expansion of macro 'initVars'
   initVars();
   ^
 include/Fillmc.h:35:6: warning: unused variable 'Direction_NorthSouth' [-Wunused-variable]
   int Direction_NorthSouth; \
       ^
-main.c:36:2: note: in expansion of macro 'initVars'
+main.c:34:2: note: in expansion of macro 'initVars'
   initVars();
   ^
 include/Fillmc.h:34:6: warning: unused variable 'EdgesOnly' [-Wunused-variable]
   int EdgesOnly=0;   \
       ^
-main.c:36:2: note: in expansion of macro 'initVars'
+main.c:34:2: note: in expansion of macro 'initVars'
   initVars();
   ^
 include/Fillmc.h:33:6: warning: unused variable 'Hollow' [-Wunused-variable]
   int Hollow=0;    \
       ^
-main.c:36:2: note: in expansion of macro 'initVars'
+main.c:34:2: note: in expansion of macro 'initVars'
   initVars();
   ^
 include/Fillmc.h:32:6: warning: variable 'HeightOffsetStop' set but not used [-Wunused-but-set-variable]
   int HeightOffsetStop=0;  \
       ^
-main.c:36:2: note: in expansion of macro 'initVars'
+main.c:34:2: note: in expansion of macro 'initVars'
   initVars();
   ^
 include/Fillmc.h:31:6: warning: variable 'HeightOffsetStart' set but not used [-Wunused-but-set-variable]
   int HeightOffsetStart=0; \
       ^
-main.c:36:2: note: in expansion of macro 'initVars'
+main.c:34:2: note: in expansion of macro 'initVars'
   initVars();
   ^
 include/Fillmc.h:30:6: warning: unused variable 'MinHeight' [-Wunused-variable]
   int MinHeight=0;   \
       ^
-main.c:36:2: note: in expansion of macro 'initVars'
+main.c:34:2: note: in expansion of macro 'initVars'
   initVars();
   ^
 include/Fillmc.h:29:6: warning: unused variable 'MaxHeight' [-Wunused-variable]
   int MaxHeight=HEIGHT_MAX; \
       ^
-main.c:36:2: note: in expansion of macro 'initVars'
+main.c:34:2: note: in expansion of macro 'initVars'
   initVars();
   ^
-main.c:35:8: warning: unused variable 'File_Output' [-Wunused-variable]
+main.c:33:8: warning: unused variable 'File_Output' [-Wunused-variable]
   char *File_Output = NULL;
         ^
-main.c:34:8: warning: unused variable 'File_Input' [-Wunused-variable]
+main.c:32:8: warning: unused variable 'File_Input' [-Wunused-variable]
   char *File_Input = NULL;
         ^
-main.c:33:8: warning: variable 'IP_Input_Port' set but not used [-Wunused-but-set-variable]
-  char *IP_Input_Port = NULL;
-        ^
-main.c:32:8: warning: unused variable 'Passed_Shape' [-Wunused-variable]
+main.c:30:8: warning: unused variable 'Passed_Shape' [-Wunused-variable]
   char *Passed_Shape = NULL;
         ^
-main.c:30:7: warning: unused variable 'OutputFile' [-Wunused-variable]
+main.c:28:7: warning: unused variable 'OutputFile' [-Wunused-variable]
   char OutputFile[500]="ncp.out";
-       ^
-main.c:29:7: warning: unused variable 'IP_Port' [-Wunused-variable]
-  int  IP_Port=1337;
-       ^
-main.c:28:7: warning: unused variable 'IP_Port_Str' [-Wunused-variable]
-  char IP_Port_Str[10];
-       ^
-main.c:27:7: warning: unused variable 'IP_Dest' [-Wunused-variable]
-  char IP_Dest[50]="127.0.0.1";
        ^
 main.c:26:6: warning: unused variable 'MODE' [-Wunused-variable]
   int MODE=0;
@@ -164,10 +101,6 @@ main.c:25:6: warning: variable 'Rotate' set but not used [-Wunused-but-set-varia
       ^
 In file included from main.c:21:0:
 include/Fillmc.h: In function 'getDepth':
-include/Fillmc.h:119:1: warning: control reaches end of non-void function [-Wreturn-type]
- }
- ^
-include/Fillmc.h: In function 'getconsoleORchat':
-include/Fillmc.h:132:1: warning: control reaches end of non-void function [-Wreturn-type]
+include/Fillmc.h:150:1: warning: control reaches end of non-void function [-Wreturn-type]
  }
  ^
