@@ -22,12 +22,12 @@
 
 
 int main(int argc, char **argv){
-	int	Rotate=0;
-	int	MODE=0;
+//	int	Rotate=0;
+//	int	MODE=0;
 
 	char	OutputFile[500]="ncp.out";
 	//Parse Args Vars
-	char	*Passed_Shape = NULL;
+//	char	*Passed_Shape = NULL;
 	char	*parsedmaterial = NULL;
 	char	*File_Input = NULL;
 	char	*File_Output = NULL;
@@ -64,8 +64,10 @@ int main(int argc, char **argv){
 		return EXIT_SUCCESS;
 	}
 	
-	printBanner();
-
+	if(quiet!=1){
+		printBanner();
+	}
+	
 	if(parsedmaterial != NULL && parsedmaterial[0] != '\0'){
 		strcpy(buildingMaterial,parsedmaterial);
 	}

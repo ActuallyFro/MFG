@@ -32,8 +32,6 @@
 	int HeightOffsetStop=0;		\
 	int Hollow=0;				\
 	int EdgesOnly=0;			\
-	int Direction_NorthSouth;	\
-	int Direction_WestEast;		\
 	int shapesTotal=9;			\
 	int Width=0;				\
 	int Depth=0;				\
@@ -41,6 +39,10 @@
 	int quiet=FALSE;			\
 	int Height=0
 
+//	int Direction_NorthSouth;	
+//	int Direction_WestEast;		
+
+	
 int getShape(int *Type, int TotalShapes, int Args_Parsed){
 	int shape=*Type;
 //	printf("\n\n[DEBUGGING] shape:%i Total shapes:%i\n",shape,TotalShapes);
@@ -145,8 +147,8 @@ int getDepth(char *name,int *Depth, int Args_Parsed){
 			printf("\n[WARNING] The passed value for height (%i) is not valid!\n",val);	
 		}	printf("What is the %s's depth: ",name);
 		scanf("%i",Depth);
-		return EXIT_SUCCESS;
 	}
+	return EXIT_SUCCESS;
 }
 
 int getbuildingMaterial(char *array){
@@ -494,9 +496,9 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Height, int Width){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
-	int i,j,k;
+	int i,j;//,k;
 	int residue;
-	int offset;
+	//int offset;
 
 	xStart=x;
 	yStart=y;
@@ -505,8 +507,8 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 
 	double Radius;
 	Radius=(double)(Width)/2.0;
-	double LayerRadius,LayerRadius2;
-	double LayerDiameter;
+	double LayerRadius;//,LayerRadius2;
+//	double LayerDiameter;
 //	int voxelDiameter;
 
 	int startPosition;
@@ -522,14 +524,14 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 			LayerRadius=Radius*cos(asin((double)i/Radius));
 			//LayerRadius2=Radius*sin(PI*(double)i/(double)Width);
 		}
-		LayerDiameter=LayerRadius*2;
+		//LayerDiameter=LayerRadius*2;
 		residue=(int)(LayerRadius);
 		//printf("\n\n\n[DEBUGGING] Radius-i: %f",(Radius-i));
 		//		printf("\n\n\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
 
-		offset=0;
+//		offset=0;
 		if((LayerRadius-residue)>0.000000 && (LayerRadius-residue)<1.000000){ // ANY residue rounds up!
-			offset=1;
+//			offset=1;
 			//			printf("\n[DEBUGGING] \tResidue(%f - %i): %f present!",LayerRadius,residue,LayerRadius-residue);
 			LayerRadius+=1.0;
 		}

@@ -1,19 +1,17 @@
-In file included from main.c:21:0:
-include/Fillmc.h: In function 'createCylinder':
-include/Fillmc.h:509:9: warning: variable 'LayerDiameter' set but not used [-Wunused-but-set-variable]
-  double LayerDiameter;
-         ^
-include/Fillmc.h:508:21: warning: unused variable 'LayerRadius2' [-Wunused-variable]
-  double LayerRadius,LayerRadius2;
-                     ^
-include/Fillmc.h:499:6: warning: variable 'offset' set but not used [-Wunused-but-set-variable]
-  int offset;
-      ^
-include/Fillmc.h:497:10: warning: unused variable 'k' [-Wunused-variable]
-  int i,j,k;
-          ^
 In file included from main.c:20:0:
 main.c: In function 'main':
+main.c:53:37: error: 'Rotate' undeclared (first use in this function)
+   TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
+                                     ^
+include/TL_0_01d.h:278:3: note: in definition of macro 'TL_PARSEARGS_ADD_FLAG'
+   y = Value;TL_PARSEARGS_OCCURED=TRUE; \
+   ^
+main.c:53:37: note: each undeclared identifier is reported only once for each function it appears in
+   TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
+                                     ^
+include/TL_0_01d.h:278:3: note: in definition of macro 'TL_PARSEARGS_ADD_FLAG'
+   y = Value;TL_PARSEARGS_OCCURED=TRUE; \
+   ^
 include/TL_0_01d.h:231:6: warning: variable 'TL_Enforce_Exception_Occured' set but not used [-Wunused-but-set-variable]
   int TL_Enforce_Exception_Occured
       ^
@@ -27,24 +25,6 @@ main.c:36:2: note: in expansion of macro 'TL_PARSEARGS_INSTALL'
   TL_PARSEARGS_INSTALL();
   ^
 In file included from main.c:21:0:
-include/Fillmc.h:41:6: warning: variable 'quiet' set but not used [-Wunused-but-set-variable]
-  int quiet=FALSE;   \
-      ^
-main.c:34:2: note: in expansion of macro 'initVars'
-  initVars();
-  ^
-include/Fillmc.h:36:6: warning: unused variable 'Direction_WestEast' [-Wunused-variable]
-  int Direction_WestEast;  \
-      ^
-main.c:34:2: note: in expansion of macro 'initVars'
-  initVars();
-  ^
-include/Fillmc.h:35:6: warning: unused variable 'Direction_NorthSouth' [-Wunused-variable]
-  int Direction_NorthSouth; \
-      ^
-main.c:34:2: note: in expansion of macro 'initVars'
-  initVars();
-  ^
 include/Fillmc.h:34:6: warning: unused variable 'EdgesOnly' [-Wunused-variable]
   int EdgesOnly=0;   \
       ^
@@ -96,11 +76,3 @@ main.c:28:7: warning: unused variable 'OutputFile' [-Wunused-variable]
 main.c:26:6: warning: unused variable 'MODE' [-Wunused-variable]
   int MODE=0;
       ^
-main.c:25:6: warning: variable 'Rotate' set but not used [-Wunused-but-set-variable]
-  int Rotate=0;
-      ^
-In file included from main.c:21:0:
-include/Fillmc.h: In function 'getDepth':
-include/Fillmc.h:150:1: warning: control reaches end of non-void function [-Wreturn-type]
- }
- ^
