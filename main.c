@@ -25,12 +25,12 @@ int main(int argc, char **argv){
 //	int	Rotate=0;
 //	int	MODE=0;
 
-	char	OutputFile[500]="ncp.out";
+//	char	OutputFile[500]="ncp.out";
 	//Parse Args Vars
 //	char	*Passed_Shape = NULL;
 	char	*parsedmaterial = NULL;
-	char	*File_Input = NULL;
-	char	*File_Output = NULL;
+//	char	*File_Input = NULL;
+//	char	*File_Output = NULL;
 	initVars();
 
 	TL_PARSEARGS_INSTALL();
@@ -39,8 +39,6 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_INT("-x",x)
 		TL_PARSEARGS_ADD_INT("-y",y)
 		TL_PARSEARGS_ADD_INT("-z",z)
-		TL_PARSEARGS_ADD_INT("-dy1",HeightOffsetStart)
-		TL_PARSEARGS_ADD_INT("-dy2",HeightOffsetStop)
 		TL_PARSEARGS_ADD_INT("-h",Height)
 		TL_PARSEARGS_ADD_INT("-w",Width)
 		TL_PARSEARGS_ADD_INT("--height",Height)
@@ -50,19 +48,25 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_FLAG("--printshapes",printshapes,TRUE)
 		TL_PARSEARGS_ADD_STR("--material",parsedmaterial)
 		TL_PARSEARGS_ADD_STR("-m",parsedmaterial)
-		TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
-		TL_PARSEARGS_ADD_FLAG("-r", Rotate, 1)
+		TL_PARSEARGS_ADD_FLAG("--hollow", Hollow, 1)
+		TL_PARSEARGS_ADD_FLAG("-h", Hollow, 1)
 		TL_PARSEARGS_ADD_FLAG("--console", consoleORchat, 0)
 		TL_PARSEARGS_ADD_FLAG("--chat", consoleORchat, 1)
 		TL_PARSEARGS_ADD_FLAG("--quiet", quiet, TRUE)
 	TL_PARSEARGS_STOP
-	//	TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_GREATER_THAN_N(2)
+//		TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
+//		TL_PARSEARGS_ADD_FLAG("-r", Rotate, 1)
+//		TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_GREATER_THAN_N(2)
+//		TL_PARSEARGS_ADD_INT("-dy1",HeightOffsetStart)
+//		TL_PARSEARGS_ADD_INT("-dy2",HeightOffsetStop)
 	
 	if(printshapes==TRUE){
 		shapeType=-1;
 		getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
 		return EXIT_SUCCESS;
 	}
+	
+	getHollow(&Hollow,TL_PARSEARGS_OCCURED);
 	
 	if(quiet!=1){
 		printBanner();

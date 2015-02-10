@@ -26,12 +26,7 @@
 	int shapeType=0;			\
 	char buildingMaterial[50];	\
 	int consoleORchat=-1;		\
-	int MaxHeight=HEIGHT_MAX;	\
-	int MinHeight=0;			\
-	int HeightOffsetStart=0;	\
-	int HeightOffsetStop=0;		\
 	int Hollow=0;				\
-	int EdgesOnly=0;			\
 	int shapesTotal=9;			\
 	int Width=0;				\
 	int Depth=0;				\
@@ -41,7 +36,22 @@
 
 //	int Direction_NorthSouth;	
 //	int Direction_WestEast;		
+//	int EdgesOnly=0;
+//	int HeightOffsetStart=0;
+//	int HeightOffsetStop=0;		
+//	int MaxHeight=HEIGHT_MAX;
+//	int MinHeight=0;			
 
+int getHollow(int * hollow,int Args_Parsed){
+	if(Args_Parsed!=TRUE || *hollow!=1){
+		do{
+			printf("\n");
+			printf("\nWould you like the shape to be hollow T/F[1/0]?: ");
+			scanf("%i",hollow);
+		}while(*hollow!=0 && *hollow!=1);
+	}
+	return EXIT_SUCCESS;
+}
 	
 int getShape(int *Type, int TotalShapes, int Args_Parsed){
 	int shape=*Type;
@@ -69,6 +79,7 @@ int getShape(int *Type, int TotalShapes, int Args_Parsed){
 			scanf("%i",Type);
 		}while(0>Type && *Type>TotalShapes);
 	}
+	
 	return EXIT_SUCCESS;
 }
 

@@ -162,16 +162,20 @@
 	}
 #endif
 
-int TL_DEBUGGING=0;
-#define TL_DEBUGF(...)		\
-	if(TL_DEBUGGING==1)		\
-		fprintf(__VA_ARGS__)
-
 #define TL_DEBUGGING_ENABLE() TL_DEBUGGING=1
 
 #define TL_DEBUGGING_DISABLE() TL_DEBUGGING=0
 
 #define DEBUGGING_FILE_FD	stderr
+
+int TL_DEBUGGING=0;
+#define TL_DEBUGF(...)		\
+	if(TL_DEBUGGING==1)		\
+		fprintf(__VA_ARGS__)
+
+#define TL_DEBUG(...)		\
+	if(TL_DEBUGGING==1)		\
+		fprintf(stdout,__VA_ARGS__)
 
 int TL_STDIN_PIPED=0;
 #define STDIN_CHECK()										\
@@ -227,9 +231,11 @@ int TL_Default_Set_Array_j;
 	int EnforceParsing;				\
 	char TL_ProgName[500];			\
 	int TL_Initial_Argc = 0;		\
-	int TL_PARSEARGS_OCCURED=FALSE;	\
-	int TL_Enforce_Exception_Occured
+	int TL_PARSEARGS_OCCURED=FALSE
 
+//	Thoughts?: int TL_Enforce_Exception_Occured
+
+	
 #if !defined(TL_HELP_MESSAGE)
     #define TL_HELP_MESSAGE "\nUsage: %s [-file <filename>] [-double <arg>] [-int <arg>] [-flag]\n",TL_ProgName
 #endif
@@ -237,7 +243,6 @@ int TL_Default_Set_Array_j;
 #define TL_PARSEARGS_START(argc,argv,Enforce)	\
 	EnforceParsing=Enforce;						\
 	TL_Initial_Argc = argc;						\
-	TL_Enforce_Exception_Occured=0;				\
 	strcpy(TL_ProgName,argv[0]);				\
 	argc--; argv++;								\
 	while(argc > 0){							\
@@ -253,10 +258,11 @@ int TL_Default_Set_Array_j;
 		}													\
 		argv++;argc--;												\
 	} 														\
-if(TL_help){   \
-    fprintf(stderr,TL_HELP_MESSAGE);    \
-	return 1;                                       \
-  }
+	if(TL_help){   \
+		fprintf(stdout, TL_HELP_MESSAGE);    \
+		return EXIT_FAILURE;                                       \
+	}														\
+	TL_DEBUG("[DEBUGGING] %i Arguments passed",TL_Initial_Argc-1);
 
 #define TL_PARSEARGS_ADD_INT(x,y)					\
 	else if (!strcmp(*argv, x)){			\
