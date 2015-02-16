@@ -63,7 +63,7 @@ int getHollow(int * hollow, int * hollow_wall_width){
 				scanf("%i",hollow_wall_width);
 			}while(*hollow_wall_width<1);
 		
-			*hollow_wall_width*=2;
+			//*hollow_wall_width*=2;
 		}
 		if(*hollow_wall_width>WIDTH_MAX){
 			printf("\n[WARNING] Given value, %i, is larger than the typical maximum view distance (%i)!\n",*hollow_wall_width/2,WIDTH_MAX);
@@ -73,46 +73,61 @@ int getHollow(int * hollow, int * hollow_wall_width){
 }
 
 int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, int * Height, int * Depth, int * Width){
-	printf("\n[DEBUGGING] Hollow is true! Hollow Width: %i", Hollow_wall_width);
+	//printf("\n[DEBUGGING] Hollow is true! Hollow Width: %i", Hollow_wall_width);
 
 	if(shapeType==1){ //Square
 		//Width
-		*Width-=Hollow_wall_width;
-		*x+=(Hollow_wall_width/2);
-		*y+=(Hollow_wall_width/2);
-		*z-=(Hollow_wall_width/2);
+		*Width-=(Hollow_wall_width*2);
+		*x+=Hollow_wall_width;
+		*y+=Hollow_wall_width;
+		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==2){ //Rectangle
 		//Height
 		//Depth
 		//Width
-		*Height-=Hollow_wall_width;
-		*Depth-=Hollow_wall_width;
-		*Width-=Hollow_wall_width;		
+		*Height-=(Hollow_wall_width*2);
+		*Depth-=(Hollow_wall_width*2);
+		*Width-=(Hollow_wall_width*2);		
+		*x+=Hollow_wall_width;
+		*y+=Hollow_wall_width;
+		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==3){ //Triangular Prism
 		//Depth
 		//Width
-		*Depth-=Hollow_wall_width;
-		*Width-=Hollow_wall_width;		
+		*Depth-=(Hollow_wall_width*2);
+		*Width-=(Hollow_wall_width*2);		
 	}
 	else if(shapeType==4){ //Pyramid
 		//Width
-		*Width-=Hollow_wall_width;		
+		*Width-=(Hollow_wall_width*2);		
+		*x+=Hollow_wall_width;
+		*y+=Hollow_wall_width;
+		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==5){ //Sphere
 		//Width
-		*Width-=Hollow_wall_width;		
+		*Width-=(Hollow_wall_width*2);		
+//		*x+=Hollow_wall_width;
+//		*y+=(Hollow_wall_width*2); //<--- should be the only one that changes; but should be the same delta as Width
+//		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==6){ //Cylinder
 		//Height
 		//Width
-		*Height-=Hollow_wall_width;
-		*Width-=Hollow_wall_width;		
+		*Height-=(Hollow_wall_width*2);
+		*Width-=(Hollow_wall_width*2);		
+//		*x+=Hollow_wall_width;
+		*y+=Hollow_wall_width;
+//		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==7){ //Diamond
 		//Width
-		*Width-=Hollow_wall_width;		
+		*Width-=(Hollow_wall_width*2);		
+		*x+=Hollow_wall_width;
+		*y+=Hollow_wall_width;
+		*z-=Hollow_wall_width;
 	}
 	
 	return EXIT_SUCCESS;
