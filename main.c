@@ -48,8 +48,10 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_FLAG("--printshapes",printshapes,TRUE)
 		TL_PARSEARGS_ADD_STR("--material",parsedmaterial)
 		TL_PARSEARGS_ADD_STR("-m",parsedmaterial)
-		TL_PARSEARGS_ADD_FLAG("--hollow", Hollow, 1)
-		TL_PARSEARGS_ADD_FLAG("-h", Hollow, 1)
+		TL_PARSEARGS_ADD_FLAG("--hollow", Hollow, TRUE)
+		TL_PARSEARGS_ADD_FLAG("-hw", Hollow, TRUE)
+		TL_PARSEARGS_ADD_FLAG("--nothollow", Hollow, FALSE)
+		TL_PARSEARGS_ADD_FLAG("-nhw", Hollow, FALSE)
 		TL_PARSEARGS_ADD_FLAG("--console", consoleORchat, 0)
 		TL_PARSEARGS_ADD_FLAG("--chat", consoleORchat, 1)
 		TL_PARSEARGS_ADD_FLAG("--quiet", quiet, TRUE)
@@ -65,10 +67,8 @@ int main(int argc, char **argv){
 		getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
 		return EXIT_SUCCESS;
 	}
-	
-	getHollow(&Hollow,TL_PARSEARGS_OCCURED);
-	
-	if(quiet!=1){
+		
+	if(quiet!=TRUE){
 		printBanner();
 	}
 	
@@ -80,38 +80,65 @@ int main(int argc, char **argv){
 	}
 	getconsoleORchat(&consoleORchat);
 	getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
+	getHollow(&Hollow,&Hollow_wall_width);
 	getStartCoords(&x,&y,&z,TL_PARSEARGS_OCCURED);
 
 	if(shapeType==1){
 		getWidth("Square",&Width,TL_PARSEARGS_OCCURED);
 		createSquare(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		if(Hollow==TRUE){
+			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
+			createSquare(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		}
 	}
 	else if(shapeType==2){
 		getHeight("Rectangle",&Height,TL_PARSEARGS_OCCURED);
-		getDepth("Rectangle",&Height,TL_PARSEARGS_OCCURED);
+		getDepth("Rectangle",&Depth,TL_PARSEARGS_OCCURED);
 		getWidth("Rectangle",&Width,TL_PARSEARGS_OCCURED);
 		createRectangle(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Depth, Width);
+		if(Hollow==TRUE){
+			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
+			createRectangle(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Depth, Width);
+		}
 	}
 	//else if(shapeType==3){
+	//	getDepth("Rectangle",&Depth,TL_PARSEARGS_OCCURED);
+	//	getWidth("Rectangle",&Width,TL_PARSEARGS_OCCURED);
 	//	createTriangularPrism(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width);
 	//}
 	else if(shapeType==4){
 		getWidth("Pyramid",&Width,TL_PARSEARGS_OCCURED);
 		createPyramid(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		if(Hollow==TRUE){
+			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
+			createPyramid(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		}
 	}
 	else if(shapeType==5){
 //		getHeight("Sphere",&Height);
 		getWidth("Sphere",&Width,TL_PARSEARGS_OCCURED);
 		createSphere(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		if(Hollow==TRUE){
+			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
+			createSphere(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		}
 	}
 	else if(shapeType==6){
 		getHeight("Cylinder",&Height,TL_PARSEARGS_OCCURED);
 		getWidth("Cylinder",&Width,TL_PARSEARGS_OCCURED);
 		createCylinder(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width);
+		if(Hollow==TRUE){
+			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
+			createCylinder(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width);
+		}
 	}
 	else if(shapeType==7){
 		getWidth("Diamond",&Width,TL_PARSEARGS_OCCURED);
 		createDiamond(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		if(Hollow==TRUE){
+			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
+			createDiamond(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		}
 	}
 	printf("\n\n");
 	return EXIT_SUCCESS;

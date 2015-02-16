@@ -26,7 +26,8 @@
 	int shapeType=0;			\
 	char buildingMaterial[50];	\
 	int consoleORchat=-1;		\
-	int Hollow=0;				\
+	int Hollow=-1;				\
+	int Hollow_wall_width=0;	\
 	int shapesTotal=9;			\
 	int Width=0;				\
 	int Depth=0;				\
@@ -42,14 +43,78 @@
 //	int MaxHeight=HEIGHT_MAX;
 //	int MinHeight=0;			
 
-int getHollow(int * hollow,int Args_Parsed){
-	if(Args_Parsed!=TRUE || *hollow!=1){
+
+int getHollow(int * hollow, int * hollow_wall_width){
+	printf("\n[DEBUGGING] Hollow: %i\n\n",*hollow);
+	if(*hollow==-1){
 		do{
 			printf("\n");
-			printf("\nWould you like the shape to be hollow T/F[1/0]?: ");
+			printf("\nWould you like the shape to be hollow 1/0(T/F)?: ");
 			scanf("%i",hollow);
 		}while(*hollow!=0 && *hollow!=1);
 	}
+	
+	if(*hollow==TRUE){
+		if(*hollow_wall_width<=0){
+
+			do{
+				printf("\n");
+				printf("\nHow wide shall the wall of the hollowed the shape be?: ");
+				scanf("%i",hollow_wall_width);
+			}while(*hollow_wall_width<1);
+		
+			*hollow_wall_width*=2;
+		}
+		if(*hollow_wall_width>WIDTH_MAX){
+			printf("\n[WARNING] Given value, %i, is larger than the typical maximum view distance (%i)!\n",*hollow_wall_width/2,WIDTH_MAX);
+		}
+	}
+	return EXIT_SUCCESS;
+}
+
+int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, int * Height, int * Depth, int * Width){
+	printf("\n[DEBUGGING] Hollow is true! Hollow Width: %i", Hollow_wall_width);
+
+	if(shapeType==1){ //Square
+		//Width
+		*Width-=Hollow_wall_width;
+		*x+=(Hollow_wall_width/2);
+		*y+=(Hollow_wall_width/2);
+		*z-=(Hollow_wall_width/2);
+	}
+	else if(shapeType==2){ //Rectangle
+		//Height
+		//Depth
+		//Width
+		*Height-=Hollow_wall_width;
+		*Depth-=Hollow_wall_width;
+		*Width-=Hollow_wall_width;		
+	}
+	else if(shapeType==3){ //Triangular Prism
+		//Depth
+		//Width
+		*Depth-=Hollow_wall_width;
+		*Width-=Hollow_wall_width;		
+	}
+	else if(shapeType==4){ //Pyramid
+		//Width
+		*Width-=Hollow_wall_width;		
+	}
+	else if(shapeType==5){ //Sphere
+		//Width
+		*Width-=Hollow_wall_width;		
+	}
+	else if(shapeType==6){ //Cylinder
+		//Height
+		//Width
+		*Height-=Hollow_wall_width;
+		*Width-=Hollow_wall_width;		
+	}
+	else if(shapeType==7){ //Diamond
+		//Width
+		*Width-=Hollow_wall_width;		
+	}
+	
 	return EXIT_SUCCESS;
 }
 	
@@ -96,18 +161,18 @@ int getStartCoords(int *x,int *y,int *z, int Args_Parsed){
 	}
 	*/
 	if(val_x==COORD_MAX){
-		printf("Please enter a value for x: ");
+		printf("\nPlease enter a value for x: ");
 		scanf("%i",x);
 	}
 	
-	if(Args_Parsed==TRUE && val_y!=COORD_MAX){
+	if(Args_Parsed==TRUE && val_y!=(HEIGHT_MIN-1)){
 		if(val_y>HEIGHT_MAX || val_y < HEIGHT_MIN){
 			printf("\n[WARNING] y (%i) is out of bounds(%i-%i)!\n",val_y,HEIGHT_MIN,HEIGHT_MAX);
-			val_y=HEIGHT_MIN-1;
+			val_y=(HEIGHT_MIN-1);
 		}
 	}
 	if(val_y==(HEIGHT_MIN-1)){
-		printf("Please enter a value for y: ");
+		printf("\nPlease enter a value for y: ");
 		scanf("%i",y);
 	}
 	/*
@@ -118,7 +183,7 @@ int getStartCoords(int *x,int *y,int *z, int Args_Parsed){
 	}
 	*/
 	if(val_z==COORD_MAX){
-		printf("Please enter a value for z: ");
+		printf("\nPlease enter a value for z: ");
 		scanf("%i",z);
 	}
 	return EXIT_SUCCESS;
@@ -130,23 +195,22 @@ int getHeight(char *name,int *Height, int Args_Parsed){
 		if(Args_Parsed==TRUE && val!=0){
 			printf("\n[WARNING] The passed value for height (%i) is not valid!\n",val);	
 		}
-		printf("What is the %s's height: ",name);
+		printf("\nWhat is the %s's height: ",name);
 		scanf("%i",Height);
 	}
 	return EXIT_SUCCESS;
 }
 
 int getWidth(char *name,int *Width, int Args_Parsed){
-	int val=*Width;
-	if(val < WIDTH_MIN ){
-		if(Args_Parsed==TRUE){
-			printf("\n[WARNING] The passed value for width (%i) is not valid and is smaller than the minimum value (%i)!\n",val,WIDTH_MIN);	
+	if(*Width < WIDTH_MIN ){
+		if(Args_Parsed==TRUE && *Width!=0){
+			printf("\n[WARNING] The passed value for width (%i) is not valid and is smaller than the minimum value (%i)!\n",*Width,WIDTH_MIN);	
 		}
-		printf("What is the %s's width: ",name);
+		printf("\nWhat is the %s's width: ",name);
 		scanf("%i",Width);
 	}
-	if(val > WIDTH_MAX){
-		printf("\n[WARNING] The passed value for width (%i) is larger that typical view distance(%i)!\n",val,WIDTH_MAX);	
+	if(*Width > WIDTH_MAX){
+		printf("[WARNING] The passed value for width (%i) is larger that typical view distance(%i)!\n",*Width,WIDTH_MAX);	
 	}	
 	return EXIT_SUCCESS;
 }
@@ -156,7 +220,7 @@ int getDepth(char *name,int *Depth, int Args_Parsed){
 	if(val < HEIGHT_MIN || val > HEIGHT_MAX){
 		if(Args_Parsed==TRUE){
 			printf("\n[WARNING] The passed value for height (%i) is not valid!\n",val);	
-		}	printf("What is the %s's depth: ",name);
+		}	printf("\nWhat is the %s's depth: ",name);
 		scanf("%i",Depth);
 	}
 	return EXIT_SUCCESS;
@@ -195,7 +259,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	xStart=x;
 	yStart=y;
 	zStart=z;
-
+/*
 	do{
 		printf("\n\nPlease Enter a Width: ");
 		scanf("%i",&Width);
@@ -213,6 +277,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		}
 
 	}while((Width*Width)>=LAYER_MAX_SIZE);
+*/
 
 	//These never change
 	xStart=x;
@@ -243,7 +308,7 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 	xStart=x;
 	yStart=y;
 	zStart=z;
-
+/*
 	do{
 		printf("\n\nPlease Enter a Width: ");
 		scanf("%i",&Width);
@@ -265,7 +330,7 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
 	}while((Width*Depth)>=LAYER_MAX_SIZE || Height>HEIGHT_MAX);
-
+*/
 		//These Never Change
 		xStart=x;
 		zStart=z;
@@ -298,7 +363,7 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	xStart=x;
 	yStart=y;
 	zStart=z;
-
+/*
 	do{
 		printf("\n\nPlease Enter a Base Width: ");
 		scanf("%i",&Width);
@@ -316,7 +381,7 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 		}
 
 	}while((Width*Width)>=LAYER_MAX_SIZE);
-
+*/
 
 	printf("\n\nCopy and paste this into your console/chat:");
 	for(i=(0+heightStart);i<=(Width-heightStop)/2;i++){
@@ -348,7 +413,7 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	xStart=x;
 	yStart=y;
 	zStart=z;
-
+/*
 	do{
 		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
 		scanf("%i",&Width);
@@ -356,7 +421,7 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 //		printf("\n\nPlease Enter a Height: ");
 //		scanf("%i",&Height);
 //		Width++;//Need to account for exception handling of sin/cos predictions
-/*
+
 		if((Width*2)>=LAYER_MAX_SIZE){
 			printf("\n[WARNING] The Diameter of the Sphere is out of bounds! Radius*2=%i > 2^15",Width*Width);
 		}
@@ -369,8 +434,9 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		if(Width*2>WIDTH_MAX){
 			printf("\n[WARNING] Your shape is very long and may not render!");
 		}
-*/
+
 	}while((Width*2)>=LAYER_MAX_SIZE);// || Height>HEIGHT_MAX);
+*/
 /*
 	do{
 		printf("\n\nPlease Enter a Width: ");
@@ -471,6 +537,7 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 //	yStart=y;
 //	zStart=z;
 
+/*
 	do{
 		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
 		scanf("%i",&Width);
@@ -489,6 +556,7 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 		}
 
 	}while((Width*2)>=LAYER_MAX_SIZE);
+*/
 
 //	for(i=0;i<Width;i++){
 	i=Width%2;
