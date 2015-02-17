@@ -1132,8 +1132,8 @@ listen(NAME, NUM)
 #define O_SEQUENTIAL _O_SEQUENTIAL
 #define O_RANDOM _O_RANDOM
 #define O_ACCMODE _O_ACCMODE
+*/
 
-Thus the below code is moot:
 #if WINDOWS
 	#define TL_FILE_FLAGS_OPEN_READ O_RDONLY
 	#define TL_FILE_FLAGS_OPEN_READ_BINARY O_RDONLY | O_BINARY 
@@ -1146,8 +1146,9 @@ Thus the below code is moot:
 	#define TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE O_WRONLY | O_APPEND
 #endif
 
--- TL currently uses POSIX open() vs. windows calls SINCE POSIX is 'cross platform' thanks to MinGW && -w64
-*/
+//-- TL currently uses POSIX open() vs. windows calls SINCE POSIX is 'cross platform' thanks to MinGW && -w64
+//	FALSE -- not important for Windows -- important for LINUX!
+
 
 	
 int TL_FILE_CHECK_EXISTS(char * fileName){
