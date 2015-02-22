@@ -240,7 +240,7 @@ int TL_Default_Set_Array_j;
     #define TL_HELP_MESSAGE "\nUsage: %s [-file <filename>] [-double <arg>] [-int <arg>] [-flag]\n",TL_ProgName
 #endif
 	
-#define TL_PARSEARGS_START(argc,argv,Enforce)	\
+#define TL_PARSEARGS_START(Enforce)	\
 	EnforceParsing=Enforce;						\
 	TL_Initial_Argc = argc;						\
 	strcpy(TL_ProgName,argv[0]);				\
@@ -252,9 +252,11 @@ int TL_Default_Set_Array_j;
         
 #define TL_PARSEARGS_STOP													\
 		else {													\
-          fprintf(stderr,TL_HELP_MESSAGE);  \
-		  fprintf(stderr, "\nUnrecognized recognized command line argument: %s\n\n", *argv);			\
-		  if(EnforceParsing==1){return 0;}									\
+          if(EnforceParsing==1){				\
+			fprintf(stderr,TL_HELP_MESSAGE);  \
+			fprintf(stderr, "\nUnrecognized recognized command line argument: %s\n\n", *argv);			\
+		  	return 0;				\
+		  }									\
 		}													\
 		argv++;argc--;												\
 	} 														\
@@ -262,7 +264,11 @@ int TL_Default_Set_Array_j;
 		fprintf(stdout, TL_HELP_MESSAGE);    \
 		return EXIT_FAILURE;                                       \
 	}														\
-	TL_DEBUG("[DEBUGGING] %i Arguments passed",TL_Initial_Argc-1);
+	TL_DEBUG("[DEBUGGING] %i Arguments passed",TL_Initial_Argc-1);	\
+	if(TL_PARSEARGS_OCCURED==FALSE){\
+		argc=TL_Initial_Argc;	\
+		argv-=TL_Initial_Argc;	\
+	}
 
 #define TL_PARSEARGS_ADD_INT(x,y)					\
 	else if (!strcmp(*argv, x)){			\
@@ -298,7 +304,12 @@ int TL_Default_Set_Array_j;
 	else if (TL_Initial_Argc > ExceptionN){		\
 		TL_Enforce_Exception_Occured=1;	break;\
 	}
+
+#define TL_QUIT_HELPMSG() 				\
+	fprintf(stderr,TL_HELP_MESSAGE);	\
+	return EXIT_FAILURE
 	
+
 #if WINDOWS
 	#include <io.h>
 	#include <fcntl.h>
@@ -1145,6 +1156,35 @@ listen(NAME, NUM)
 	#define TL_FILE_FLAGS_OPEN_WRITE_NEWFILE O_WRONLY | O_CREAT
 	#define TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE O_WRONLY | O_APPEND
 #endif
+
+#define TL_FILE_BUF_SIZE 8192
+
+#define TL_FILE_IO_INSTALL()									\
+	int TL_FILE_OPEN_READ_RET_VAL=0;								\
+	int TL_FILE_OPEN_WRITE_RET_VAL;								\
+	ssize_t TL_FILE_READ_IN_BYTES, TL_FILE_WRITE_OUT_BYTES;	\
+	char TL_FILE_BUF[TL_FILE_BUF_SIZE]
+
+#define	TL_FILE_CLOSE( NAME ) close(NAME)
+
+#define TL_FILE_OPEN_WRITE_MODE_APPEND( TL_FILE , TL_PERMS ) 	\
+    TL_FILE_OPEN_WRITE_RET_VAL = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE, TL_PERMS); 	\
+	if(TL_FILE_OPEN_WRITE_RET_VAL == -1){														\
+		TL_DEBUGGING_ENABLE();																\
+		TL_DEBUG("[WARNING] File not found! Creating new File");							\
+		TL_FILE_OPEN_WRITE_RET_VAL = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, TL_PERMS);	\
+	}
+#define TL_FILE_OPEN_WRITE_MODE_NEW( TL_FILE , TL_PERMS )	\
+	TL_FILE_OPEN_WRITE_RET_VAL = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, TL_PERMS );
+
+#define TL_FILE_OPEN_READ_MODE_BINARY( TL_FILE )									\
+	TL_FILE_OPEN_READ_RET_VAL = open ( TL_FILE , TL_FILE_FLAGS_OPEN_READ_BINARY);	\
+    if (TL_FILE_OPEN_READ_RET_VAL == -1) {												\
+			TL_DEBUGGING_ENABLE();													\
+            TL_DEBUG("\n[ERROR] Cannot Open File!");								\
+            return EXIT_FAILURE;													\
+    }
+
 
 //-- TL currently uses POSIX open() vs. windows calls SINCE POSIX is 'cross platform' thanks to MinGW && -w64
 //	FALSE -- not important for Windows -- important for LINUX!

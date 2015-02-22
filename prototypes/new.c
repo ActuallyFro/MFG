@@ -1,119 +1,50 @@
-/*
- ============================================================================
- Name        : sp_linux_copy.c
- Author      : Marko Martinović
- Description : Copy input file into output file
- ============================================================================
- */
+#define TL_HELP_MESSAGE		\
+"\n cp\
+\n ===\
+\n A Poor excuse of a copy of cp...\
+\n\
+\n                                                ActuallyFro - Feb 2015		\
+\n\
+\n Example Commandline Excecution:\
+\n -------------------------------\
+\n %s <source file> <dest file>\
+\n\
+\n\n",TL_ProgName
  
 #include "../include/TL_0_01d.h"
-#define BUF_SIZE 8192
- 
-int main(int argc, char* argv[]) {
- 
-    int input_fd, output_fd;
-    ssize_t ret_bytesRead_in, ret_bytesRead_out;
-    char readInBuffer[BUF_SIZE];
- 
-    /* Are src and dest file name arguments missing */
-    if(argc != 3){
-        printf ("Usage: cp file1 file2");
-        return 1;
-    }
- 
-    /* Create input file descriptor */
-    input_fd = open (argv [1], TL_FILE_FLAGS_OPEN_READ_BINARY);
-    if (input_fd == -1) {
-            perror ("open");
-            return 2;
-    }
- 
-    /* Create output file descriptor */
-//    output_fd = open(argv[2], TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644);
 
-//Append Sequence
-    output_fd = open(argv[2], TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE, 0644);
+int main(int argc, char **argv) {
+	TL_PARSEARGS_INSTALL();	
+	TL_PARSEARGS_START(TL_ENFORCEPARSING_OFF)
+	TL_PARSEARGS_STOP
+
+	TL_FILE_IO_INSTALL();
 	
-    if(output_fd == -1){
-        //perror("open");
-        //return 3;
-		fprintf(stdout,"[WARNING] File not found! Creating new File");
-		output_fd = open(argv[2], TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644);
-	}
-//END -- Append Sequence	
+    if(argc != 3){
+		TL_QUIT_HELPMSG();
+    }
  
-    /* Copy process */
-    while((ret_bytesRead_in = read (input_fd, &readInBuffer, BUF_SIZE)) > 0){
-            ret_bytesRead_out = write (output_fd, &readInBuffer, (ssize_t) ret_bytesRead_in);
-            if(ret_bytesRead_out != ret_bytesRead_in){
-                /* Write error */
-                perror("write");
-                return 4;
+	//1. Open Source File
+	TL_FILE_OPEN_READ_MODE_BINARY(argv[1]); 
+	
+    //2.1 Open Destination File -- New File
+	TL_FILE_OPEN_WRITE_MODE_NEW(argv[2], 0644);
+
+	//2.2 Open Destination File -- Append File
+	//TL_FILE_OPEN_WRITE_MODE_APPEND(TL_CP_FILE_DEST, 0644);
+ 
+    //Read from source process
+    while((TL_FILE_READ_IN_BYTES = read (TL_FILE_OPEN_READ_RET_VAL, &TL_FILE_BUF, TL_FILE_BUF_SIZE)) > 0){
+            TL_FILE_WRITE_OUT_BYTES = write (TL_FILE_OPEN_WRITE_RET_VAL, &TL_FILE_BUF, (ssize_t) TL_FILE_READ_IN_BYTES);
+            if(TL_FILE_WRITE_OUT_BYTES != TL_FILE_READ_IN_BYTES){
+                fprintf(stderr,"\n[ERROR] The copy process has been aborted! Bytes writen != Bytes read.");
+                return EXIT_FAILURE;
             }
     }
  
-    /* Close file descriptors */
-    close (input_fd);
-    close (output_fd);
- 
-    return (EXIT_SUCCESS);
-}/*
- ============================================================================
- Name        : sp_linux_copy.c
- Author      : Marko Martinović
- Description : Copy input file into output file
- ============================================================================
- */
- 
-#include "../include/TL_0_01d.h"
-#define BUF_SIZE 8192
- 
-int main(int argc, char* argv[]) {
- 
-    int input_fd, output_fd;
-    ssize_t ret_bytesRead_in, ret_bytesRead_out;
-    char readInBuffer[BUF_SIZE];
- 
-    /* Are src and dest file name arguments missing */
-    if(argc != 3){
-        printf ("Usage: cp file1 file2");
-        return 1;
-    }
- 
-    /* Create input file descriptor */
-    input_fd = open (argv [1], TL_FILE_FLAGS_OPEN_READ_BINARY);
-    if (input_fd == -1) {
-            perror ("open");
-            return 2;
-    }
- 
-    /* Create output file descriptor */
-//    output_fd = open(argv[2], TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644);
+    //Close files
+	TL_FILE_CLOSE(TL_FILE_OPEN_READ_RET_VAL);
+	TL_FILE_CLOSE(TL_FILE_OPEN_WRITE_RET_VAL);
 
-//Append Sequence
-    output_fd = open(argv[2], TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE, 0644);
-	
-    if(output_fd == -1){
-        //perror("open");
-        //return 3;
-		fprintf(stdout,"[WARNING] File not found! Creating new File");
-		output_fd = open(argv[2], TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644);
-	}
-//END -- Append Sequence	
- 
-    /* Copy process */
-    while((ret_bytesRead_in = read (input_fd, &readInBuffer, BUF_SIZE)) > 0){
-            ret_bytesRead_out = write (output_fd, &readInBuffer, (ssize_t) ret_bytesRead_in);
-            if(ret_bytesRead_out != ret_bytesRead_in){
-                /* Write error */
-                perror("write");
-                return 4;
-            }
-    }
- 
-    /* Close file descriptors */
-    close (input_fd);
-    close (output_fd);
- 
-    return (EXIT_SUCCESS);
+    return EXIT_SUCCESS;
 }
