@@ -1,1 +1,1 @@
-gcc file_io.c -o file_io -Wall 
+gcc file_io.c -o cp -Wall 
