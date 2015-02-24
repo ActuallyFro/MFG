@@ -14,6 +14,14 @@
 #include "../include/TL_0_01d.h"
 
 int main(int argc, char **argv) {
+	TL_TIME_INIT();
+	TL_TIME_INIT_STRING_FULL_SAFE_ARRAY();
+	TL_TIME_GET();
+	TL_TIME_CONVERT_STRING_FULL_SAFE();
+
+	TL_LOGFILE_INSTALL();
+	TL_LOGFILE_START();
+	
 	TL_PARSEARGS_INSTALL();	
 	TL_PARSEARGS_START(TL_ENFORCEPARSING_OFF)
 	TL_PARSEARGS_STOP
@@ -46,5 +54,18 @@ int main(int argc, char **argv) {
 	TL_FILE_CLOSE(TL_FILE_OPEN_READ_RET_VAL);
 	TL_FILE_CLOSE(TL_FILE_OPEN_WRITE_RET_VAL);
 
+	char thisstring[20]="Done!";
+	TL_LOGFILE_WRITE_STRING(thisstring);
+	TL_LOGFILE_WRITE_STRING(thisstring);
+	TL_LOGFILE_WRITE_STRING(thisstring);
+	#if WINDOWS
+		strcpy(thisstring,"\r\n\r\n");
+	#else
+		strcpy(thisstring,"\n\n");
+	#endif
+	TL_LOGFILE_WRITE_STRING(thisstring);
+	TL_LOGFILE_WRITE_STRING(TL_TIME_STRING_FULL_SAFE);
+	TL_LOGFILE_STOP();
+	
     return EXIT_SUCCESS;
 }

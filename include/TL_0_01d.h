@@ -176,7 +176,7 @@ int TL_DEBUGGING=0;
 #define TL_DEBUG(...)		\
 	if(TL_DEBUGGING==1)		\
 		fprintf(stdout,__VA_ARGS__)
-
+		
 int TL_STDIN_PIPED=0;
 #define STDIN_CHECK()										\
 if (isatty(fileno(stdin))){									\
@@ -907,22 +907,45 @@ listen(NAME, NUM)
 
 #define TL_TIME_INIT()														\
 	time_t TL_TIME_SYSTEM;													\
-	struct tm * TL_TIME_SYSTEM_STRUCT;											\
+	struct tm * TL_TIME_SYSTEM_STRUCT
+
+#define TL_TIME_INIT_STRING_ARRAYS()												\
 	char TL_TIME_STRING_FULL[30];												\
+	char TL_TIME_STRING_FULL_SAFE[30];												\
 	char TL_TIME_STRING_DATE[30];												\
-	char TL_TIME_STRING_TIME[30];												\
+	char TL_TIME_STRING_TIME[30]
+
+#define TL_TIME_INIT_STRING_FULL_ARRAY()	char TL_TIME_STRING_FULL[30]
+#define TL_TIME_INIT_STRING_FULL_SAFE_ARRAY() char TL_TIME_STRING_FULL_SAFE[30]
+#define TL_TIME_INIT_STRING_DATE_ARRAY() char TL_TIME_STRING_DATE[30]
+#define TL_TIME_INIT_STRING_TIME_ARRAY() char TL_TIME_STRING_TIME[30]
+
+#define TL_TIME_2K8_INIT()														\
 	int TL_TIME_INT_SECONDS_SINCE_2K8;											\
 	struct tm TL_y2k8;													\
 	TL_y2k8.tm_sec=0; TL_y2k8.tm_min=0; TL_y2k8.tm_hour=0; TL_y2k8.tm_mday=0; TL_y2k8.tm_mon=1; TL_y2k8.tm_year=108
 
 #define TL_TIME_GET()												\
 	time(&TL_TIME_SYSTEM);											\
-	TL_TIME_SYSTEM_STRUCT = localtime(&TL_TIME_SYSTEM);							\
-	strftime(TL_TIME_STRING_FULL,sizeof(TL_TIME_STRING_FULL),"%Y-%m-%dT%H:%M:%S",TL_TIME_SYSTEM_STRUCT);	\
-	strftime(TL_TIME_STRING_DATE,sizeof(TL_TIME_STRING_DATE),"%Y-%m-%d",TL_TIME_SYSTEM_STRUCT);		\
-	strftime(TL_TIME_STRING_TIME,sizeof(TL_TIME_STRING_TIME),"%H:%M:%S",TL_TIME_SYSTEM_STRUCT);		\
+	TL_TIME_SYSTEM_STRUCT = localtime(&TL_TIME_SYSTEM)
+
+#define TL_TIME_CONVERT_STRING_FULL()\
+	strftime(TL_TIME_STRING_FULL,sizeof(TL_TIME_STRING_FULL),"%Y-%m-%dT%H:%M:%S",TL_TIME_SYSTEM_STRUCT)
+
+#define TL_TIME_CONVERT_STRING_FULL_SAFE()\
+	strftime(TL_TIME_STRING_FULL_SAFE,sizeof(TL_TIME_STRING_FULL_SAFE),"%Y-%m-%dT%H-%M-%S",TL_TIME_SYSTEM_STRUCT)
+
+#define TL_TIME_CONVERT_STRING_DATE()\
+	strftime(TL_TIME_STRING_DATE,sizeof(TL_TIME_STRING_DATE),"%Y-%m-%d",TL_TIME_SYSTEM_STRUCT)
+
+#define TL_TIME_CONVERT_STRING_TIME()\
+	strftime(TL_TIME_STRING_TIME,sizeof(TL_TIME_STRING_TIME),"%H:%M:%S",TL_TIME_SYSTEM_STRUCT)
+
+#define TL_TIME_GET_Y2K8()												\
+	time(&TL_TIME_SYSTEM);											\
 	TL_TIME_INT_SECONDS_SINCE_2K8=(int)difftime(TL_TIME_SYSTEM,mktime(&TL_y2k8))
 
+	
 #ifndef TL_IPv4_SOCKET_TCP_NCP_SIZE
 	#define TL_IPv4_SOCKET_TCP_NCP_SIZE	2061250
 #endif
@@ -1148,12 +1171,12 @@ listen(NAME, NUM)
 #if WINDOWS
 	#define TL_FILE_FLAGS_OPEN_READ O_RDONLY
 	#define TL_FILE_FLAGS_OPEN_READ_BINARY O_RDONLY | O_BINARY 
-	#define TL_FILE_FLAGS_OPEN_WRITE_NEWFILE O_WRONLY | O_CREAT | O_BINARY
+	#define TL_FILE_FLAGS_OPEN_WRITE_NEWFILE O_WRONLY | O_CREAT | O_BINARY | O_TRUNC
 	#define TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE O_WRONLY | O_APPEND | O_BINARY
 #else
 	#define TL_FILE_FLAGS_OPEN_READ O_RDONLY
 	#define TL_FILE_FLAGS_OPEN_READ_BINARY O_RDONLY
-	#define TL_FILE_FLAGS_OPEN_WRITE_NEWFILE O_WRONLY | O_CREAT
+	#define TL_FILE_FLAGS_OPEN_WRITE_NEWFILE O_WRONLY | O_CREAT | O_TRUNC
 	#define TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE O_WRONLY | O_APPEND
 #endif
 
@@ -1165,7 +1188,7 @@ listen(NAME, NUM)
 	ssize_t TL_FILE_READ_IN_BYTES, TL_FILE_WRITE_OUT_BYTES;	\
 	char TL_FILE_BUF[TL_FILE_BUF_SIZE]
 
-#define	TL_FILE_CLOSE( NAME ) close(NAME)
+#define	TL_FILE_CLOSE(...) close( __VA_ARGS__ )
 
 #define TL_FILE_OPEN_WRITE_MODE_APPEND( TL_FILE , TL_PERMS ) 	\
     TL_FILE_OPEN_WRITE_RET_VAL = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE, TL_PERMS); 	\
@@ -1184,8 +1207,7 @@ listen(NAME, NUM)
             TL_DEBUG("\n[ERROR] Cannot Open File!");								\
             return EXIT_FAILURE;													\
     }
-
-
+	
 //-- TL currently uses POSIX open() vs. windows calls SINCE POSIX is 'cross platform' thanks to MinGW && -w64
 //	FALSE -- not important for Windows -- important for LINUX!
 
@@ -1201,3 +1223,29 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
      return FALSE;
 }
 
+#define TL_LOGFILE_NAME_SIZE 5000
+
+char TL_LOGFILE[ TL_LOGFILE_NAME_SIZE ];
+
+#define TL_LOGFILE_INSTALL()						\
+	int TL_LOGFILE_WRITE_RET_VAL;					\
+	ssize_t TL_LOGFILE_WRITE_OUT_BYTES;				\
+	strcat(TL_LOGFILE,argv[0]);						\
+	strcat(TL_LOGFILE,"_");							\
+	strcat(TL_LOGFILE,TL_TIME_STRING_FULL_SAFE);	\
+	strcat(TL_LOGFILE,".log")
+
+#define TL_LOGFILE_START() \
+	TL_LOGFILE_WRITE_RET_VAL = open( TL_LOGFILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644 )
+
+#define TL_LOGFILE_WRITE( STRING ) \
+	TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, &STRING, sizeof(STRING));	\
+	if(TL_LOGFILE_WRITE_OUT_BYTES==0)														\
+		fprintf(stderr,"\n[ERROR] %s not written to the Logfile!", STRING)
+
+#define TL_LOGFILE_WRITE_STRING( STRING ) \
+	TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, &STRING, strlen(STRING));	\
+	if(TL_LOGFILE_WRITE_OUT_BYTES==0)														\
+		fprintf(stderr,"\n[ERROR] %s not written to the Logfile!", STRING)
+
+#define TL_LOGFILE_STOP() close( TL_LOGFILE_WRITE_RET_VAL )
