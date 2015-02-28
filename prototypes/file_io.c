@@ -36,10 +36,12 @@ int main(int argc, char **argv) {
 	TL_FILE_OPEN_READ_MODE_BINARY(argv[1]); 
 	
     //2.1 Open Destination File -- New File
-	TL_FILE_OPEN_WRITE_MODE_NEW(argv[2], 0644);
+//	TL_FILE_OPEN_WRITE_MODE_NEW(argv[2], 0644);
 
 	//2.2 Open Destination File -- Append File
-	//TL_FILE_OPEN_WRITE_MODE_APPEND(TL_CP_FILE_DEST, 0644);
+//	TL_DEBUGGING_ENABLE();
+	TL_FILE_OPEN_WRITE_MODE_APPEND(argv[2], 0644);
+//	TL_DEBUGGING_DISABLE();
  
     //Read from source process
     while((TL_FILE_READ_IN_BYTES = read (TL_FILE_OPEN_READ_RET_VAL, &TL_FILE_BUF, TL_FILE_BUF_SIZE)) > 0){
@@ -55,17 +57,40 @@ int main(int argc, char **argv) {
 	TL_FILE_CLOSE(TL_FILE_OPEN_WRITE_RET_VAL);
 
 	char thisstring[20]="Done!";
-	TL_LOGFILE_WRITE_STRING(thisstring);
-	TL_LOGFILE_WRITE_STRING(thisstring);
-	TL_LOGFILE_WRITE_STRING(thisstring);
-	#if WINDOWS
-		strcpy(thisstring,"\r\n\r\n");
-	#else
-		strcpy(thisstring,"\n\n");
-	#endif
-	TL_LOGFILE_WRITE_STRING(thisstring);
-	TL_LOGFILE_WRITE_STRING(TL_TIME_STRING_FULL_SAFE);
+	int value=23;
+	TL_LOGFILE_WRITE_STRING_ARRAY(thisstring);
+	TL_LOGFILE_WRITE_STRING_ARRAY(thisstring);
+	TL_LOGFILE_WRITE_STRING_ARRAY(thisstring);
+	TL_LOGFILE_WRITE(" W00T! ", 7);
+	TL_LOGFILE_WRITE((char *)&value, sizeof(value));
+	TL_LOGFILE_WRITE(&thisstring, strlen(thisstring));
+	TL_LOGFILE_WRITE_STRING_ARRAY(thisstring);
+	TL_LOGFILE_WRITE("\r\nStart Time: ", 14);
+	TL_LOGFILE_WRITE_STRING_ARRAY(TL_TIME_STRING_FULL_SAFE);
+	TL_LOGFILE_WRITE("\r\nStop Time: ", 13);
+	TL_TIME_GET();
+	TL_TIME_CONVERT_STRING_FULL_SAFE();
+	TL_LOGFILE_WRITE_STRING_ARRAY(TL_TIME_STRING_FULL_SAFE);
+
 	TL_LOGFILE_STOP();
+	
+ struct timeval tv;
+ struct tm* ptm;
+ char time_string[40];
+ long milliseconds;
+
+ /* Obtain the time of day, and convert it to a tm struct. */
+ gettimeofday (&tv, NULL);
+ ptm = localtime (&tv.tv_sec);
+ /* Format the date and time, down to a single second. */
+ strftime (time_string, sizeof (time_string), "%Y-%m-%d %H:%M:%S", ptm);
+ /* Compute milliseconds from microseconds. */
+ milliseconds = tv.tv_usec ;
+ /* Print the formatted time, in seconds, followed by a decimal point
+   and the milliseconds. */
+ printf ("%s.%06ld\n", time_string, milliseconds);
+
+
 	
     return EXIT_SUCCESS;
 }

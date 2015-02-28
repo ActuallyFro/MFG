@@ -173,9 +173,21 @@ int TL_DEBUGGING=0;
 	if(TL_DEBUGGING==1)		\
 		fprintf(__VA_ARGS__)
 
-#define TL_DEBUG(...)		\
-	if(TL_DEBUGGING==1)		\
+#define TL_DEBUG(...)										\
+	if(TL_DEBUGGING==1)										\
 		fprintf(stdout,__VA_ARGS__)
+
+#define TL_DEBUG_N_LOG(...)		\
+	if(TL_DEBUGGING==1)										\
+		fprintf(stdout,__VA_ARGS__);						\
+	if(TL_LOGGING==1)		\
+		fprintf(TL_LOGFILE_WRITE_RET_VAL,__VA_ARGS__)
+		
+#define TL_DEBUG_N_LOG(...)		\
+	if(TL_DEBUGGING==1)										\
+		fprintf(stdout,__VA_ARGS__);						\
+	if(TL_LOGGING==1)		\
+		fprintf(TL_LOGFILE_WRITE_RET_VAL,__VA_ARGS__)
 		
 int TL_STDIN_PIPED=0;
 #define STDIN_CHECK()										\
@@ -1193,7 +1205,6 @@ listen(NAME, NUM)
 #define TL_FILE_OPEN_WRITE_MODE_APPEND( TL_FILE , TL_PERMS ) 	\
     TL_FILE_OPEN_WRITE_RET_VAL = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE, TL_PERMS); 	\
 	if(TL_FILE_OPEN_WRITE_RET_VAL == -1){														\
-		TL_DEBUGGING_ENABLE();																\
 		TL_DEBUG("[WARNING] File not found! Creating new File");							\
 		TL_FILE_OPEN_WRITE_RET_VAL = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, TL_PERMS);	\
 	}
@@ -1225,9 +1236,10 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
 
 #define TL_LOGFILE_NAME_SIZE 5000
 
-char TL_LOGFILE[ TL_LOGFILE_NAME_SIZE ];
 
 #define TL_LOGFILE_INSTALL()						\
+	char TL_LOGFILE[ TL_LOGFILE_NAME_SIZE ];		\
+	int TL_LOGGING=0;								\
 	int TL_LOGFILE_WRITE_RET_VAL;					\
 	ssize_t TL_LOGFILE_WRITE_OUT_BYTES;				\
 	strcat(TL_LOGFILE,argv[0]);						\
@@ -1238,14 +1250,14 @@ char TL_LOGFILE[ TL_LOGFILE_NAME_SIZE ];
 #define TL_LOGFILE_START() \
 	TL_LOGFILE_WRITE_RET_VAL = open( TL_LOGFILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644 )
 
-#define TL_LOGFILE_WRITE( STRING ) \
-	TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, &STRING, sizeof(STRING));	\
+#define TL_LOGFILE_WRITE( STRING , SIZE ) \
+	TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, STRING, SIZE );	\
 	if(TL_LOGFILE_WRITE_OUT_BYTES==0)														\
 		fprintf(stderr,"\n[ERROR] %s not written to the Logfile!", STRING)
 
-#define TL_LOGFILE_WRITE_STRING( STRING ) \
+#define TL_LOGFILE_WRITE_STRING_ARRAY( STRING ) \
 	TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, &STRING, strlen(STRING));	\
 	if(TL_LOGFILE_WRITE_OUT_BYTES==0)														\
-		fprintf(stderr,"\n[ERROR] %s not written to the Logfile!", STRING)
+		TL_DEBUG("\n[ERROR] %s not written to the Logfile!", STRING)
 
 #define TL_LOGFILE_STOP() close( TL_LOGFILE_WRITE_RET_VAL )
