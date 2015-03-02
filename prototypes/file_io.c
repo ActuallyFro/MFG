@@ -10,7 +10,7 @@
 \n %s <source file> <dest file>\
 \n\
 \n\n",TL_ProgName
- 
+#include <sys/time.h>
 #include "../include/TL_0_01d.h"
 
 int main(int argc, char **argv) {
@@ -63,9 +63,9 @@ int main(int argc, char **argv) {
 	TL_LOGFILE_WRITE_STRING_ARRAY(thisstring);
 	TL_LOGFILE_WRITE(" W00T! ", 7);
 	TL_LOGFILE_WRITE((char *)&value, sizeof(value));
-	TL_LOGFILE_WRITE(&thisstring, strlen(thisstring));
+//	TL_LOGFILE_WRITE(&thisstring, strlen(thisstring));
 	TL_LOGFILE_WRITE_STRING_ARRAY(thisstring);
-	TL_LOGFILE_WRITE("\r\nStart Time: ", 14);
+	TL_LOG("\r\nStart Time: ");
 	TL_LOGFILE_WRITE_STRING_ARRAY(TL_TIME_STRING_FULL_SAFE);
 	TL_LOGFILE_WRITE("\r\nStop Time: ", 13);
 	TL_TIME_GET();
