@@ -905,29 +905,43 @@ listen(NAME, NUM)
     }                                                                                           \
     fclose(TL_HTTP_fh)
 
-#define TL_TIME_INIT()														\
-	time_t TL_TIME_SYSTEM;													\
-	struct tm * TL_TIME_SYSTEM_STRUCT
+#define TL_TIME_INIT()							\
+	time_t TL_TIME_SYSTEM;						\
+	struct tm * TL_TIME_SYSTEM_STRUCT;			\
+	struct timeval TL_TIME_SYSTEM_USECS_STRUCT
 
 #define TL_TIME_INIT_STRING_ARRAYS()												\
 	char TL_TIME_STRING_FULL[30];												\
 	char TL_TIME_STRING_FULL_SAFE[30];												\
 	char TL_TIME_STRING_DATE[30];												\
-	char TL_TIME_STRING_TIME[30]
+	char TL_TIME_STRING_TIME[30];					\
+	char TL_TIME_STRING_TIME_USECS[30]
 
-#define TL_TIME_INIT_STRING_FULL_ARRAY()	char TL_TIME_STRING_FULL[30]
-#define TL_TIME_INIT_STRING_FULL_SAFE_ARRAY() char TL_TIME_STRING_FULL_SAFE[30]
+#define TL_TIME_INIT_STRING_FULL_ARRAY()	\
+	char TL_TIME_STRING_FULL[30];			\
+	char TL_TIME_STRING_TIME_USECS[30]
+
+#define TL_TIME_INIT_STRING_FULL_SAFE_ARRAY() 	\
+	char TL_TIME_STRING_FULL_SAFE[30];			\
+	char TL_TIME_STRING_TIME_USECS[30]
+
 #define TL_TIME_INIT_STRING_DATE_ARRAY() char TL_TIME_STRING_DATE[30]
-#define TL_TIME_INIT_STRING_TIME_ARRAY() char TL_TIME_STRING_TIME[30]
+
+#define TL_TIME_INIT_STRING_TIME_ARRAY() 	\
+	char TL_TIME_STRING_TIME[30];			\
+	char TL_TIME_STRING_TIME_USECS[30]
+
 
 #define TL_TIME_2K8_INIT()														\
 	int TL_TIME_INT_SECONDS_SINCE_2K8;											\
 	struct tm TL_y2k8;													\
 	TL_y2k8.tm_sec=0; TL_y2k8.tm_min=0; TL_y2k8.tm_hour=0; TL_y2k8.tm_mday=0; TL_y2k8.tm_mon=1; TL_y2k8.tm_year=108
 
-#define TL_TIME_GET()												\
-	time(&TL_TIME_SYSTEM);											\
+#define TL_TIME_GET()										\
+	gettimeofday(&TL_TIME_SYSTEM_USECS_STRUCT, 0);			\
 	TL_TIME_SYSTEM_STRUCT = localtime(&TL_TIME_SYSTEM)
+
+//	time(&TL_TIME_SYSTEM);						
 
 #define TL_TIME_CONVERT_STRING_FULL()\
 	strftime(TL_TIME_STRING_FULL,sizeof(TL_TIME_STRING_FULL),"%Y-%m-%dT%H:%M:%S",TL_TIME_SYSTEM_STRUCT)
@@ -935,12 +949,26 @@ listen(NAME, NUM)
 #define TL_TIME_CONVERT_STRING_FULL_SAFE()\
 	strftime(TL_TIME_STRING_FULL_SAFE,sizeof(TL_TIME_STRING_FULL_SAFE),"%Y-%m-%dT%H-%M-%S",TL_TIME_SYSTEM_STRUCT)
 
+	/*
+#define TL_TIME_CONVERT_STRING_FULL_USECS()\
+	strftime(TL_TIME_STRING_FULL,sizeof(TL_TIME_STRING_FULL),"%Y-%m-%dT%H:%M:%S.%ld",TL_TIME_SYSTEM_STRUCT,TL_TIME_SYSTEM_USECS_STRUCT.tv_usec)
+
+#define TL_TIME_CONVERT_STRING_FULL_USECS_SAFE()\
+	strftime(TL_TIME_STRING_FULL_SAFE,sizeof(TL_TIME_STRING_FULL_SAFE),"%Y-%m-%dT%H-%M-%S.%ld",TL_TIME_SYSTEM_STRUCT,TL_TIME_SYSTEM_USECS_STRUCT.tv_usec)
+*/
+
 #define TL_TIME_CONVERT_STRING_DATE()\
 	strftime(TL_TIME_STRING_DATE,sizeof(TL_TIME_STRING_DATE),"%Y-%m-%d",TL_TIME_SYSTEM_STRUCT)
 
 #define TL_TIME_CONVERT_STRING_TIME()\
 	strftime(TL_TIME_STRING_TIME,sizeof(TL_TIME_STRING_TIME),"%H:%M:%S",TL_TIME_SYSTEM_STRUCT)
 
+#define TL_TIME_CONVERT_STRING_TIME_USECS()\
+	strftime(TL_TIME_STRING_TIME,sizeof(TL_TIME_STRING_TIME),"%H:%M:%S",TL_TIME_SYSTEM_STRUCT)
+
+#define TL_TIME_CONVERT_STRING_USECS()\
+	sprintf(TL_TIME_STRING_TIME_USECS,"%ld",TL_TIME_SYSTEM_USECS_STRUCT.tv_usec);
+	
 #define TL_TIME_GET_Y2K8()												\
 	time(&TL_TIME_SYSTEM);											\
 	TL_TIME_INT_SECONDS_SINCE_2K8=(int)difftime(TL_TIME_SYSTEM,mktime(&TL_y2k8))

@@ -18,6 +18,8 @@ int main(int argc, char **argv) {
 	TL_TIME_INIT_STRING_FULL_SAFE_ARRAY();
 	TL_TIME_GET();
 	TL_TIME_CONVERT_STRING_FULL_SAFE();
+	TL_TIME_CONVERT_STRING_USECS();
+	printf("%s",TL_TIME_STRING_TIME_USECS);
 
 
 	/*
@@ -40,13 +42,15 @@ int main(int argc, char **argv) {
    and the milliseconds. 
  printf ("%s.%06ld\n", time_string, milliseconds);
 */
-char time_string[40];
-struct timeval tp;
-gettimeofday(&tp, 0);
-time_t curtime = tp.tv_sec;
-struct tm* t = localtime(&curtime);
-strftime(time_string, sizeof (time_string), "%Y-%m-%d %H:%M:%S", t);
-printf("%02d:%02d:%02d:%ld\n", t->tm_hour, t->tm_min, t->tm_sec, tp.tv_usec/1000);
+
+
+///char time_string[40];
+///struct timeval tp;
+//gettimeofday(&tp, 0);
+//time_t curtime = tp.tv_sec;
+//struct tm* t = localtime(&curtime);
+//strftime(time_string, sizeof (time_string), "%Y-%m-%d %H:%M:%S", t);
+//printf("%02d:%02d:%02d:%ld\n", t->tm_hour, t->tm_min, t->tm_sec, tp.tv_usec);
 
 	
     return EXIT_SUCCESS;
