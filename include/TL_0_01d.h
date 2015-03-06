@@ -914,23 +914,14 @@ listen(NAME, NUM)
 	char TL_TIME_STRING_FULL[30];												\
 	char TL_TIME_STRING_FULL_SAFE[30];												\
 	char TL_TIME_STRING_DATE[30];												\
-	char TL_TIME_STRING_TIME[30];					\
+	char TL_TIME_STRING_TIME[30];\
 	char TL_TIME_STRING_TIME_USECS[30]
 
-#define TL_TIME_INIT_STRING_FULL_ARRAY()	\
-	char TL_TIME_STRING_FULL[30];			\
-	char TL_TIME_STRING_TIME_USECS[30]
-
-#define TL_TIME_INIT_STRING_FULL_SAFE_ARRAY() 	\
-	char TL_TIME_STRING_FULL_SAFE[30];			\
-	char TL_TIME_STRING_TIME_USECS[30]
-
+#define TL_TIME_INIT_STRING_FULL_ARRAY() char TL_TIME_STRING_FULL[30]
+#define TL_TIME_INIT_STRING_FULL_SAFE_ARRAY() char TL_TIME_STRING_FULL_SAFE[30]
 #define TL_TIME_INIT_STRING_DATE_ARRAY() char TL_TIME_STRING_DATE[30]
-
-#define TL_TIME_INIT_STRING_TIME_ARRAY() 	\
-	char TL_TIME_STRING_TIME[30];			\
-	char TL_TIME_STRING_TIME_USECS[30]
-
+#define TL_TIME_INIT_STRING_TIME_ARRAY() char TL_TIME_STRING_TIME[30]
+#define TL_TIME_INIT_STRING_USEC_ARRAY() char TL_TIME_STRING_TIME_USECS[30]
 
 #define TL_TIME_2K8_INIT()														\
 	int TL_TIME_INT_SECONDS_SINCE_2K8;											\
@@ -939,9 +930,15 @@ listen(NAME, NUM)
 
 #define TL_TIME_GET()										\
 	gettimeofday(&TL_TIME_SYSTEM_USECS_STRUCT, 0);			\
+	TL_TIME_SYSTEM=TL_TIME_SYSTEM_USECS_STRUCT.tv_sec;		\
 	TL_TIME_SYSTEM_STRUCT = localtime(&TL_TIME_SYSTEM)
 
 //	time(&TL_TIME_SYSTEM);						
+//gettimeofday(&tp, 0);
+//time_t curtime = tp.tv_sec;
+//struct tm* t = localtime(&curtime);
+//strftime(time_string, sizeof (time_string), "%Y-%m-%d %H:%M:%S", t);
+//printf("%02d:%02d:%02d:%ld\n", t->tm_hour, t->tm_min, t->tm_sec, tp.tv_usec);
 
 #define TL_TIME_CONVERT_STRING_FULL()\
 	strftime(TL_TIME_STRING_FULL,sizeof(TL_TIME_STRING_FULL),"%Y-%m-%dT%H:%M:%S",TL_TIME_SYSTEM_STRUCT)
