@@ -1213,7 +1213,17 @@ listen(NAME, NUM)
 	ssize_t TL_FILE_READ_IN_BYTES, TL_FILE_WRITE_OUT_BYTES;	\
 	char TL_FILE_BUF[TL_FILE_BUF_SIZE]
 
-#define	TL_FILE_CLOSE(...) close( __VA_ARGS__ )
+#define TL_FILE_IO_INSTALL_NAMED( STRING )									\
+	int FILE_PTR_##STRING=0;								\
+	ssize_t IN_BYTES_##STRING, OUT_BYTES_##STRING;	\
+	char BUF_##STRING[TL_FILE_BUF_SIZE]
+	
+	
+#define	TL_FILE_CLOSE()	\
+	close(TL_FILE_OPEN_READ_RET_VAL);\
+	close(TL_FILE_OPEN_WRITE_RET_VAL)
+
+#define	TL_FILE_CLOSE_NAMED(...) close( FILE_PTR_##__VA_ARGS__ )
 
 #define TL_FILE_OPEN_WRITE_MODE_APPEND( TL_FILE , TL_PERMS ) 	\
     TL_FILE_OPEN_WRITE_RET_VAL = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE, TL_PERMS); 	\
@@ -1231,7 +1241,73 @@ listen(NAME, NUM)
             TL_DEBUG("\n[ERROR] Cannot Open File!");								\
             return EXIT_FAILURE;													\
     }
+
+#define TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED( TL_FILE , TL_PERMS , NAME ) 	\
+    FILE_PTR_##NAME = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE, TL_PERMS); 	\
+	if(FILE_PTR_##NAME == -1){														\
+		TL_DEBUG("[WARNING] File not found! Creating new File");							\
+		FILE_PTR_##NAME = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, TL_PERMS);	\
+	}
+
+#define TL_FILE_OPEN_WRITE_MODE_NEW_NAMED( TL_FILE , TL_PERMS , NAME ) FILE_PTR_##NAME = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, TL_PERMS )
+
+#define TL_FILE_OPEN_READ_MODE_BINARY_NAMED( TL_FILE , NAME )									\
+	FILE_PTR_##NAME = open ( TL_FILE , TL_FILE_FLAGS_OPEN_READ_BINARY);	\
+    if (FILE_PTR_##NAME == -1) {												\
+			TL_DEBUGGING_ENABLE();													\
+            TL_DEBUG("\n[ERROR] Cannot Open File!");								\
+            return EXIT_FAILURE;													\
+    }
 	
+#define TL_FILE_WRITE( TL_FILE , STRING , SIZE ) \
+	TL_FILE_WRITE_OUT_BYTES = write( TL_FILE , STRING, SIZE );	\
+	if(TL_FILE_WRITE_OUT_BYTES==0)														\
+		fprintf(stderr,"\n[ERROR] %s not written to the Logfile!", STRING)
+
+#define TL_FILE_WRITE_NO_CHECK() TL_FILE_WRITE_OUT_BYTES = write( TL_FILE_OPEN_WRITE_RET_VAL , &TL_FILE_BUF , (ssize_t) TL_FILE_READ_IN_BYTES )
+		
+#define TL_FILE_WRITE_STRING_ARRAY( STRING ) \
+	TL_FILE_WRITE_OUT_BYTES = write( TL_FILE , &STRING, strlen(STRING));	\
+	if(TL_FILE_WRITE_OUT_BYTES==0)														\
+		TL_DEBUG("\n[ERROR] %s not written to the Logfile!", STRING)
+
+#define TL_FILE_WRITE_STRING_ARRAY_NO_CHECK( STRING ) TL_FILE_WRITE_OUT_BYTES = write( TL_FILE , &STRING, strlen(STRING))
+
+#define TL_FILE_READ() \
+	TL_FILE_READ_IN_BYTES = read( TL_FILE_OPEN_WRITE_RET_VAL , &TL_FILE_BUF, TL_FILE_BUF_SIZE );	\
+	if(TL_FILE_READ_IN_BYTES==0)														\
+		fprintf(stderr,"\n[ERROR] No bytes read into %s!", STRING)
+
+#define TL_FILE_READ_NO_CHECK() TL_FILE_READ_IN_BYTES = read( TL_FILE_OPEN_WRITE_RET_VAL , &TL_FILE_BUF, TL_FILE_BUF_SIZE )
+
+#define TL_FILE_WRITE_NAMED( NAME , STRING , SIZE ) \
+	OUT_BYTES_##NAME = write( FILE_PTR_##NAME , STRING, SIZE );	\
+	if(OUT_BYTES_##NAME==0)														\
+		fprintf(stderr,"\n[ERROR] %s not written to the Logfile!", STRING)
+
+#define TL_FILE_WRITE_NO_CHECK_NAMED( NAME , STRING , SIZE ) OUT_BYTES_##NAME = write( FILE_PTR_##NAME , STRING, SIZE )
+		
+#define TL_FILE_WRITE_STRING_ARRAY_NAMED( NAME, STRING ) \
+	OUT_BYTES_##NAME = write( FILE_PTR_##NAME , &STRING, strlen(STRING));	\
+	if(OUT_BYTES_##NAME==0)														\
+		TL_DEBUG("\n[ERROR] %s not written to the Logfile!", STRING)
+
+#define TL_FILE_WRITE_STRING_ARRAY_NO_CHECK_NAMED( NAME, STRING ) OUT_BYTES_##NAME = write( FILE_PTR_##NAME , &STRING, strlen(STRING))
+
+#define TL_FILE_READ_NAMED( NAME ) \
+	IN_BYTES_##NAME = read( FILE_PTR_##NAME , BUF_##NAME, TL_FILE_BUF_SIZE );	\
+	if(IN_BYTES_##NAME==0)														\
+		fprintf(stderr,"\n[ERROR] No bytes read into %s!", BUF_##NAME)
+
+#define TL_FILE_READ_NO_CHECK_NAMED( NAME , STRING , SIZE ) IN_BYTES_##NAME = read( FILE_PTR_##NAME , STRING, SIZE )
+
+/*
+#define TL_FILE_IO_INSTALL_NAMED( STRING )									\
+	int FILE_PTR_##STRING=0;								\
+	ssize_t IN_BYTES_##STRING, OUT_BYTES_##STRING;	\
+	char BUF_##STRING[TL_FILE_BUF_SIZE]
+*/
+
 //-- TL currently uses POSIX open() vs. windows calls SINCE POSIX is 'cross platform' thanks to MinGW && -w64
 //	FALSE -- not important for Windows -- important for LINUX!
 
@@ -1256,6 +1332,7 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
 	char TL_LOG_STRING[2000];						\
 	int TL_LOGFILE_WRITE_RET_VAL;					\
 	ssize_t TL_LOGFILE_WRITE_OUT_BYTES;				\
+	TL_LOGFILE[0]='\0';\
 	strcat(TL_LOGFILE,argv[0]);						\
 	strcat(TL_LOGFILE,"_");							\
 	strcat(TL_LOGFILE,TL_TIME_STRING_FULL_SAFE);	\
@@ -1277,7 +1354,7 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
 #define TL_LOGFILE_STOP() close( TL_LOGFILE_WRITE_RET_VAL )
 
 
-#define TL_LOG(...)		\
+#define TL_LOGFILE_PRINT(...)		\
 	if(TL_LOGGING==1){	\
 		strcpy(TL_LOG_STRING,__VA_ARGS__);\
 		TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, &TL_LOG_STRING, strlen(TL_LOG_STRING) );	\
