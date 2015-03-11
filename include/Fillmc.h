@@ -19,20 +19,24 @@
 #define Sqrt_2 1.41421356
 #define Sqrt_2_over_2 0.70710678
 
-#define initVars() 				\
-	int x=COORD_MAX; 			\
-	int y=HEIGHT_MIN-1;			\
-	int z=COORD_MAX;			\
-	int shapeType=0;			\
-	char buildingMaterial[50];	\
-	int consoleORchat=-1;		\
-	int Hollow=-1;				\
-	int Hollow_wall_width=0;	\
-	int shapesTotal=9;			\
-	int Width=0;				\
-	int Depth=0;				\
-	int printshapes=FALSE;		\
-	int quiet=FALSE;			\
+#define initVars() 								\
+	int x=COORD_MAX; 							\
+	int y=HEIGHT_MIN-1;							\
+	int z=COORD_MAX;							\
+	int shapeType=0;							\
+	char buildingMaterial[50];					\
+	char OutputFileName[200]="MFSG_output.txt";	\
+	int consoleORchat=-1;						\
+	int Hollow=-1;								\
+	int Hollow_wall_width=0;					\
+	int shapesTotal=9;							\
+	int Width=0;								\
+	int Depth=0;								\
+	int printshapes=FALSE;						\
+	int quiet=FALSE;							\
+	char *parsedmaterial = NULL;				\
+	char *parsedOutputFileName = NULL;			\
+	int OutputToFile = -1;						\
 	int Height=0
 
 //	int Direction_NorthSouth;	
@@ -45,7 +49,6 @@
 
 
 int getHollow(int * hollow, int * hollow_wall_width){
-	printf("\n[DEBUGGING] Hollow: %i\n\n",*hollow);
 	if(*hollow==-1){
 		do{
 			printf("\n");
@@ -243,7 +246,7 @@ int getDepth(char *name,int *Depth, int Args_Parsed){
 
 int getbuildingMaterial(char *array){
 	printf("\nPlease enter a Material (e.g. minecraft:brick_block:");
-	scanf("%50[^\n]", array);
+	scanf("\n%50[^\n]", array);
 
 	return EXIT_SUCCESS;
 }
@@ -257,6 +260,33 @@ int getconsoleORchat(int *var){
 		}while(*var!=0 && *var!=1);
 	}
 	return EXIT_SUCCESS;	
+}
+
+int getFileTrueORFalse(int *var){
+	if(*var!=0 && *var!=1){
+		do{
+			printf("\n");
+			printf("\nWould you like to Print the commands to a file (0/1)?: ");
+			scanf("%i",var);
+		}while(*var!=0 && *var!=1);
+	}
+	return EXIT_SUCCESS;	
+}
+
+int getFileName(char *array){
+	int var=-1;
+	if(var!=0 && var!=1){
+		do{
+			printf("\n");
+			printf("\nWould you like to rename the file(0/1)? (Current name: %s) ",array);
+			scanf("%i",&var);
+		}while(var!=0 && var!=1);
+	}
+	if(var==1){
+		printf("\nPlease enter a new file name:\n");
+		scanf("\n%200[^\n]", array);
+	}
+	return EXIT_SUCCESS;
 }
 
 int printBanner(){

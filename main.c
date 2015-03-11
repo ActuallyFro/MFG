@@ -22,20 +22,24 @@
 
 
 int main(int argc, char **argv){
+	TL_TIME_INIT();
+	TL_TIME_INIT_STRING_FULL_SAFE_ARRAY();
+	TL_TIME_INIT_STRING_USEC_ARRAY();
+	TL_TIME_GET();
+	TL_TIME_CONVERT_STRING_FULL_SAFE();
+	TL_TIME_CONVERT_STRING_USECS();
+	
 //	int	Rotate=0;
 //	int	MODE=0;
 
-//	char	OutputFile[500]="ncp.out";
-	//Parse Args Vars
-//	char	*Passed_Shape = NULL;
-	char	*parsedmaterial = NULL;
-//	char	*File_Input = NULL;
-//	char	*File_Output = NULL;
 	initVars();
-
+/*
+	char *OutputFileName = "MFSG_output.txt";
+	int OutputToFile = FALSE;					
+*/
 	TL_PARSEARGS_INSTALL();
 	
-	TL_PARSEARGS_START(argc, argv,TL_ENFORCEPARSING_ON)
+	TL_PARSEARGS_START(TL_ENFORCEPARSING_ON)
 		TL_PARSEARGS_ADD_INT("-x",x)
 		TL_PARSEARGS_ADD_INT("-y",y)
 		TL_PARSEARGS_ADD_INT("-z",z)
@@ -47,6 +51,10 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_INT("-s",shapeType)
 		TL_PARSEARGS_ADD_FLAG("--printshapes",printshapes,TRUE)
 		TL_PARSEARGS_ADD_STR("--material",parsedmaterial)
+		TL_PARSEARGS_ADD_STR("--output-name",parsedOutputFileName)
+		TL_PARSEARGS_ADD_STR("-o",parsedOutputFileName)
+		TL_PARSEARGS_ADD_FLAG("--output-true", OutputToFile, TRUE)
+		TL_PARSEARGS_ADD_FLAG("-O", OutputToFile, TRUE)
 		TL_PARSEARGS_ADD_STR("-m",parsedmaterial)
 		TL_PARSEARGS_ADD_FLAG("--hollow", Hollow, TRUE)
 		TL_PARSEARGS_ADD_FLAG("-hw", Hollow, TRUE)
@@ -55,12 +63,21 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_FLAG("--console", consoleORchat, 0)
 		TL_PARSEARGS_ADD_FLAG("--chat", consoleORchat, 1)
 		TL_PARSEARGS_ADD_FLAG("--quiet", quiet, TRUE)
-	TL_PARSEARGS_STOP
+	TL_PARSEARGS_STOP;
 //		TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
 //		TL_PARSEARGS_ADD_FLAG("-r", Rotate, 1)
 //		TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_GREATER_THAN_N(2)
 //		TL_PARSEARGS_ADD_INT("-dy1",HeightOffsetStart)
 //		TL_PARSEARGS_ADD_INT("-dy2",HeightOffsetStop)
+
+	if(parsedOutputFileName != NULL && parsedOutputFileName[0] != '\0'){
+		strcpy(OutputFileName,parsedOutputFileName);
+		OutputToFile=TRUE;
+	}
+	else{
+		getFileTrueORFalse(&OutputToFile);
+		getFileName(OutputFileName);
+	}
 	
 	if(printshapes==TRUE){
 		shapeType=-1;
@@ -141,5 +158,24 @@ int main(int argc, char **argv){
 		}
 	}
 	printf("\n\n");
+	
+	//Play with Named File
+	if(OutputToFile==TRUE){
+		TL_FILE_IO_INSTALL_NAMED(FILE1);
+		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
+		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"Sup!?"); 
+		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"\r\nStart Time: ");
+		TL_FILE_WRITE_NAMED(FILE1,(char *)&TL_TIME_STRING_FULL_SAFE,strlen(TL_TIME_STRING_FULL_SAFE));
+		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,".");
+		TL_FILE_WRITE_NAMED(FILE1,(char *)&TL_TIME_STRING_TIME_USECS,strlen(TL_TIME_STRING_TIME_USECS));
+		TL_TIME_GET();
+		TL_TIME_CONVERT_STRING_FULL_SAFE();
+		TL_TIME_CONVERT_STRING_USECS();
+		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"\r\nEnd Time: ");
+		TL_FILE_WRITE_NAMED(FILE1,(char *)&TL_TIME_STRING_FULL_SAFE,strlen(TL_TIME_STRING_FULL_SAFE));
+		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,".");
+		TL_FILE_WRITE_NAMED(FILE1,(char *)&TL_TIME_STRING_TIME_USECS,strlen(TL_TIME_STRING_TIME_USECS));
+		TL_FILE_CLOSE_NAMED(FILE1);
+	}
 	return EXIT_SUCCESS;
 }
