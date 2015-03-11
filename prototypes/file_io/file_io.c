@@ -3,7 +3,7 @@
 \n ===\
 \n A Poor excuse of a copy of cp...\
 \n\
-\n                                                ActuallyFro - Feb 2015		\
+\n                                                ActuallyFro - Mar 2015		\
 \n\
 \n Example Commandline Excecution:\
 \n -------------------------------\
@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 	
 	TL_PARSEARGS_INSTALL();	
 	TL_PARSEARGS_START(TL_ENFORCEPARSING_OFF)
-	TL_PARSEARGS_STOP
+	TL_PARSEARGS_STOP;
 
 	TL_FILE_IO_INSTALL();
 	
@@ -34,33 +34,33 @@ int main(int argc, char **argv) {
 		TL_QUIT_HELPMSG();
     }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~///
-/// File IO Example 1
+/// File IO Example 1 -- an implementation of Copy / cp
 /// -----------------
 	//1. Open Source File
 	TL_FILE_OPEN_READ_MODE_BINARY(argv[1]); 
 	
     //2.1 Open Destination File -- New File
 	TL_FILE_OPEN_WRITE_MODE_NEW(argv[2], 0644);
-
+	
 	//2.2 Open Destination File -- Append File
-//	TL_DEBUGGING_ENABLE();
-//	TL_FILE_OPEN_WRITE_MODE_APPEND(argv[2], 0644);
-//	TL_DEBUGGING_DISABLE();
+	//TL_FILE_OPEN_WRITE_MODE_APPEND(argv[2], 0644);
 
-    //Copy Read Bytes from source and Write to new file
-	while((TL_FILE_READ_NO_CHECK()) > 0){ //This command will read in the file opened with any TL_FILE_OPEN_READ into the default TL_FILE_BUF
+    //3. Copy Read Bytes from source and Write to new file
+	TL_FILE_READ_NO_CHECK(); //Set default case
+	while(TL_FILE_READ_IN_BYTES > 0){ //This command will read in the file opened with any TL_FILE_OPEN_READ into the default TL_FILE_BUF
 		TL_FILE_WRITE_NO_CHECK(); //This command will write the data in the default TL_FILE_BUF to the file opened by TL_FILE_OPEN_WRITE
 		if(TL_FILE_WRITE_OUT_BYTES != TL_FILE_READ_IN_BYTES){ //since this 'tool' is copying from one file to the next it's simply needs to check that the read-> write process had the same bytes
-			fprintf(stderr,"\n[ERROR] The copy process has been aborted! Bytes writen != Bytes read.");
+			TL_DEBUGF(stderr,"\n[ERROR] The copy process has been aborted! Bytes writen != Bytes read.");
 			return EXIT_FAILURE;
 		}
+		TL_FILE_READ_NO_CHECK();
     }
     //Close files
 	TL_FILE_CLOSE();
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~///
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~///
-/// File IO Example 2
+/// File IO Example 2 -- examples of creating a log file that is a "named" file
 /// -----------------
 
 	//Play with Named File
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~///
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~///
-/// File IO Example 3
+/// File IO Example 3 -- example of using TL's 'Default' Log file that is activated by command line switches
 /// -----------------
 	TL_LOGFILE_INSTALL();
 	TL_LOGFILE_START();

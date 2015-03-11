@@ -248,13 +248,13 @@ int TL_Default_Set_Array_j;
 	argc--; argv++;												\
 	while(argc > 0){											\
 		if(!strcmp(*argv, "--help") || !strcmp(*argv, "/?")){	\
-			argv++; argc--; TL_HELP=TRUE;								\
+			argv++; argc--; TL_HELP=TRUE; TL_PARSEARGS_OCCURED=TRUE;								\
 		}														\
 		if(!strcmp(*argv, "--enable-debugging") || !strcmp(*argv, "--debug")){	\
-			argv++; argc--; TL_DEBUGGING=TRUE;								\
+			argv++; argc--; TL_DEBUGGING=TRUE; TL_PARSEARGS_OCCURED=TRUE;								\
 		}														\
 		if(!strcmp(*argv, "--enable-logging") || !strcmp(*argv, "--log")){	\
-			argv++; argc--; TL_LOGGING=TRUE;								\
+			argv++; argc--; TL_LOGGING=TRUE; TL_PARSEARGS_OCCURED=TRUE;								\
 		}
 
 #define TL_PARSEARGS_STOP													\
@@ -1282,11 +1282,11 @@ listen(NAME, NUM)
 #define TL_FILE_WRITE_STRING_ARRAY_NO_CHECK( STRING ) TL_FILE_WRITE_OUT_BYTES = write( TL_FILE , &STRING, strlen(STRING))
 
 #define TL_FILE_READ() \
-	TL_FILE_READ_IN_BYTES = read( TL_FILE_OPEN_WRITE_RET_VAL , &TL_FILE_BUF, TL_FILE_BUF_SIZE );	\
+	TL_FILE_READ_IN_BYTES = read( TL_FILE_OPEN_READ_RET_VAL , &TL_FILE_BUF, TL_FILE_BUF_SIZE );	\
 	if(TL_FILE_READ_IN_BYTES==0)														\
 		fprintf(stderr,"\n[ERROR] No bytes read into %s!", STRING)
 
-#define TL_FILE_READ_NO_CHECK() TL_FILE_READ_IN_BYTES = read( TL_FILE_OPEN_WRITE_RET_VAL , &TL_FILE_BUF, TL_FILE_BUF_SIZE )
+#define TL_FILE_READ_NO_CHECK() TL_FILE_READ_IN_BYTES = read( TL_FILE_OPEN_READ_RET_VAL , &TL_FILE_BUF, TL_FILE_BUF_SIZE )
 
 #define TL_FILE_WRITE_NAMED( NAME , STRING , SIZE ) \
 	OUT_BYTES_##NAME = write( FILE_PTR_##NAME , STRING, SIZE );	\
@@ -1333,22 +1333,22 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
 
 #define TL_LOGFILE_NAME_SIZE 5000
 
-
-#define TL_LOGFILE_INSTALL()						\
-	char TL_LOGFILE[ TL_LOGFILE_NAME_SIZE ];		\
-	char TL_LOG_STRING[2000];						\
-	int TL_LOGFILE_WRITE_RET_VAL;					\
-	ssize_t TL_LOGFILE_WRITE_OUT_BYTES;				\
-	TL_LOGFILE[0]='\0';\
-	strcat(TL_LOGFILE,argv[0]);						\
-	strcat(TL_LOGFILE,"_");							\
-	strcat(TL_LOGFILE,TL_TIME_STRING_FULL_SAFE);	\
-	strcat(TL_LOGFILE,".log")
-
-#define TL_LOGFILE_START() 																	\
-	if(TL_LOGGING==TRUE){																	\
-	TL_LOGFILE_WRITE_RET_VAL = open( TL_LOGFILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644 );	\
+#define TL_LOGFILE_INSTALL()							\
+	char TL_LOGFILE[ TL_LOGFILE_NAME_SIZE ];			\
+	char TL_LOG_STRING[2000];							\
+	int TL_LOGFILE_WRITE_RET_VAL;						\
+	ssize_t TL_LOGFILE_WRITE_OUT_BYTES;					\
+	if(TL_LOGGING==TRUE){								\
+		TL_LOGFILE[0]='\0';								\
+		strcat(TL_LOGFILE,argv[0]);						\
+		strcat(TL_LOGFILE,"_");							\
+		strcat(TL_LOGFILE,TL_TIME_STRING_FULL_SAFE);	\
+		strcat(TL_LOGFILE,".log");						\
 	}
+	
+#define TL_LOGFILE_START() 																	\
+	if(TL_LOGGING==TRUE)																	\
+		TL_LOGFILE_WRITE_RET_VAL = open( TL_LOGFILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644 )
 
 #define TL_LOGFILE_WRITE( STRING , SIZE ) \
 	if(TL_LOGGING==TRUE){																\
@@ -1359,13 +1359,10 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
 	
 #define TL_LOGFILE_WRITE_STRING_ARRAY( STRING ) \
 	if(TL_LOGGING==TRUE){																\
-	TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, &STRING, strlen(STRING));	\
-	if(TL_LOGFILE_WRITE_OUT_BYTES==0)														\
-		TL_DEBUG("\n[ERROR] %s not written to the Logfile!", STRING);\
+		TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, &STRING, strlen(STRING));	\
+		if(TL_LOGFILE_WRITE_OUT_BYTES==0)														\
+			TL_DEBUG("\n[ERROR] %s not written to the Logfile!", STRING);\
 	}
-	
-#define TL_LOGFILE_STOP() close( TL_LOGFILE_WRITE_RET_VAL )
-
 
 #define TL_LOGFILE_PRINT(...)		\
 	if(TL_LOGGING==1){	\
@@ -1381,3 +1378,7 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
 		fprintf(stdout,__VA_ARGS__);						\
 	if(TL_LOGGING==1)		\
 		fprintf(TL_LOGFILE_WRITE_RET_VAL,__VA_ARGS__)
+
+#define TL_LOGFILE_STOP() \
+	if(TL_LOGGING==TRUE)\
+		close( TL_LOGFILE_WRITE_RET_VAL )
