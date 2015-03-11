@@ -227,7 +227,8 @@ int TL_Default_Set_Array_j;
 #define TL_ENFORCEPARSING_OFF 0
 
 #define TL_PARSEARGS_INSTALL()		\
-	int TL_help=0;					\
+	int TL_HELP=0;					\
+	int TL_LOGGING=0;				\
 	int EnforceParsing;				\
 	char TL_ProgName[500];			\
 	int TL_Initial_Argc = 0;		\
@@ -240,19 +241,25 @@ int TL_Default_Set_Array_j;
     #define TL_HELP_MESSAGE "\nUsage: %s [-file <filename>] [-double <arg>] [-int <arg>] [-flag]\n",TL_ProgName
 #endif
 	
-#define TL_PARSEARGS_START(Enforce)	\
-	EnforceParsing=Enforce;						\
-	TL_Initial_Argc = argc;						\
-	strcpy(TL_ProgName,argv[0]);				\
-	argc--; argv++;								\
-	while(argc > 0){							\
-		if(!strcmp(*argv, "--help") || !strcmp(*argv, "/?")){\
-		argv++; argc--; TL_help=1;				\
+#define TL_PARSEARGS_START(Enforce)								\
+	EnforceParsing=Enforce;										\
+	TL_Initial_Argc = argc;										\
+	strcpy(TL_ProgName,argv[0]);								\
+	argc--; argv++;												\
+	while(argc > 0){											\
+		if(!strcmp(*argv, "--help") || !strcmp(*argv, "/?")){	\
+			argv++; argc--; TL_HELP=TRUE;								\
+		}														\
+		if(!strcmp(*argv, "--enable-debugging") || !strcmp(*argv, "--debug")){	\
+			argv++; argc--; TL_DEBUGGING=TRUE;								\
+		}														\
+		if(!strcmp(*argv, "--enable-logging") || !strcmp(*argv, "--log")){	\
+			argv++; argc--; TL_LOGGING=TRUE;								\
 		}
-        
+
 #define TL_PARSEARGS_STOP													\
 		else {													\
-          if(EnforceParsing==1){				\
+          if(EnforceParsing==TRUE){				\
 			fprintf(stderr,TL_HELP_MESSAGE);  \
 			fprintf(stderr, "\nUnrecognized recognized command line argument: %s\n\n", *argv);			\
 		  	return 0;				\
@@ -260,7 +267,7 @@ int TL_Default_Set_Array_j;
 		}													\
 		argv++;argc--;												\
 	} 														\
-	if(TL_help){   \
+	if(TL_HELP){   \
 		fprintf(stdout, TL_HELP_MESSAGE);    \
 		return EXIT_FAILURE;                                       \
 	}														\
@@ -1227,10 +1234,11 @@ listen(NAME, NUM)
 
 #define TL_FILE_OPEN_WRITE_MODE_APPEND( TL_FILE , TL_PERMS ) 	\
     TL_FILE_OPEN_WRITE_RET_VAL = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE, TL_PERMS); 	\
-	if(TL_FILE_OPEN_WRITE_RET_VAL == -1){														\
-		TL_DEBUG("[WARNING] File not found! Creating new File");							\
+	if(TL_FILE_OPEN_WRITE_RET_VAL == -1){															\
+		TL_DEBUG("[WARNING] File (%s) not found! Creating new File",TL_FILE);									\
 		TL_FILE_OPEN_WRITE_RET_VAL = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, TL_PERMS);	\
 	}
+	
 #define TL_FILE_OPEN_WRITE_MODE_NEW( TL_FILE , TL_PERMS )	\
 	TL_FILE_OPEN_WRITE_RET_VAL = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, TL_PERMS );
 
@@ -1238,14 +1246,14 @@ listen(NAME, NUM)
 	TL_FILE_OPEN_READ_RET_VAL = open ( TL_FILE , TL_FILE_FLAGS_OPEN_READ_BINARY);	\
     if (TL_FILE_OPEN_READ_RET_VAL == -1) {												\
 			TL_DEBUGGING_ENABLE();													\
-            TL_DEBUG("\n[ERROR] Cannot Open File!");								\
+            TL_DEBUG("\n[ERROR] Cannot Open File (%s)!",TL_FILE);								\
             return EXIT_FAILURE;													\
     }
 
 #define TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED( TL_FILE , TL_PERMS , NAME ) 	\
     FILE_PTR_##NAME = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_APPENDFILE, TL_PERMS); 	\
 	if(FILE_PTR_##NAME == -1){														\
-		TL_DEBUG("[WARNING] File not found! Creating new File");							\
+		TL_DEBUG("[WARNING] File (%s) not found! Creating new File",TL_FILE);							\
 		FILE_PTR_##NAME = open( TL_FILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, TL_PERMS);	\
 	}
 
@@ -1255,7 +1263,7 @@ listen(NAME, NUM)
 	FILE_PTR_##NAME = open ( TL_FILE , TL_FILE_FLAGS_OPEN_READ_BINARY);	\
     if (FILE_PTR_##NAME == -1) {												\
 			TL_DEBUGGING_ENABLE();													\
-            TL_DEBUG("\n[ERROR] Cannot Open File!");								\
+            TL_DEBUG("\n[ERROR] Cannot Open File (%s)!",TL_FILE);								\
             return EXIT_FAILURE;													\
     }
 	
@@ -1328,7 +1336,6 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
 
 #define TL_LOGFILE_INSTALL()						\
 	char TL_LOGFILE[ TL_LOGFILE_NAME_SIZE ];		\
-	int TL_LOGGING=1;								\
 	char TL_LOG_STRING[2000];						\
 	int TL_LOGFILE_WRITE_RET_VAL;					\
 	ssize_t TL_LOGFILE_WRITE_OUT_BYTES;				\
@@ -1338,19 +1345,25 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
 	strcat(TL_LOGFILE,TL_TIME_STRING_FULL_SAFE);	\
 	strcat(TL_LOGFILE,".log")
 
-#define TL_LOGFILE_START() \
-	TL_LOGFILE_WRITE_RET_VAL = open( TL_LOGFILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644 )
+#define TL_LOGFILE_START() 																	\
+	if(TL_LOGGING==TRUE){																	\
+	TL_LOGFILE_WRITE_RET_VAL = open( TL_LOGFILE , TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644 );	\
+	}
 
 #define TL_LOGFILE_WRITE( STRING , SIZE ) \
-	TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, STRING, SIZE );	\
-	if(TL_LOGFILE_WRITE_OUT_BYTES==0)														\
-		fprintf(stderr,"\n[ERROR] %s not written to the Logfile!", STRING)
-
+	if(TL_LOGGING==TRUE){																\
+		TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, STRING, SIZE );	\
+		if(TL_LOGFILE_WRITE_OUT_BYTES==0)												\
+			fprintf(stderr,"\n[ERROR] %s not written to the Logfile!", STRING);			\
+	}
+	
 #define TL_LOGFILE_WRITE_STRING_ARRAY( STRING ) \
+	if(TL_LOGGING==TRUE){																\
 	TL_LOGFILE_WRITE_OUT_BYTES = write(TL_LOGFILE_WRITE_RET_VAL, &STRING, strlen(STRING));	\
 	if(TL_LOGFILE_WRITE_OUT_BYTES==0)														\
-		TL_DEBUG("\n[ERROR] %s not written to the Logfile!", STRING)
-
+		TL_DEBUG("\n[ERROR] %s not written to the Logfile!", STRING);\
+	}
+	
 #define TL_LOGFILE_STOP() close( TL_LOGFILE_WRITE_RET_VAL )
 
 
