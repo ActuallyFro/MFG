@@ -22,6 +22,7 @@
 #include "include/TL_0_01d.h"
 #include "include/Fillmc.h"
 
+/** The main fucntion needs these default cases of argc and argv for TL_PARSING*/
 int main(int argc, char **argv){
 	TL_TIME_INIT();
 	TL_TIME_INIT_STRING_FULL_SAFE_ARRAY();
@@ -32,7 +33,7 @@ int main(int argc, char **argv){
 	
 //	int	Rotate=0;
 //	int	MODE=0;
-
+	/** Start or install default variables./
 	initVars();
 /*
 	char *OutputFileName = "MFSG_output.txt";
