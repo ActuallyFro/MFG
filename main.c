@@ -61,9 +61,12 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_FLAG("-hw", Hollow, TRUE)
 		TL_PARSEARGS_ADD_FLAG("--nothollow", Hollow, FALSE)
 		TL_PARSEARGS_ADD_FLAG("-nhw", Hollow, FALSE)
+		TL_PARSEARGS_ADD_INT("--width-hollow", Hollow_wall_width)
+		TL_PARSEARGS_ADD_INT("-wh", Hollow_wall_width)
 		TL_PARSEARGS_ADD_FLAG("--console", consoleORchat, 0)
 		TL_PARSEARGS_ADD_FLAG("--chat", consoleORchat, 1)
 		TL_PARSEARGS_ADD_FLAG("--quiet", quiet, TRUE)
+		TL_PARSEARGS_ADD_FLAG("-q", quiet, TRUE)
 	TL_PARSEARGS_STOP;
 //		TL_PARSEARGS_ADD_FLAG("--rotate", Rotate, 1)
 //		TL_PARSEARGS_ADD_FLAG("-r", Rotate, 1)
@@ -160,25 +163,8 @@ int main(int argc, char **argv){
 	}
 	printf("\n\n");
 	
-	/*
+	
 	//Play with Named File
-	if(OutputToFile==TRUE){
-		TL_FILE_IO_INSTALL_NAMED(FILE1);
-		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
-		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"Sup!?"); 
-		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"\r\nStart Time: ");
-		TL_FILE_WRITE_NAMED(FILE1,(char *)&TL_TIME_STRING_FULL_SAFE,strlen(TL_TIME_STRING_FULL_SAFE));
-		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,".");
-		TL_FILE_WRITE_NAMED(FILE1,(char *)&TL_TIME_STRING_TIME_USECS,strlen(TL_TIME_STRING_TIME_USECS));
-		TL_TIME_GET();
-		TL_TIME_CONVERT_STRING_FULL_SAFE();
-		TL_TIME_CONVERT_STRING_USECS();
-		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"\r\nEnd Time: ");
-		TL_FILE_WRITE_NAMED(FILE1,(char *)&TL_TIME_STRING_FULL_SAFE,strlen(TL_TIME_STRING_FULL_SAFE));
-		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,".");
-		TL_FILE_WRITE_NAMED(FILE1,(char *)&TL_TIME_STRING_TIME_USECS,strlen(TL_TIME_STRING_TIME_USECS));
-		TL_FILE_CLOSE_NAMED(FILE1);
-	}
-	*/
+	
 	return EXIT_SUCCESS;
 }

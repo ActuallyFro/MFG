@@ -31,6 +31,7 @@
 	int Hollow_wall_width=0;					\
 	int shapesTotal=9;							\
 	int Width=0;								\
+	int HollowWidth=0;							\
 	int Depth=0;								\
 	int printshapes=FALSE;						\
 	int quiet=FALSE;							\
@@ -331,7 +332,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 
 	if(OutputToFile==TRUE){
 		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
-		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"Copy and paste this into your console/chat:");
+		//TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"Copy and paste this into your console/chat:");
 	}
 	else{
 		printf("\n\nCopy and paste this into your console/chat:");
@@ -365,6 +366,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	}
 	
 	if(OutputToFile==TRUE){
+		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"\r\n");
 		TL_FILE_CLOSE_NAMED(FILE1);
 	}
 	
