@@ -235,7 +235,7 @@ int getWidth(char *name,int *Width, int Args_Parsed){
 
 int getDepth(char *name,int *Depth, int Args_Parsed){
 	int val=*Depth;
-	if(val < HEIGHT_MIN || val > HEIGHT_MAX){
+ 	if(val < HEIGHT_MIN || val > HEIGHT_MAX){
 		if(Args_Parsed==TRUE){
 			printf("\n[WARNING] The passed value for height (%i) is not valid!\n",val);	
 		}	printf("\nWhat is the %s's depth: ",name);
@@ -295,11 +295,12 @@ int printBanner(){
 	return EXIT_SUCCESS;
 }
 
-int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
+int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int OutputToFile, char OutputFileName[]){
 	//int Width;//, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i;//,j,k;
+	TL_FILE_IO_INSTALL_NAMED(FILE1);
 
 	xStart=x;
 	yStart=y;
@@ -328,7 +329,14 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	xStart=x;
 	zStart=z;
 
-	printf("\n\nCopy and paste this into your console/chat:");
+	if(OutputToFile==TRUE){
+		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
+		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"Copy and paste this into your console/chat:");
+	}
+	else{
+		printf("\n\nCopy and paste this into your console/chat:");
+	}
+	
 	for(i=(0+heightStart);i<(Width-heightStop);i++){
 		yStart=i+y;
 		xStop=xStart+(Width-1)*Direction_NorthSouth;
@@ -336,12 +344,30 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		zStop=zStart-(Width-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 		if(consoleORchat==0){
-			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"\r\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
 		}
 		else{
-			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"\r\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
+			
 		}
 	}
+	
+	if(OutputToFile==TRUE){
+		TL_FILE_CLOSE_NAMED(FILE1);
+	}
+	
 	return EXIT_SUCCESS;
 }
 

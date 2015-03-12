@@ -17,9 +17,10 @@
 \n\
 \n\n",TL_ProgName
 
+
+/**\file*/
 #include "include/TL_0_01d.h"
 #include "include/Fillmc.h"
-
 
 int main(int argc, char **argv){
 	TL_TIME_INIT();
@@ -102,10 +103,10 @@ int main(int argc, char **argv){
 
 	if(shapeType==1){
 		getWidth("Square",&Width,TL_PARSEARGS_OCCURED);
-		createSquare(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		createSquare(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
 		if(Hollow==TRUE){
 			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
-			createSquare(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+			createSquare(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width,OutputToFile,OutputFileName);
 		}
 	}
 	else if(shapeType==2){
@@ -159,6 +160,7 @@ int main(int argc, char **argv){
 	}
 	printf("\n\n");
 	
+	/*
 	//Play with Named File
 	if(OutputToFile==TRUE){
 		TL_FILE_IO_INSTALL_NAMED(FILE1);
@@ -177,5 +179,6 @@ int main(int argc, char **argv){
 		TL_FILE_WRITE_NAMED(FILE1,(char *)&TL_TIME_STRING_TIME_USECS,strlen(TL_TIME_STRING_TIME_USECS));
 		TL_FILE_CLOSE_NAMED(FILE1);
 	}
+	*/
 	return EXIT_SUCCESS;
 }
