@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 	
 //	int	Rotate=0;
 //	int	MODE=0;
-	/** Start or install default variables./
+	/** Start or install default variables.*/
 	initVars();
 /*
 	char *OutputFileName = "MFSG_output.txt";

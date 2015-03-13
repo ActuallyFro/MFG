@@ -346,7 +346,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 
 		if(consoleORchat==0){
 			if(OutputToFile==TRUE){
-				sprintf(BUF_FILE1,"\r\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
 			}
 			else{
@@ -355,7 +355,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		}
 		else{
 			if(OutputToFile==TRUE){
-				sprintf(BUF_FILE1,"\r\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
 			}
 			else{
@@ -366,7 +366,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	}
 	
 	if(OutputToFile==TRUE){
-		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"\r\n");
+//		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"\r\n");
 		TL_FILE_CLOSE_NAMED(FILE1);
 	}
 	
