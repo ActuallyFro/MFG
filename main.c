@@ -35,10 +35,7 @@ int main(int argc, char **argv){
 //	int	MODE=0;
 	/** Start or install default variables.*/
 	initVars();
-/*
-	char *OutputFileName = "MFSG_output.txt";
-	int OutputToFile = FALSE;					
-*/
+
 	TL_PARSEARGS_INSTALL();
 	
 	TL_PARSEARGS_START(TL_ENFORCEPARSING_ON)
@@ -75,6 +72,26 @@ int main(int argc, char **argv){
 //		TL_PARSEARGS_ADD_INT("-dy1",HeightOffsetStart)
 //		TL_PARSEARGS_ADD_INT("-dy2",HeightOffsetStop)
 
+	if(quiet!=TRUE){
+		printBanner();
+	}
+	
+	if(printshapes==TRUE){
+		shapeType=-1;
+		getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
+		return EXIT_SUCCESS;
+	}
+			
+	if(parsedmaterial != NULL && parsedmaterial[0] != '\0'){
+		strcpy(buildingMaterial,parsedmaterial);
+	}
+	else{
+		getbuildingMaterial(buildingMaterial);
+	}
+	getHollow(&Hollow,&Hollow_wall_width);
+	getStartCoords(&x,&y,&z,TL_PARSEARGS_OCCURED);
+	getconsoleORchat(&consoleORchat);
+
 	if(parsedOutputFileName != NULL && parsedOutputFileName[0] != '\0'){
 		strcpy(OutputFileName,parsedOutputFileName);
 		OutputToFile=TRUE;
@@ -84,26 +101,7 @@ int main(int argc, char **argv){
 		getFileName(OutputFileName);
 	}
 	
-	if(printshapes==TRUE){
-		shapeType=-1;
-		getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
-		return EXIT_SUCCESS;
-	}
-		
-	if(quiet!=TRUE){
-		printBanner();
-	}
-	
-	if(parsedmaterial != NULL && parsedmaterial[0] != '\0'){
-		strcpy(buildingMaterial,parsedmaterial);
-	}
-	else{
-		getbuildingMaterial(buildingMaterial);
-	}
-	getconsoleORchat(&consoleORchat);
 	getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
-	getHollow(&Hollow,&Hollow_wall_width);
-	getStartCoords(&x,&y,&z,TL_PARSEARGS_OCCURED);
 
 	if(shapeType==1){
 		getWidth("Square",&Width,TL_PARSEARGS_OCCURED);

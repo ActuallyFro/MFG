@@ -291,48 +291,24 @@ int getFileName(char *array){
 }
 
 int printBanner(){
-	printf("\n\n\nMinecraft Fill Tool Building Generator");
+	printf("\nMinecraft Fill Tool Building Generator");
 	printf("\n======================================");
 	return EXIT_SUCCESS;
 }
 
 int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int OutputToFile, char OutputFileName[]){
-	//int Width;//, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
-	int i;//,j,k;
+	int i;
 	TL_FILE_IO_INSTALL_NAMED(FILE1);
-
-	xStart=x;
-	yStart=y;
-	zStart=z;
-/*
-	do{
-		printf("\n\nPlease Enter a Width: ");
-		scanf("%i",&Width);
-		if((Width*Width)>=LAYER_MAX_SIZE){
-			printf("\n[WARNING] The Width of the Cube is out of bounds! Width*Width=%i > 2^15",Width*Width);
-		}
-
-		if((Width+y)> HEIGHT_MAX){
-			printf("\n[ERROR] The Height of the Cube is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
-			Width=HEIGHT_MAX-y;
-		}
-
-		if(Width>WIDTH_MAX){
-			printf("\n[WARNING] Your shape is very long and may not render!");
-		}
-
-	}while((Width*Width)>=LAYER_MAX_SIZE);
-*/
 
 	//These never change
 	xStart=x;
+	yStart=y;
 	zStart=z;
 
 	if(OutputToFile==TRUE){
 		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
-		//TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"Copy and paste this into your console/chat:");
 	}
 	else{
 		printf("\n\nCopy and paste this into your console/chat:");
@@ -366,7 +342,6 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	}
 	
 	if(OutputToFile==TRUE){
-//		TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,"\r\n");
 		TL_FILE_CLOSE_NAMED(FILE1);
 	}
 	
@@ -376,85 +351,41 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 int createRectangle(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int Depth, int Height){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
-	int i;//,j,k;
+	int i;
 
+	//These Never Change
 	xStart=x;
 	yStart=y;
 	zStart=z;
-/*
-	do{
-		printf("\n\nPlease Enter a Width: ");
-		scanf("%i",&Width);
+	
+	printf("\n\nCopy and paste this into your console/chat:");
+	for(i=(0+heightStart);i<(Height-heightStop);i++){
+		yStart=i+y;
 
-		printf("\n\nPlease Enter a Depth: ");
-		scanf("%i",&Depth);
+		xStop=xStart+(Width-1)*Direction_NorthSouth;
+		yStop=yStart;
+		zStop=zStart-(Depth-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
-		printf("\n\nPlease Enter a Height: ");
-		scanf("%i",&Height);
-
-		if((Width*Depth)>=LAYER_MAX_SIZE){
-			printf("\n[WARNING] Width and Depth are TOO GREAT (Width*Depth= %i >2^15)!",Width*Depth);
+		if(consoleORchat==0){
+			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 		}
-		if((Height+y)> HEIGHT_MAX){
-			printf("\n[ERROR] The Height of the Rectangle is out of the map! Forcing Height to be: %i",HEIGHT_MAX-y);
-			Height=HEIGHT_MAX-y;
+		else{
+			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 		}
-		if(Width>WIDTH_MAX || Depth>WIDTH_MAX){
-			printf("\n[WARNING] Your shape is very long and may not render!");
-		}
-	}while((Width*Depth)>=LAYER_MAX_SIZE || Height>HEIGHT_MAX);
-*/
-		//These Never Change
-		xStart=x;
-		zStart=z;
-
-		printf("\n\nCopy and paste this into your console/chat:");
-		for(i=(0+heightStart);i<(Height-heightStop);i++){
-			yStart=i+y;
-
-			xStop=xStart+(Width-1)*Direction_NorthSouth;
-			yStop=yStart;
-			zStop=zStart-(Depth-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
-
-			if(consoleORchat==0){
-				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
-			}
-			else{
-				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
-			}
-		}
+	}
+	
 	return EXIT_SUCCESS;
 }
 
 
 int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
-	//int Width;//, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
-	int i;//,j,k;
+	int i;
 
 	xStart=x;
 	yStart=y;
 	zStart=z;
-/*
-	do{
-		printf("\n\nPlease Enter a Base Width: ");
-		scanf("%i",&Width);
-		if((Width*Width)>=LAYER_MAX_SIZE){
-			printf("\n[WARNING] The Width of the Base is out of bounds! Width*Width=%i > 2^15",Width*Width);
-		}
-
-		if((Width+y)> HEIGHT_MAX){
-			printf("\n[ERROR] The Height of the Pyramid is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
-			Width=HEIGHT_MAX-y;
-		}
-
-		if(Width>WIDTH_MAX){
-			printf("\n[WARNING] Your shape is very long and may not render!");
-		}
-
-	}while((Width*Width)>=LAYER_MAX_SIZE);
-*/
 
 	printf("\n\nCopy and paste this into your console/chat:");
 	for(i=(0+heightStart);i<=(Width-heightStop)/2;i++){
@@ -472,76 +403,24 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 		}
 	}
+	
 	return EXIT_SUCCESS;
 }
 
 int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
-	//int Width, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
-	int i,j;//,k;
+	int i,j;
 	int residue;
-//	int offset;
 
 	xStart=x;
 	yStart=y;
 	zStart=z;
-/*
-	do{
-		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
-		scanf("%i",&Width);
-		
-//		printf("\n\nPlease Enter a Height: ");
-//		scanf("%i",&Height);
-//		Width++;//Need to account for exception handling of sin/cos predictions
 
-		if((Width*2)>=LAYER_MAX_SIZE){
-			printf("\n[WARNING] The Diameter of the Sphere is out of bounds! Radius*2=%i > 2^15",Width*Width);
-		}
-
-		if(Height > HEIGHT_MAX){
-			printf("\n[ERROR] The Height of the Sphere is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
-			Height=HEIGHT_MAX-y;
-		}
-
-		if(Width*2>WIDTH_MAX){
-			printf("\n[WARNING] Your shape is very long and may not render!");
-		}
-
-	}while((Width*2)>=LAYER_MAX_SIZE);// || Height>HEIGHT_MAX);
-*/
-/*
-	do{
-		printf("\n\nPlease Enter a Width: ");
-		scanf("%i",&Width);
-
-		printf("\n\nPlease Enter a Depth: ");
-		scanf("%i",&Depth);
-
-		printf("\n\nPlease Enter a Height: ");
-		scanf("%i",&Height);
-
-		if((Width*Depth)>=LAYER_MAX_SIZE){
-			printf("\n[WARNING] Width and Depth are TOO GREAT (Width*Depth= %i >2^15)!",Width*Depth);
-		}
-		if((Height+y)> HEIGHT_MAX){
-			printf("\n[ERROR] The Height of the Rectangle is out of the map! Forcing Height to be: %i",HEIGHT_MAX-y);
-			Height=HEIGHT_MAX-y;
-		}
-		if(Width>WIDTH_MAX || Depth>WIDTH_MAX){
-			printf("\n[WARNING] Your shape is very long and may not render!");
-		}
-	}while((Width*Depth)>=LAYER_MAX_SIZE || Height>HEIGHT_MAX);
-*/
 	printf("\n\nCopy and paste this into your console/chat:");
-	//for(i=(0+heightStart);i<((Width-heightStop +2-1)/2);i++){ //Round up in C == Add the divisor less one
-//	int isEven;
-//	isEven=Width%2;
 	double Radius;
 	Radius=(double)(Width)/2.0;
 	double LayerRadius,LayerRadius2;
-	//double LayerDiameter;
-	//int voxelDiameter;
 
 	int startPosition;
 	startPosition=0;
@@ -556,18 +435,11 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		else{
 			LayerRadius2=LayerRadius*cos(asin((double)i/LayerRadius));
 		}
-//		LayerDiameter=LayerRadius2*2;
 		residue=(int)(LayerRadius2);
-		//printf("\n\n\n[DEBUGGING] LayerRadius-i: %f",(LayerRadius-i));
-		//		printf("\n\n\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius2,LayerRadius22,(int)LayerRadius2,(int)LayerRadius22,180.0*(double)i/((double)Width));
 
-		//offset=0;
 		if((LayerRadius2-residue)>0.000000 && (LayerRadius2-residue)<1.000000){ // ANY residue rounds up!
-			//offset=1;
-			//			printf("\n[DEBUGGING] \tResidue(%f - %i): %f present!",LayerRadius2,residue,LayerRadius2-residue);
 			LayerRadius2+=1.0;
 		}
-		//		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius2,LayerRadius22,(int)LayerRadius2,(int)LayerRadius22,180.0*(double)i/((double)Width));
 		xStart=x-(int)LayerRadius2;
 		yStart=y+j; //goes up for 'height' ONLY
 		zStart=z+i;//-(int)LayerRadius2;
@@ -582,8 +454,8 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 		}
 		if(i!=0 || Width%2==0){
-			zStart=z-i;//-(int)LayerRadius2;	
-			zStop=z-i;//+(int)LayerRadius2*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+			zStart=z-i;
+			zStop=z-i;
 			if(consoleORchat==0){
 				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 			}
