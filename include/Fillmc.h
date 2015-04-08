@@ -144,13 +144,13 @@ int getShape(int *Type, int TotalShapes, int Args_Parsed){
 		printf("\n");
 		printf("\n[1] Square");
 		printf("\n[2] Rectangle");
-		printf("\n[3] Triangular Prism");
+		//printf("\n[3] Triangular Prism");
 		printf("\n[4] Pyramid");
 		printf("\n[5] Sphere");
 		printf("\n[6] Cylinder");
 		printf("\n[7] Diamond");
-		printf("\n[8] Cone");
-		printf("\n[9] Doughnut");
+		//printf("\n[8] Cone");
+		//printf("\n[9] Doughnut");
 		printf("\n");
 	}
 
@@ -348,7 +348,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	return EXIT_SUCCESS;
 }
 
-int createRectangle(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int Depth, int Height){
+int createRectangle(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int Depth, int Height, int OutputToFile, char OutputFileName[]){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i;
@@ -358,7 +358,14 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 	yStart=y;
 	zStart=z;
 	
-	printf("\n\nCopy and paste this into your console/chat:");
+	TL_FILE_IO_INSTALL_NAMED(FILE1);
+	if(OutputToFile==TRUE){
+		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
+	}
+	else{
+		printf("\n\nCopy and paste this into your console/chat:");
+	}	
+
 	for(i=(0+heightStart);i<(Height-heightStop);i++){
 		yStart=i+y;
 
@@ -367,18 +374,33 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 		zStop=zStart-(Depth-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 		if(consoleORchat==0){
-			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
 		}
 		else{
-			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
 		}
 	}
 	
+	if(OutputToFile==TRUE){
+		TL_FILE_CLOSE_NAMED(FILE1);
+	}
 	return EXIT_SUCCESS;
 }
 
 
-int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
+int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int OutputToFile, char OutputFileName[]){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i;
@@ -386,8 +408,15 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	xStart=x;
 	yStart=y;
 	zStart=z;
+	
+	TL_FILE_IO_INSTALL_NAMED(FILE1);
+	if(OutputToFile==TRUE){
+		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
+	}
+	else{
+		printf("\n\nCopy and paste this into your console/chat:");
+	}
 
-	printf("\n\nCopy and paste this into your console/chat:");
 	for(i=(0+heightStart);i<=(Width-heightStop)/2;i++){
 		xStart=x+i*Direction_NorthSouth;
 		yStart=i+y;
@@ -397,17 +426,33 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 		zStop=zStart-(Width-i-i)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 		if(consoleORchat==0){
-			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
 		}
 		else{
-			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
 		}
 	}
 	
+	if(OutputToFile==TRUE){
+		TL_FILE_CLOSE_NAMED(FILE1);
+	}
+
 	return EXIT_SUCCESS;
 }
 
-int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
+int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int OutputToFile, char OutputFileName[]){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,j;
@@ -416,8 +461,16 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	xStart=x;
 	yStart=y;
 	zStart=z;
+	
+	TL_FILE_IO_INSTALL_NAMED(FILE1);
+	if(OutputToFile==TRUE){
+		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
+	}
+	else{
+		printf("\n\nCopy and paste this into your console/chat:");
+	}
+	
 
-	printf("\n\nCopy and paste this into your console/chat:");
 	double Radius;
 	Radius=(double)(Width)/2.0;
 	double LayerRadius,LayerRadius2;
@@ -448,40 +501,79 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 		zStop=z+i;//+(int)LayerRadius2*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 		if(consoleORchat==0){
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
 			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
 		}
 		else{
-			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
-		}
-		if(i!=0 || Width%2==0){
-			zStart=z-i;
-			zStop=z-i;
-			if(consoleORchat==0){
-				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
 			}
 			else{
 				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 			}
 		}
+		if(i!=0 || Width%2==0){
+			zStart=z-i;
+			zStop=z-i;
+			if(consoleORchat==0){
+				if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+				}
+				else{					
+					printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				}
+			}
+			else{
+				if(OutputToFile==TRUE){
+					sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+				}
+				else{
+					printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				}
+			}
+		}
 
 		}
 	}
+	
+	if(OutputToFile==TRUE){
+		TL_FILE_CLOSE_NAMED(FILE1);
+	}
+
 	return EXIT_SUCCESS;
 }
 
 
-int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width){
+int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int OutputToFile, char OutputFileName[]){
+//example call: MFSG.exe -x 0 -y 100 -z 0 --console -m glowstone -nhw -nf -s 7 -w 10
+
 	//int Width, Depth, Height;
-//	int xStart,yStart,zStart;
-//	int xStop,yStop,zStop;
+	int xStart,yStart,zStart;
+	int xStop,yStop,zStop;
 	int i;//,j,k;
 //	int residue;
 //	int offset;
 
-//	xStart=x;
-//	yStart=y;
-//	zStart=z;
+	xStart=x+(Width/2);
+	yStart=y;
+	zStart=z-(Width/2);
 
+	TL_FILE_IO_INSTALL_NAMED(FILE1);
+	if(OutputToFile==TRUE){
+		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
+	}
+	else{
+		printf("\n\nCopy and paste this into your console/chat:");
+	}
+	
 /*
 	do{
 		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
@@ -507,17 +599,72 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	i=Width%2;
 	if(i==0){i=2;}
 
-	do{
-		printf("\n%i",i);	
-	}while((i+=2)<Width);	
-	do{
-		printf("\n%i",i);		
-	}while((i-=2)>0);
+	do{//First Half Going Vertical; Increasing Width
+		//printf("\n%i <%i,%i,%i> to <%i,%i,%i> ",i,xStart,yStart,zStart,xStart+i-1,yStart,zStart-i+1);
+		xStop=xStart+i-1;
+		yStop=yStart;
+		zStop=zStart-i+1;
+		if(consoleORchat==0){
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
+		}
+		else{
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
+		}
+		xStart--;
+		yStart++;
+		zStart++;		
+	}while((i+=2)<Width);
+
+	do{//Second Half Going Vertical; Decreasing Width
+		//printf("\n%i <%i,%i,%i> to <%i,%i,%i> ",i,xStart,yStart,zStart,xStart+i-1,yStart,zStart-i+1);
+		xStop=xStart+i-1;
+		yStop=yStart;
+		zStop=zStart-i+1;
 		
+		if(consoleORchat==0){
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
+		}
+		else{
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
+		}		
+		
+		xStart++;
+		yStart++;
+		zStart--;			
+	}while((i-=2)>0);
+	
+	if(OutputToFile==TRUE){
+		TL_FILE_CLOSE_NAMED(FILE1);
+	}
+	
 	return EXIT_SUCCESS;
 }
 
-int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Height, int Width){
+int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Height, int Width, int OutputToFile, char OutputFileName[]){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,j;//,k;
@@ -528,7 +675,14 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 	yStart=y;
 	zStart=z;
 
-
+	TL_FILE_IO_INSTALL_NAMED(FILE1);
+	if(OutputToFile==TRUE){
+		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
+	}
+	else{
+		printf("\n\nCopy and paste this into your console/chat:");
+	}
+	
 	double Radius;
 	Radius=(double)(Width)/2.0;
 	double LayerRadius;//,LayerRadius2;
@@ -569,20 +723,44 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 		zStop=z+((int)LayerRadius-1)*Direction_NorthSouth;//+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 		if(consoleORchat==0){
-			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
 		}
 		else{
-			printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
 		}
 		if(Width%2==0){//if EVEN Width 
 			//printf("\n\n[DEBUGGING] EVEN WIDTH!\n");
 			xStart=x-i-1; //-(int)LayerRadius;	
 			xStop=x-i-1;  //+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 			if(consoleORchat==0){
-				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				if(OutputToFile==TRUE){
+					sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+				}
+				else{
+					printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				}
 			}
 			else{
-				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				if(OutputToFile==TRUE){
+					sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+				}
+				else{
+					printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				}
 			}
 		}
 		else{ //if ODD Width 
@@ -591,16 +769,33 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 				xStart=x-i;//-(int)LayerRadius;	
 				xStop=x-i;//+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 				if(consoleORchat==0){
-					printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					if(OutputToFile==TRUE){
+						sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+						TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+					}
+					else{
+						printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					}
 				}
 				else{
-					printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					if(OutputToFile==TRUE){
+						sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);				
+						TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+					}
+					else{
+						printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					}
 				}				
 			}
 		}
 
 		}
 	}
+	
+	if(OutputToFile==TRUE){
+		TL_FILE_CLOSE_NAMED(FILE1);
+	}
+
 	return EXIT_SUCCESS;
 }
 //

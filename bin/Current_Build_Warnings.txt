@@ -1,0 +1,61 @@
+In file included from main.c:22:0:
+include/Fillmc.h: In function 'createSquare':
+include/TL_0_01d.h:1225:10: warning: unused variable 'IN_BYTES_FILE1' [-Wunused-variable]
+  ssize_t IN_BYTES_##STRING, OUT_BYTES_##STRING; \
+          ^
+include/Fillmc.h:303:2: note: in expansion of macro 'TL_FILE_IO_INSTALL_NAMED'
+  TL_FILE_IO_INSTALL_NAMED(FILE1);
+  ^
+include/Fillmc.h: In function 'createRectangle':
+include/TL_0_01d.h:1225:10: warning: unused variable 'IN_BYTES_FILE1' [-Wunused-variable]
+  ssize_t IN_BYTES_##STRING, OUT_BYTES_##STRING; \
+          ^
+include/Fillmc.h:361:2: note: in expansion of macro 'TL_FILE_IO_INSTALL_NAMED'
+  TL_FILE_IO_INSTALL_NAMED(FILE1);
+  ^
+include/Fillmc.h: In function 'createPyramid':
+include/TL_0_01d.h:1225:10: warning: unused variable 'IN_BYTES_FILE1' [-Wunused-variable]
+  ssize_t IN_BYTES_##STRING, OUT_BYTES_##STRING; \
+          ^
+include/Fillmc.h:412:2: note: in expansion of macro 'TL_FILE_IO_INSTALL_NAMED'
+  TL_FILE_IO_INSTALL_NAMED(FILE1);
+  ^
+include/Fillmc.h: In function 'createSphere':
+include/TL_0_01d.h:1225:10: warning: unused variable 'IN_BYTES_FILE1' [-Wunused-variable]
+  ssize_t IN_BYTES_##STRING, OUT_BYTES_##STRING; \
+          ^
+include/Fillmc.h:465:2: note: in expansion of macro 'TL_FILE_IO_INSTALL_NAMED'
+  TL_FILE_IO_INSTALL_NAMED(FILE1);
+  ^
+include/Fillmc.h: In function 'createDiamond':
+include/TL_0_01d.h:1225:10: warning: unused variable 'IN_BYTES_FILE1' [-Wunused-variable]
+  ssize_t IN_BYTES_##STRING, OUT_BYTES_##STRING; \
+          ^
+include/Fillmc.h:569:2: note: in expansion of macro 'TL_FILE_IO_INSTALL_NAMED'
+  TL_FILE_IO_INSTALL_NAMED(FILE1);
+  ^
+include/Fillmc.h: In function 'createCylinder':
+include/TL_0_01d.h:1225:10: warning: unused variable 'IN_BYTES_FILE1' [-Wunused-variable]
+  ssize_t IN_BYTES_##STRING, OUT_BYTES_##STRING; \
+          ^
+include/Fillmc.h:678:2: note: in expansion of macro 'TL_FILE_IO_INSTALL_NAMED'
+  TL_FILE_IO_INSTALL_NAMED(FILE1);
+  ^
+main.c: In function 'main':
+main.c:30:2: warning: implicit declaration of function 'gettimeofday' [-Wimplicit-function-declaration]
+  TL_TIME_GET();
+  ^
+In file included from main.c:22:0:
+include/TL_0_01d.h:231:6: warning: variable 'TL_LOGGING' set but not used [-Wunused-but-set-variable]
+  int TL_LOGGING=0;    \
+      ^
+main.c:39:2: note: in expansion of macro 'TL_PARSEARGS_INSTALL'
+  TL_PARSEARGS_INSTALL();
+  ^
+In file included from main.c:23:0:
+include/Fillmc.h:34:6: warning: unused variable 'HollowWidth' [-Wunused-variable]
+  int HollowWidth=0;       \
+      ^
+main.c:37:2: note: in expansion of macro 'initVars'
+  initVars();
+  ^

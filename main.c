@@ -53,6 +53,8 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_STR("--output-name",parsedOutputFileName)
 		TL_PARSEARGS_ADD_STR("-o",parsedOutputFileName)
 		TL_PARSEARGS_ADD_FLAG("--output-true", OutputToFile, TRUE)
+		TL_PARSEARGS_ADD_FLAG("--no-file", OutputToFile, -999)
+		TL_PARSEARGS_ADD_FLAG("-nf", OutputToFile, -999)
 		TL_PARSEARGS_ADD_FLAG("-O", OutputToFile, TRUE)
 		TL_PARSEARGS_ADD_STR("-m",parsedmaterial)
 		TL_PARSEARGS_ADD_FLAG("--hollow", Hollow, TRUE)
@@ -97,8 +99,12 @@ int main(int argc, char **argv){
 		OutputToFile=TRUE;
 	}
 	else{
-		getFileTrueORFalse(&OutputToFile);
-		getFileName(OutputFileName);
+		if(OutputToFile!=-999){ //no file workaround
+			getFileTrueORFalse(&OutputToFile);
+			if(OutputToFile==TRUE){
+				getFileName(OutputFileName);
+			}
+		}
 	}
 	
 	getShape(&shapeType,shapesTotal,TL_PARSEARGS_OCCURED);
@@ -115,49 +121,49 @@ int main(int argc, char **argv){
 		getHeight("Rectangle",&Height,TL_PARSEARGS_OCCURED);
 		getDepth("Rectangle",&Depth,TL_PARSEARGS_OCCURED);
 		getWidth("Rectangle",&Width,TL_PARSEARGS_OCCURED);
-		createRectangle(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Depth, Width);
+		createRectangle(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Depth, Width, OutputToFile, OutputFileName);
 		if(Hollow==TRUE){
 			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
-			createRectangle(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Depth, Width);
+			createRectangle(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Depth, Width, OutputToFile, OutputFileName);
 		}
 	}
 	//else if(shapeType==3){
 	//	getDepth("Rectangle",&Depth,TL_PARSEARGS_OCCURED);
 	//	getWidth("Rectangle",&Width,TL_PARSEARGS_OCCURED);
-	//	createTriangularPrism(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width);
+	//	createTriangularPrism(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width, OutputToFile, OutputFileName);
 	//}
 	else if(shapeType==4){
 		getWidth("Pyramid",&Width,TL_PARSEARGS_OCCURED);
-		createPyramid(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		createPyramid(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
 		if(Hollow==TRUE){
 			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
-			createPyramid(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+			createPyramid(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
 		}
 	}
 	else if(shapeType==5){
 //		getHeight("Sphere",&Height);
 		getWidth("Sphere",&Width,TL_PARSEARGS_OCCURED);
-		createSphere(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		createSphere(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
 		if(Hollow==TRUE){
 			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
-			createSphere(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+			createSphere(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
 		}
 	}
 	else if(shapeType==6){
 		getHeight("Cylinder",&Height,TL_PARSEARGS_OCCURED);
 		getWidth("Cylinder",&Width,TL_PARSEARGS_OCCURED);
-		createCylinder(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width);
+		createCylinder(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width, OutputToFile, OutputFileName);
 		if(Hollow==TRUE){
 			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
-			createCylinder(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width);
+			createCylinder(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Height, Width, OutputToFile, OutputFileName);
 		}
 	}
 	else if(shapeType==7){
 		getWidth("Diamond",&Width,TL_PARSEARGS_OCCURED);
-		createDiamond(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+		createDiamond(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
 		if(Hollow==TRUE){
 			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
-			createDiamond(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width);
+			createDiamond(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
 		}
 	}
 	printf("\n\n");
