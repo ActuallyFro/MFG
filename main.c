@@ -55,7 +55,8 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_FLAG("--output-true", OutputToFile, TRUE)
 		TL_PARSEARGS_ADD_FLAG("--no-file", OutputToFile, -999)
 		TL_PARSEARGS_ADD_FLAG("-nf", OutputToFile, -999)
-		TL_PARSEARGS_ADD_FLAG("-O", OutputToFile, TRUE)
+		TL_PARSEARGS_ADD_FLAG("-O", OutputToFile, 100)
+		TL_PARSEARGS_ADD_FLAG("--output-default", OutputToFile, 100)
 		TL_PARSEARGS_ADD_STR("-m",parsedmaterial)
 		TL_PARSEARGS_ADD_FLAG("--hollow", Hollow, TRUE)
 		TL_PARSEARGS_ADD_FLAG("-hw", Hollow, TRUE)
@@ -100,10 +101,13 @@ int main(int argc, char **argv){
 	}
 	else{
 		if(OutputToFile!=-999){ //no file workaround
-			getFileTrueORFalse(&OutputToFile);
-			if(OutputToFile==TRUE){
-				getFileName(OutputFileName);
+			if(OutputToFile!=100){
+				getFileTrueORFalse(&OutputToFile);
+				if(OutputToFile==TRUE){
+					getFileName(OutputFileName);
+				}
 			}
+			else{OutputToFile=TRUE;}
 		}
 	}
 	

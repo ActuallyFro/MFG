@@ -114,7 +114,7 @@ int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, i
 		//Width
 		*Width-=(Hollow_wall_width*2);		
 //		*x+=Hollow_wall_width;
-//		*y+=(Hollow_wall_width*2); //<--- should be the only one that changes; but should be the same delta as Width
+		*y+=Hollow_wall_width;
 //		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==6){ //Cylinder
@@ -452,6 +452,110 @@ int createPyramid(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	return EXIT_SUCCESS;
 }
 
+	
+/*
+                ____
+            ,dP9CGG88@b,
+          ,IP""YICCG888@@b,
+         dIi   ,IICGG8888@b
+        dCIIiciIICCGG8888@@b
+________GCCIIIICCCGGG8888@@@__________________
+        GGCCCCCCCGGG88888@@@
+        GGGGCCCGGGG88888@@@@...
+        Y8GGGGGG8888888@@@@P.....
+         Y88888888888@@@@@P......
+         `Y8888888@@@@@@@P'......
+            `@@@@@@@@@P'.......
+                """"........
+For a voxel sphere --^ a "3D Printing Approach must be taken".
+
+            . -- ~~~ -- .
+         .-~              ~-.
+       /                     \
+      /                       \
++----|  -   -   -   -   -   -  |+
+ \   |                         | \
+  \--|-------------X-----------|--\          <---- Imagine the plane starts at the bottom and "prints" up
+   \  \            |##########/    \
+    \  \           |#########/      \        The "X" is in the direct center of the sphere and measures "DOWN" to the edge
+     \  `-.        |########'        \
+      \     ~- .   |###. -~           \
+       +-------------------------------+
+	   
+	   
+Cutting the voxel sphere into two hemispheres would look like this per layer:
+
+ 		      ===|===
+	       ======|======
+	     ========|========
+       ==========|==========
+       ==========X==========
+       ==========|==========
+	     ========|========
+	       ======|======
+ 		      ===|===
+	   
+Imagine stacking of the Towers of Hanoi, so we need to figure out the width if the circle for each layer and "print up"	   
+
+Enter Trig:
+             :****
+             :       ***
+             :             **
+             :              + *    Sin(theta T)
+             :           +   |  * /                   <---- "Normal" measures of a circle, but is NOT oriented correctly
+             :        +      |   /             
+             :     +         |<-/ *
+             :  + (T)        |    *
+             X---------r-----+----*  
+              \_____________/
+                     |
+             	Cos(theta T)	
+	
+	
+        .-> X .. .. .. .. .. .. ..
+       /    | +                   *
+      |     |(T)+                 *
+      |     |	  +               *
+Cos(Theta T)|       H=r             *  <-------- Oriented as shown above
+      |     A         +        *
+      |     |           +      *
+       \--->| - - O - - -+  *
+            j        \ * * 
+            | * * * * \
+                       \____ Sin(theta T)
+ The sides are in also now in standard form: O(pposite), A(djacent), H(ypotenunse), and j(index).
+ Looking at the figure above we can dermine H, since it's the radius 'r'.
+ Also, we can determine A, since it's H minus the index (A=r-j) since we can seed in the figure above that adding A and j is equal to r
+ 
+Plug an chug and example:
+Diameter=9, r=4.5
+ 		      =O9=|=O9= <--- j=9
+	       ====O8=|=O8==== <--- j=8
+	     ======O7=|=O7====== <--- j=7
+       ========O6=|=O6======== <--- j=6
+       ========O5=X=O5======== <--- j=5
+       ========O4=|=O4======== <--- j=4
+	     ======O3=|=O3====== <--- j=3
+	       ====O2=|=O2==== <--- j=2
+ 		      =O1=|=O1= <--- j=1
+Notice that each layer has i changing over time, so we can put that as in the index variable in a for loop, but O is still unknown!
+Also note that we only solve for an O# term on one side of the vertical cut or the other.
+HOWEVER, solving for one side gives the radius, so once O# term is found we can multiply it by 2 to find the layer's/disk's diameter
+
+Math time: CAH --> Cos(theta T) = A/H = (r-j)/r. Since we don't know theta let's ARCCOS the A/H term: theta T = acos((r-j)/r).
+Now to find O: SOH ==> sin(theta T)= O/H ==> H*sin(theta T) = O ==> r*sin(acos((r-j)/r)) = O
+In code form: SphereRadius=Radius*sin(acos(((double)Radius-(double)j)/(double)Radius));
+
+since this is in a for loop let's try the first case of j=0, for EVERY case of Radius!
+SphereRadius=Radius*sin(acos(((Radius-0)/Radius)) = Radius*sin(acos(Radius/Radius) = Radius*sin(acos(1)) = Radius*sin(0) = Radius*0 = 0;
+--> this was a loaded statement, since 
+	   
+The only thing known in this printing process is that it will go layer by layer (as shown above).
+One would assume that we know the height of cos(T), but this is NOT true ... we know R and the delta from r with each layer of printing...
+
+So you have to go from, in this orientation, 270 degrees to 90 degrees, calculate the "sub-radius", generate the circle for that layer, and repeat for the half circle.To be completely technical: only 1/4 length of pi would need to be calculated, and reflected appropriately for the whole circle and sphere... but that makes my brain hurt.
+
+*/
 int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int OutputToFile, char OutputFileName[]){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
@@ -469,65 +573,45 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	else{
 		printf("\n\nCopy and paste this into your console/chat:");
 	}
-	
 
 	double Radius;
 	Radius=(double)(Width)/2.0;
-	double LayerRadius,LayerRadius2;
+	double SphereRadius,SphereDiskLayerRadius;
 
 	int startPosition;
 	startPosition=0;
-
-	for(j=(0+heightStart);j<Radius;j++){ //Round up in C == Add the divisor less one
-		LayerRadius=Radius*sin(acos((Radius-(double)j-1.0)/(double)Radius));
-
-		for(i=(0+heightStart);i<=(Width-heightStop-startPosition)/2;i++){ //Round up in C == Add the divisor less one
-		if(i==0){
-			LayerRadius2=LayerRadius;
-		}
-		else{
-			LayerRadius2=LayerRadius*cos(asin((double)i/LayerRadius));
-		}
-		residue=(int)(LayerRadius2);
-
-		if((LayerRadius2-residue)>0.000000 && (LayerRadius2-residue)<1.000000){ // ANY residue rounds up!
-			LayerRadius2+=1.0;
-		}
-		xStart=x-(int)LayerRadius2;
-		yStart=y+j; //goes up for 'height' ONLY
-		zStart=z+i;//-(int)LayerRadius2;
-		xStop=x+(int)LayerRadius2*Direction_NorthSouth;
-		yStop=yStart;
-		zStop=z+i;//+(int)LayerRadius2*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
-
-		if(consoleORchat==0){
-			if(OutputToFile==TRUE){
-				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
-				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+	
+	for(j=(0+heightStart);j<Width-heightStop-startPosition;j++){ //Run for the diameter since each disk layer deals with the radius; this loop 'prints' from top to bottom.
+		SphereRadius=Radius*sin(acos(((double)Radius-(double)j)/(double)Radius));
+		//The following should be the same code as the circle maker... As the sphere radius changes with height the DiskLayet radius will change accordingly:
+		for(i=0;i<=SphereRadius;i++){
+			/*
+			if(i==0){//This is the MIDDLE row of the circle
+				SphereDiskLayerRadius=SphereRadius;
 			}
 			else{
-			printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				*/
+				SphereDiskLayerRadius=SphereRadius*sin(acos(((double)SphereRadius-(double)i)/(double)SphereRadius));
+			//}
+			residue=(int)(SphereDiskLayerRadius);
+
+			if((SphereDiskLayerRadius-residue)>0.000000 && (SphereDiskLayerRadius-residue)<1.000000){ // (less than 1 but greater than 0) round up!
+				SphereDiskLayerRadius+=1.0;
 			}
-		}
-		else{
-			if(OutputToFile==TRUE){
-				sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
-				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
-			}
-			else{
-				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
-			}
-		}
-		if(i!=0 || Width%2==0){
-			zStart=z-i;
-			zStop=z-i;
+			xStart=x-(int)SphereDiskLayerRadius;
+			yStart=y+j; //goes up for 'j-height' ONLY; Each disk of the Tower of Hanoi/3D printing
+			zStart=z+i;//-(int)SphereDiskLayerRadius;
+			xStop=x+(int)SphereDiskLayerRadius;//Ignore for now *Direction_NorthSouth;
+			yStop=y+j; // The height occurs on the same layer
+			zStop=z+i;//+(int)SphereDiskLayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+
 			if(consoleORchat==0){
 				if(OutputToFile==TRUE){
-				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
-				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+					sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
 				}
-				else{					
-					printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				else{
+				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 				}
 			}
 			else{
@@ -539,8 +623,28 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 					printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
 				}
 			}
-		}
-
+			if(i!=0 || Width%2==0){
+				zStart=z-i;
+				zStop=z-i;
+				if(consoleORchat==0){
+					if(OutputToFile==TRUE){
+					sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+					}
+					else{					
+						printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					}
+				}
+				else{
+					if(OutputToFile==TRUE){
+						sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+						TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+					}
+					else{
+						printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					}
+				}
+			}
 		}
 	}
 	
