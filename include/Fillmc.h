@@ -144,7 +144,7 @@ int getShape(int *Type, int TotalShapes, int Args_Parsed){
 		printf("\n");
 		printf("\n[1] Square");
 		printf("\n[2] Rectangle");
-		//printf("\n[3] Triangular Prism");
+		printf("\n[3] Triangular Prism");
 		printf("\n[4] Pyramid");
 		printf("\n[5] Sphere");
 		printf("\n[6] Cylinder");
@@ -368,6 +368,56 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 
 	for(i=(0+heightStart);i<(Height-heightStop);i++){
 		yStart=i+y;
+
+		xStop=xStart+(Width-1)*Direction_NorthSouth;
+		yStop=yStart;
+		zStop=zStart-(Depth-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+
+		if(consoleORchat==0){
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
+		}
+		else{
+			if(OutputToFile==TRUE){
+				sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+			}
+			else{
+				printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+			}
+		}
+	}
+	
+	if(OutputToFile==TRUE){
+		TL_FILE_CLOSE_NAMED(FILE1);
+	}
+	return EXIT_SUCCESS;
+}
+
+int createTriangularPrism(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int Depth, int OutputToFile, char OutputFileName[]){
+	int xStart,yStart,zStart;
+	int xStop,yStop,zStop;
+	int i,Height;
+	Height=Width/2;
+	//These Never Change
+	
+	TL_FILE_IO_INSTALL_NAMED(FILE1);
+	if(OutputToFile==TRUE){
+		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
+	}
+	else{
+		printf("\n\nCopy and paste this into your console/chat:");
+	}	
+
+	for(i=(0+heightStart);i<(Height-heightStop);i++){
+		xStart=x;
+		yStart=i+y;
+		zStart=z;
 
 		xStop=xStart+(Width-1)*Direction_NorthSouth;
 		yStop=yStart;
