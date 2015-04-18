@@ -405,6 +405,7 @@ int createTriangularPrism(int consoleORchat, int x, int y, int z, char buildingM
 	int i,Height;
 	Height=Width/2;
 	//These Never Change
+	zStart=z;
 	
 	TL_FILE_IO_INSTALL_NAMED(FILE1);
 	if(OutputToFile==TRUE){
@@ -415,13 +416,12 @@ int createTriangularPrism(int consoleORchat, int x, int y, int z, char buildingM
 	}	
 
 	for(i=(0+heightStart);i<(Height-heightStop);i++){
-		xStart=x;
+		xStart=x+(i*Direction_NorthSouth); //goes east each time
 		yStart=i+y;
-		zStart=z;
 
-		xStop=xStart+(Width-1)*Direction_NorthSouth;
+		xStop=x+(Width-i)*Direction_NorthSouth;
 		yStop=yStart;
-		zStop=zStart-(Depth-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+		zStop=zStart-(Depth*Direction_WestEast); //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 		if(consoleORchat==0){
 			if(OutputToFile==TRUE){
