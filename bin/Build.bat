@@ -1,1 +1,1 @@
-gcc main.c -o MFSG.exe 
+gcc main.c -o MFG.exe 

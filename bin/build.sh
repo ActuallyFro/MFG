@@ -1,1 +1,1 @@
-gcc main.c -o MFSG
+gcc main.c -o MFG

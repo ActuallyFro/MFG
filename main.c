@@ -1,5 +1,5 @@
 #define TL_HELP_MESSAGE		\
-"\n Minecraft Fill Shape Generator (v0.1)\
+"\n Minecraft Fill-tool Generator (v0.1)\
 \n =====================================\
 \n This program is designed to help generate 'simple' geometric shapes\
 \n in Minecraft. The output of the program will be the '/fill' commands\
@@ -9,7 +9,7 @@
 \n The tool supports both commandline passing of fields for shapes or it can\
 \n executed without fields to run in an interactive, Q&A mode.\
 \n\
-\n                                                ActuallyFro - Feb 2015		\
+\n                                                ActuallyFro - April 2015	\
 \n\
 \n Example Commandline Excecution:\
 \n -------------------------------\

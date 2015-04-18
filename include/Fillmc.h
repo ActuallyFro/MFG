@@ -25,7 +25,7 @@
 	int z=COORD_MAX;							\
 	int shapeType=0;							\
 	char buildingMaterial[50];					\
-	char OutputFileName[200]="MFSG_output.txt";	\
+	char OutputFileName[200]="MFG_output.txt";	\
 	int consoleORchat=-1;						\
 	int Hollow=-1;								\
 	int Hollow_wall_width=0;					\
@@ -657,7 +657,7 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 
 
 int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int OutputToFile, char OutputFileName[]){
-//example call: MFSG.exe -x 0 -y 100 -z 0 --console -m glowstone -nhw -nf -s 7 -w 10
+//example call: MFG.exe -x 0 -y 100 -z 0 --console -m glowstone -nhw -nf -s 7 -w 10
 
 	//int Width, Depth, Height;
 	int xStart,yStart,zStart;
