@@ -1,0 +1,1 @@
+gource -s 0.9 -i 0 -1920x1080 --title "MFG - Minecraft Fill-tool Generator" --highlight-users --file-extensions --hide mouse,filenames --key --multi-sampling --hide-usernames --hide-filenames --highlight-dirs .

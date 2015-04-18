@@ -496,6 +496,8 @@ Cutting the voxel sphere into two hemispheres would look like this per layer:
  		      ===|===
 	   
 Imagine stacking of the Towers of Hanoi, so we need to figure out the width if the circle for each layer and "print up"	   
+The only thing known in this printing process is that it will go layer by layer (as shown above).
+One would assume that we know the height of cos(T), but this is NOT true ... we know R and the delta from r with each layer of printing...
 
 Enter Trig:
              :****
@@ -523,8 +525,11 @@ Cos(Theta T)|       H=r             *  <-------- Oriented as shown above
             j        \ * * 
             | * * * * \
                        \____ Sin(theta T)
+
+So you have to go from, in this orientation, 270 degrees to 90 degrees, calculate the "sub-radius", generate the circle for that layer, and repeat for the half circle.To be completely technical: only 1/4 length of pi would need to be calculated, and reflected appropriately for the whole circle and sphere... but that makes my brain hurt.
+
  The sides are in also now in standard form: O(pposite), A(djacent), H(ypotenunse), and j(index).
- Looking at the figure above we can dermine H, since it's the radius 'r'.
+ Looking at the figure above we can determine H, since it's the radius 'r'.
  Also, we can determine A, since it's H minus the index (A=r-j) since we can seed in the figure above that adding A and j is equal to r
  
 Plug an chug and example:
@@ -538,23 +543,20 @@ Diameter=9, r=4.5
 	     ======O3=|=O3====== <--- j=3
 	       ====O2=|=O2==== <--- j=2
  		      =O1=|=O1= <--- j=1
-Notice that each layer has i changing over time, so we can put that as in the index variable in a for loop, but O is still unknown!
-Also note that we only solve for an O# term on one side of the vertical cut or the other.
-HOWEVER, solving for one side gives the radius, so once O# term is found we can multiply it by 2 to find the layer's/disk's diameter
+Notice that each layer has i changing over time, so we can put that as in the index variable in a for loop, but each layer's O is still unknown!
 
-Math time: CAH --> Cos(theta T) = A/H = (r-j)/r. Since we don't know theta let's ARCCOS the A/H term: theta T = acos((r-j)/r).
+Note: we only solve for an O# term on one side of the vertical cut or the other to get the radius for that specific layer. Additionally, solving for one side allows us to multiply it by 2 to find the layer's/disk's diameter if needed.
+
+Math time:
+CAH --> Cos(theta T) = A/H = (r-j)/r. Since we don't know theta let's ARCCOS the A/H term: theta T = acos((r-j)/r).
 Now to find O: SOH ==> sin(theta T)= O/H ==> H*sin(theta T) = O ==> r*sin(acos((r-j)/r)) = O
 In code form: SphereRadius=Radius*sin(acos(((double)Radius-(double)j)/(double)Radius));
 
 since this is in a for loop let's try the first case of j=0, for EVERY case of Radius!
 SphereRadius=Radius*sin(acos(((Radius-0)/Radius)) = Radius*sin(acos(Radius/Radius) = Radius*sin(acos(1)) = Radius*sin(0) = Radius*0 = 0;
---> this was a loaded statement, since 
+--> this was a loaded statement, since courses should have taught you that arc-sin/cos are hyperbolas!
 	   
-The only thing known in this printing process is that it will go layer by layer (as shown above).
-One would assume that we know the height of cos(T), but this is NOT true ... we know R and the delta from r with each layer of printing...
-
-So you have to go from, in this orientation, 270 degrees to 90 degrees, calculate the "sub-radius", generate the circle for that layer, and repeat for the half circle.To be completely technical: only 1/4 length of pi would need to be calculated, and reflected appropriately for the whole circle and sphere... but that makes my brain hurt.
-
+Now we have the method of determining each layer's radius, so we can now follow a very similar method to fill in the disk. This is the exact method as used in the create cylinder (which determines the slices needed in a circle) for a single layer/one block of height. Thus I'm skipping it!
 */
 int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int OutputToFile, char OutputFileName[]){
 	int xStart,yStart,zStart;
@@ -581,18 +583,20 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	int startPosition;
 	startPosition=0;
 	
-	for(j=(0+heightStart);j<Width-heightStop-startPosition;j++){ //Run for the diameter since each disk layer deals with the radius; this loop 'prints' from top to bottom.
+	for(j=(0+heightStart);j<(Width-heightStop-startPosition);j++){ //Run for the diameter since each disk layer deals with the radius; this loop 'prints' from top to bottom.
 		SphereRadius=Radius*sin(acos(((double)Radius-(double)j)/(double)Radius));
-		//The following should be the same code as the circle maker... As the sphere radius changes with height the DiskLayet radius will change accordingly:
+		//The following should be the same code as the cylinder maker... yet, the sphere radius changes with height the DiskLayer radius will change accordingly:
 		for(i=0;i<=SphereRadius;i++){
-			/*
+			
 			if(i==0){//This is the MIDDLE row of the circle
 				SphereDiskLayerRadius=SphereRadius;
 			}
 			else{
+				/*
+				note we DON'T need to subtract the difference of the index to the edge, since it's already be done for the total layer from the previous calculations
 				*/
-				SphereDiskLayerRadius=SphereRadius*sin(acos(((double)SphereRadius-(double)i)/(double)SphereRadius));
-			//}
+				SphereDiskLayerRadius=SphereRadius*sin(acos((double)i/(double)SphereRadius)); 
+			}
 			residue=(int)(SphereDiskLayerRadius);
 
 			if((SphereDiskLayerRadius-residue)>0.000000 && (SphereDiskLayerRadius-residue)<1.000000){ // (less than 1 but greater than 0) round up!
