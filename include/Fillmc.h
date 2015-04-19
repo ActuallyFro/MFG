@@ -76,7 +76,7 @@ int getHollow(int * hollow, int * hollow_wall_width){
 	return EXIT_SUCCESS;
 }
 
-int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, int * Height, int * Depth, int * Width){
+int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, int * Height, int * Depth, int * Width, int Direction){
 	//printf("\n[DEBUGGING] Hollow is true! Hollow Width: %i", Hollow_wall_width);
 
 	if(shapeType==1){ //Square
@@ -100,11 +100,20 @@ int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, i
 	else if(shapeType==3){ //Triangular Prism
 		//Depth
 		//Width
-		*Depth-=(Hollow_wall_width*2);
-		*Width-=(Hollow_wall_width*2+2);
-		*x+=Hollow_wall_width+1;
-		*y+=Hollow_wall_width;
-		*z-=Hollow_wall_width;		
+		if(Direction==1){
+			*Depth-=(Hollow_wall_width*2);
+			*Width-=(Hollow_wall_width*2+2);
+			*x+=Hollow_wall_width+1;
+			*y+=Hollow_wall_width;
+			*z-=Hollow_wall_width;
+		}
+		else{//case of -1
+			*Depth-=(Hollow_wall_width*2);
+			*Width-=(Hollow_wall_width*2+2);
+			*x+=Hollow_wall_width;
+			*y+=Hollow_wall_width;
+			*z+=(Hollow_wall_width+1);			
+		}
 	}
 	else if(shapeType==4){ //Pyramid
 		//Width
@@ -408,7 +417,6 @@ int createTriangularPrism(int consoleORchat, int x, int y, int z, char buildingM
 	int i,Height;
 	Height=Width/2+1;
 	//These Never Change
-	zStart=z;
 	
 	TL_FILE_IO_INSTALL_NAMED(FILE1);
 	if(OutputToFile==TRUE){
@@ -423,17 +431,18 @@ int createTriangularPrism(int consoleORchat, int x, int y, int z, char buildingM
 		if(Direction_NorthSouth==1){
 			xStart=x+(i*Direction_NorthSouth); //goes east each time
 			yStart=i+y;
+			zStart=z;
 			xStop=x+(Width-i)*Direction_NorthSouth;
 			yStop=yStart;
 			zStop=zStart-(Depth*Direction_WestEast); //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 		}
 		else{			
-			xStart=z;
-			zStart=x+(i*Direction_NorthSouth); //goes east each time
+			xStart=x; //goes east each time
 			yStart=i+y;
-			xStop=zStart-(Depth*Direction_WestEast); //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+			zStart=z-(Width-i)*Direction_NorthSouth;
+			xStop=xStart+(Depth*Direction_WestEast);
 			yStop=yStart;
-			zStop=x+(Width-i)*Direction_NorthSouth;
+			zStop=z-(i*Direction_NorthSouth); //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 		}
 		
 		if(consoleORchat==0){
