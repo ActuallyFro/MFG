@@ -33,6 +33,7 @@
 	int Width=0;								\
 	int HollowWidth=0;							\
 	int Depth=0;								\
+	int RotationOrientation=NORTH;				\
 	int printshapes=FALSE;						\
 	int quiet=FALSE;							\
 	char *parsedmaterial = NULL;				\
