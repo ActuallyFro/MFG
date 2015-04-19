@@ -101,14 +101,14 @@ int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, i
 	else if(shapeType==3){ //Triangular Prism
 		//Depth
 		//Width
-		if(Direction==1){
+		if(Direction==1){//N/S
 			*Depth-=(Hollow_wall_width*2);
 			*Width-=(Hollow_wall_width*2+2);
 			*x+=Hollow_wall_width+1;
 			*y+=Hollow_wall_width;
 			*z-=Hollow_wall_width;
 		}
-		else{//case of -1
+		else{//W/E
 			*Depth-=(Hollow_wall_width*2);
 			*Width-=(Hollow_wall_width*2+2);
 			*x+=Hollow_wall_width;
@@ -732,6 +732,106 @@ int createSphere(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	return EXIT_SUCCESS;
 }
 
+int createCone(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Height, int Width, int OutputToFile, char OutputFileName[]){
+	int xStart,yStart,zStart;
+	int xStop,yStop,zStop;
+	int i,j;
+	int residue;
+
+	xStart=x;
+	yStart=y;
+	zStart=z;
+	
+	TL_FILE_IO_INSTALL_NAMED(FILE1);
+	if(OutputToFile==TRUE){
+		TL_FILE_OPEN_WRITE_MODE_APPEND_NAMED(OutputFileName, 0644,FILE1);
+	}
+	else{
+		printf("\n\nCopy and paste this into your console/chat:");
+	}
+
+	double Radius,Ratio;
+	Radius=(double)(Width)/2.0;
+	double ConeRadius,ConeDiskLayerRadius;
+
+	Ratio=(double)Width/(double)Height;
+	int startPosition;
+	startPosition=0;
+	
+	for(j=(Height-heightStart);j>0;j--){ //Run for the diameter since each disk layer deals with the radius; this loop 'prints' from top to bottom.
+		ConeRadius=Ratio*j;
+		//Radius*sin(acos(((double)Radius-(double)j)/(double)Radius));
+		//The following should be the same code as the cylinder maker... yet, the sphere radius changes with height the DiskLayer radius will change accordingly:
+		for(i=0;i<=ConeRadius;i++){
+			/*
+			if(i==0){//This is the MIDDLE row of the circle
+				ConeDiskLayerRadius=ConeRadius;
+			}
+			else{
+			*/
+			ConeDiskLayerRadius=ConeRadius*sin(acos((double)i/(double)ConeRadius)); 
+//			}
+			residue=(int)(ConeDiskLayerRadius);
+
+			if((ConeDiskLayerRadius-residue)>0.000000 && (ConeDiskLayerRadius-residue)<1.000000){ // (less than 1 but greater than 0) round up!
+				ConeDiskLayerRadius+=1.0;
+			}
+			xStart=x-(int)ConeDiskLayerRadius;
+			yStart=y+j; //goes up for 'j-height' ONLY; Each disk of the Tower of Hanoi/3D printing
+			zStart=z+i;//-(int)ConeDiskLayerRadius;
+			xStop=x+(int)ConeDiskLayerRadius;//Ignore for now *Direction_NorthSouth;
+			yStop=y+j; // The height occurs on the same layer
+			zStop=z+i;//+(int)ConeDiskLayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+
+			if(consoleORchat==0){
+				if(OutputToFile==TRUE){
+					sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+				}
+				else{
+				printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				}
+			}
+			else{
+				if(OutputToFile==TRUE){
+					sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+				}
+				else{
+					printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+				}
+			}
+			if(i!=0 || Width%2==0){
+				zStart=z-i;
+				zStop=z-i;
+				if(consoleORchat==0){
+					if(OutputToFile==TRUE){
+					sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+					}
+					else{					
+						printf("\nfill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					}
+				}
+				else{
+					if(OutputToFile==TRUE){
+						sprintf(BUF_FILE1,"/fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+						TL_FILE_WRITE_STRING_ARRAY_NAMED(FILE1,BUF_FILE1);
+					}
+					else{
+						printf("\n/fill %i %i %i %i %i %i %s",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);
+					}
+				}
+			}
+		}
+	}
+	
+	if(OutputToFile==TRUE){
+		TL_FILE_CLOSE_NAMED(FILE1);
+	}
+
+	return EXIT_SUCCESS;
+}
 
 int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int OutputToFile, char OutputFileName[]){
 //example call: MFG.exe -x 0 -y 100 -z 0 --console -m glowstone -nhw -nf -s 7 -w 10
