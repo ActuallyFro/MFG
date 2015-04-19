@@ -101,7 +101,10 @@ int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, i
 		//Depth
 		//Width
 		*Depth-=(Hollow_wall_width*2);
-		*Width-=(Hollow_wall_width*2);		
+		*Width-=(Hollow_wall_width*2+2);
+		*x+=Hollow_wall_width+1;
+		*y+=Hollow_wall_width;
+		*z-=Hollow_wall_width;		
 	}
 	else if(shapeType==4){ //Pyramid
 		//Width
@@ -399,11 +402,11 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 	return EXIT_SUCCESS;
 }
 
-int createTriangularPrism(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int Depth, int OutputToFile, char OutputFileName[]){
+int createTriangularPrism(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Depth, int Width,  int OutputToFile, char OutputFileName[]){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,Height;
-	Height=Width/2;
+	Height=Width/2+1;
 	//These Never Change
 	zStart=z;
 	

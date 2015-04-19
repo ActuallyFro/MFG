@@ -144,7 +144,7 @@ int main(int argc, char **argv){
 		createTriangularPrism(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Depth, Width, OutputToFile, OutputFileName);
 		if(Hollow==TRUE){
 			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
-			createPyramid(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
+			createTriangularPrism(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Depth, Width, OutputToFile, OutputFileName);
 		}
 	}
 	else if(shapeType==4){
