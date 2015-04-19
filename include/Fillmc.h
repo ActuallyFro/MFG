@@ -419,13 +419,23 @@ int createTriangularPrism(int consoleORchat, int x, int y, int z, char buildingM
 	}	
 
 	for(i=(0+heightStart);i<(Height-heightStop);i++){
-		xStart=x+(i*Direction_NorthSouth); //goes east each time
-		yStart=i+y;
 
-		xStop=x+(Width-i)*Direction_NorthSouth;
-		yStop=yStart;
-		zStop=zStart-(Depth*Direction_WestEast); //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
-
+		if(Direction_NorthSouth==1){
+			xStart=x+(i*Direction_NorthSouth); //goes east each time
+			yStart=i+y;
+			xStop=x+(Width-i)*Direction_NorthSouth;
+			yStop=yStart;
+			zStop=zStart-(Depth*Direction_WestEast); //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+		}
+		else{			
+			xStart=z;
+			zStart=x+(i*Direction_NorthSouth); //goes east each time
+			yStart=i+y;
+			xStop=zStart-(Depth*Direction_WestEast); //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+			yStop=yStart;
+			zStop=x+(Width-i)*Direction_NorthSouth;
+		}
+		
 		if(consoleORchat==0){
 			if(OutputToFile==TRUE){
 				sprintf(BUF_FILE1,"fill %i %i %i %i %i %i %s\r\n",xStart,yStart,zStart,xStop,yStop,zStop,buildingMaterial);

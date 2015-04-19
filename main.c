@@ -141,10 +141,10 @@ int main(int argc, char **argv){
 	else if(shapeType==3){
 		getWidth("Triangular Prism",&Width,TL_PARSEARGS_OCCURED);
 		getDepth("Triangular Prism",&Depth,TL_PARSEARGS_OCCURED);
-		createTriangularPrism(consoleORchat,x, y, z, buildingMaterial, NORTH, EAST, NoBaseOffset, NoCeilingCap, Depth, Width, OutputToFile, OutputFileName);
+		createTriangularPrism(consoleORchat,x, y, z, buildingMaterial, 1, EAST, NoBaseOffset, NoCeilingCap, Depth, Width, OutputToFile, OutputFileName);
 		if(Hollow==TRUE){
 			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width);
-			createTriangularPrism(consoleORchat,x, y, z, "air", NORTH, EAST, NoBaseOffset, NoCeilingCap, Depth, Width, OutputToFile, OutputFileName);
+			createTriangularPrism(consoleORchat,x, y, z, "air", 1, EAST, NoBaseOffset, NoCeilingCap, Depth, Width, OutputToFile, OutputFileName);
 		}
 	}
 	else if(shapeType==4){
