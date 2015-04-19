@@ -182,7 +182,7 @@ int main(int argc, char **argv){
 		createCone(consoleORchat,x, y, z, buildingMaterial, RotationOrientation, EAST, NoBaseOffset, NoCeilingCap, Height, Width, OutputToFile, OutputFileName);
 		if(Hollow==TRUE){
 			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width,RotationOrientation);
-			createSphere(consoleORchat,x, y, z, "air", RotationOrientation, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
+			createCone(consoleORchat,x, y, z, "air", RotationOrientation, EAST, NoBaseOffset, NoCeilingCap, Height, Width, OutputToFile, OutputFileName);
 		}
 	}
 	printf("\n\n");

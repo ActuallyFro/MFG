@@ -146,7 +146,14 @@ int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, i
 		*y+=Hollow_wall_width;
 		*z-=Hollow_wall_width;
 	}
-	
+	else if(shapeType==8){ //
+		//Width
+		*Height-=(Hollow_wall_width*2);
+		*Width-=(Hollow_wall_width*2);		
+//		*x+=Hollow_wall_width;
+		*y+=Hollow_wall_width;
+//		*z-=Hollow_wall_width;
+	}	
 	return EXIT_SUCCESS;
 }
 	
