@@ -162,7 +162,7 @@ int getShape(int *Type, int TotalShapes, int Args_Parsed){
 		printf("\n[5] Sphere");
 		printf("\n[6] Cylinder");
 		printf("\n[7] Diamond");
-		//printf("\n[8] Cone");
+		printf("\n[8] Cone");
 		//printf("\n[9] Doughnut");
 		printf("\n");
 	}
@@ -777,10 +777,10 @@ int createCone(int consoleORchat, int x, int y, int z, char buildingMaterial[], 
 				ConeDiskLayerRadius+=1.0;
 			}
 			xStart=x-(int)ConeDiskLayerRadius;
-			yStart=y+j; //goes up for 'j-height' ONLY; Each disk of the Tower of Hanoi/3D printing
+			yStart=y+Height-j;
 			zStart=z+i;//-(int)ConeDiskLayerRadius;
 			xStop=x+(int)ConeDiskLayerRadius;//Ignore for now *Direction_NorthSouth;
-			yStop=y+j; // The height occurs on the same layer
+			yStop=yStart; // The height occurs on the same layer
 			zStop=z+i;//+(int)ConeDiskLayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 			if(consoleORchat==0){

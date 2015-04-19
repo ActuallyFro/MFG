@@ -176,6 +176,15 @@ int main(int argc, char **argv){
 			createDiamond(consoleORchat,x, y, z, "air", RotationOrientation, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
 		}
 	}
+	else if(shapeType==8){
+		getWidth("Cone",&Width,TL_PARSEARGS_OCCURED);
+		getHeight("Cone",&Width,TL_PARSEARGS_OCCURED);
+		createCone(consoleORchat,x, y, z, buildingMaterial, RotationOrientation, EAST, NoBaseOffset, NoCeilingCap, Height, Width, OutputToFile, OutputFileName);
+		if(Hollow==TRUE){
+			setHollowWidth(shapeType, Hollow_wall_width, &x, &y, &z, &Height, &Depth, &Width,RotationOrientation);
+			createSphere(consoleORchat,x, y, z, "air", RotationOrientation, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
+		}
+	}
 	printf("\n\n");
 	
 	

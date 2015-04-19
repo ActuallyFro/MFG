@@ -1,3 +1,3 @@
-MFG.exe -O -m glowstone -hw -wh 1 -x -50 -y 167 -z 100 --console -s 3 -w 30 -d 30
+MFG.exe -O -m glowstone -nhw -x -630 -y 6 -z -90 --console -s 8 -w 32 -h 60
 
 %rem MFG.exe -O -m brick_block -nhw -wh 1 -x -50 -y 166 -z 100 --console -s 5 -w 30
