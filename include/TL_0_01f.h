@@ -244,7 +244,11 @@ int TL_Default_Set_Array_j;
 #if !defined(TL_HELP_MESSAGE)
     #define TL_HELP_MESSAGE "\nUsage: %s [-file <filename>] [-double <arg>] [-int <arg>] [-flag]\n",TL_ProgName
 #endif
-			
+
+#if !defined(TL_HELP_MESSAGE_OUTPUT_TO_FILE_ENABLED)
+    #define TL_HELP_MESSAGE_OUTPUT_TO_FILE_ENABLED 1
+#endif
+		
 #define TL_PARSEARGS_START(Enforce)								\
 	EnforceParsing=Enforce;										\
 	TL_Initial_Argc = argc;										\
@@ -275,7 +279,7 @@ int TL_Default_Set_Array_j;
 	} 														\
 	if(TL_HELP){   \
 		fprintf(stdout, TL_HELP_MESSAGE);    \
-		if(TL_FILE_CHECK_EXISTS(TL_HELP_MESSAGE_OUTPUT)==0){\
+		if(TL_FILE_CHECK_EXISTS(TL_HELP_MESSAGE_OUTPUT)==0 && TL_HELP_MESSAGE_OUTPUT_TO_FILE_ENABLED==1){\
 			printf("\n\nREADME.txt was created!");\
 			sprintf(TL_HELP_MESSAGE_BUFFER[0],"%s",TL_HELP_MESSAGE);\
 			TL_FILE_OPEN_WRITE_RET_VAL_HELP=open("README.txt", TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644);\
