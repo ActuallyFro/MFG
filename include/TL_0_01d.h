@@ -1,4 +1,4 @@
-//Transit Lib v 0.01d -- 2015-02-02
+//Transit Lib v 0.01f -- 2015-04-20
 
 /*So mingw uses its printf not msvcrt \*/
 #define _ISOC99_SOURCE
@@ -193,13 +193,13 @@ else{												\
 	int rows_##NAME = ROWS;									\
 	int cols_##NAME = COLS;									\
 	int TL_i_##NAME;									\
-	NAME = malloc( ROWS * sizeof(TYPE *));							\
+	NAME = malloc( rows_##NAME * sizeof(TYPE *));							\
 	if(NAME == NULL){									\
 		TL_DEBUGF(stderr,"\n[TL_ERROR] out of memory to create Array NAME");		\
 		exit;										\
 	}											\
-	for( TL_i_##NAME = 0; TL_i_##NAME < ROWS; TL_i_##NAME++){				\
-		NAME[TL_i_##NAME] = malloc( COLS * sizeof(TYPE));				\
+	for( TL_i_##NAME = 0; TL_i_##NAME < rows_##NAME; TL_i_##NAME++){				\
+		NAME[TL_i_##NAME] = malloc( cols_##NAME * sizeof(TYPE));				\
 		if( NAME[TL_i_##NAME] == NULL){							\
 			TL_DEBUGF(stderr,"\n[TL_ERROR] out of memory to create Array NAME");	\
 			exit;									\
@@ -236,6 +236,7 @@ int TL_Default_Set_Array_j;
 	int TL_PARSEARGS_OCCURED=FALSE;							\
 	char TL_HELP_MESSAGE_OUTPUT[11]="README.txt";			\
 	int TL_HELP_MESSAGE_BUFFER_SIZE=50000;					\
+	int TL_Enforce_Exception_Occured;						\
 	TL_2D_Array_Create(char,TL_HELP_MESSAGE_BUFFER,1,TL_HELP_MESSAGE_BUFFER_SIZE)
 
 //	Thoughts?: int TL_Enforce_Exception_Occured
@@ -260,7 +261,7 @@ int TL_Default_Set_Array_j;
 			argv++; argc--; TL_LOGGING=TRUE; TL_PARSEARGS_OCCURED=TRUE;								\
 		}
 
-#define TL_MACROS_STRINGIFICATION(value)	#value
+//#define TL_MACROS_STRINGIFICATION(value)	#value
 		
 #define TL_PARSEARGS_STOP													\
 		else {													\
@@ -883,7 +884,7 @@ listen(NAME, NUM)
 #define TL_HTTP_OK_IMAGE  "HTTP/1.0 200 OK\r\nContent-Type:image/gif\r\n\r\n"
 #define TL_HTTP_OK_TEXT   "HTTP/1.0 200 OK\r\nContent-Type:text/html\r\n\r\n"
 #define TL_HTTP_NOTOK_404 "HTTP/1.0 404 Not Found\r\nContent-Type:text/html\r\n\r\n"
-#define TL_HTTP_MESS_404  "<html><head><title>TrojanLib Weblite Server: 404 ERROR</title></head><body><br><br><center><h1>FILE NOT FOUND :'(</h1></center></body></html>"
+#define TL_HTTP_MESS_404  "<html><head><title>TransitLib Weblite Server: 404 ERROR</title></head><body><br><br><center><h1>FILE NOT FOUND :'(</h1></center></body></html>"
 
 #define TL_HTTP_GET_RESPOND(FD)                                                                 \
     TL_HTTP_client_s = FD;									\
@@ -1395,3 +1396,63 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
 #define TL_LOGFILE_STOP() \
 	if(TL_LOGGING==TRUE)\
 		close( TL_LOGFILE_WRITE_RET_VAL )
+
+//XOR Code -- NEEDS TO BE FINISHED
+/*
+//Example Invocation:
+	char string[11]="A nice cat";
+	char key[11]="JIHGFEDCBA";
+	char key2[5]="ABCD";
+	int x;
+	TL_XOR_INIT();
+
+	printf("Key\n----\nASCII: ");
+	for(x=0; x<10; x++){
+		printf("%c",key[x]);
+	}
+	printf("\nBinary: ");
+
+	for(x=0; x<10; x++){
+		printf("%s ",TL_XOR_Convert_CHAR_TO_BIN_STRING((int)key[x]));
+	}
+	printf("\n\n");
+
+	printf("Encoded Line\n------------\nASCII: %s\nBinary: \n",string);
+
+	for(x=0; x<10; x++){
+		printf("%s ",TL_XOR_Convert_CHAR_TO_BIN_STRING((int)string[x]));
+	}
+	
+	TL_XOR_STRING_WITH_KEY(string,string,key);
+	printf("\n\nXOR'ed ASCII: %s\nBinary: \n",string);
+
+
+*/
+//NEEDS TL_ENABLE_XOR 1 to be defined before invoking calls for 
+#if defined (TL_ENABLE_XOR)
+const char *TL_XOR_Convert_CHAR_TO_BIN_STRING(int x){
+    static char b[9];
+    b[0] = '\0';
+    int z;
+    for (z = 128; z > 0; z >>= 1){
+        strcat(b, ((x & z) == z) ? "1" : "0");
+    }
+
+    return b;
+}
+#endif
+
+#define TL_XOR_INIT()		\
+	int TL_XOR_COUNTER=0;	\
+	int TL_XOR_KEY_LEN
+
+#define TL_XOR_STRING_WITH_KEY(STRINGFROM,STRINGTO,KEY)													\
+	TL_XOR_KEY_LEN = strlen( KEY );																			\
+	if(strlen(STRINGFROM)<=strlen(STRINGTO)){															\
+		for(TL_XOR_COUNTER=0; TL_XOR_COUNTER<strlen(STRINGFROM); TL_XOR_COUNTER++){						\
+			STRINGTO[TL_XOR_COUNTER]=STRINGFROM[TL_XOR_COUNTER]^KEY[TL_XOR_COUNTER%TL_XOR_KEY_LEN];		\
+		}																								\
+	}																									\
+	else {																								\
+		printf("\n[TL ERROR] XOR destination buffer is TOO SMALL!");											\
+	}
