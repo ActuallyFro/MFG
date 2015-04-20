@@ -1,24 +1,22 @@
 #define TL_HELP_MESSAGE		\
-"\n Minecraft Fill-tool Generator (v0.1)\
-\n =====================================\
-\n This program is designed to help generate 'simple' geometric shapes\
-\n in Minecraft. The output of the program will be the '/fill' commands\
-\n needed to render the specified shapes, and can be manually entered in\
-\n the chat window in game or bulk pasted into the server's console.\
-\n\
-\n The tool supports both commandline passing of fields for shapes or it can\
-\n executed without fields to run in an interactive, Q&A mode.\
-\n\
-\n                                                ActuallyFro - April 2015	\
-\n\
-\n Example Commandline Excecution:\
-\n -------------------------------\
-\n %s --shape 6 -x 0 -y 100 -z 0 --height 3 --width 10\
-\n\
-\n\n",TL_ProgName
+" Minecraft Fill-tool Generator (v0.1)\
+\r\n =====================================\
+\r\n This program is designed to help generate 'simple' geometric shapes\
+\r\n in Minecraft. The output of the program will be the '/fill' commands\
+\r\n needed to render the specified shapes, and can be manually entered in\
+\r\n the chat window in game or bulk pasted into the server's console.\
+\r\n\
+\r\n The tool supports both commandline passing of fields for shapes or it can\
+\r\n executed without fields to run in an interactive, Q&A mode.\
+\r\n\
+\r\n                                                ActuallyFro - April 2015	\
+\r\n\
+\r\n Example Commandline Excecution:\
+\r\n -------------------------------\
+\r\n %s --shape 6 -x 0 -y 100 -z 0 --height 3 --width 10\
+\r\n\
+\r\n\r\n",TL_ProgName
 
-
-/**\file*/
 #include "include/TL_0_01d.h"
 #include "include/Fillmc.h"
 

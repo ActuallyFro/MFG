@@ -226,21 +226,24 @@ int TL_Default_Set_Array_j;
 #define TL_ENFORCEPARSING_ON 1
 #define TL_ENFORCEPARSING_OFF 0
 
-#define TL_PARSEARGS_INSTALL()		\
-	int TL_HELP=0;					\
-	int TL_LOGGING=0;				\
-	int EnforceParsing;				\
-	char TL_ProgName[500];			\
-	int TL_Initial_Argc = 0;		\
-	int TL_PARSEARGS_OCCURED=FALSE
+#define TL_PARSEARGS_INSTALL()								\
+	int TL_HELP=0;											\
+	int TL_LOGGING=0;										\
+	int EnforceParsing;										\
+	char TL_ProgName[500];									\
+	int TL_Initial_Argc = 0;								\
+	int TL_FILE_OPEN_WRITE_RET_VAL_HELP;					\
+	int TL_PARSEARGS_OCCURED=FALSE;							\
+	char TL_HELP_MESSAGE_OUTPUT[11]="README.txt";			\
+	int TL_HELP_MESSAGE_BUFFER_SIZE=50000;					\
+	TL_2D_Array_Create(char,TL_HELP_MESSAGE_BUFFER,1,TL_HELP_MESSAGE_BUFFER_SIZE)
 
 //	Thoughts?: int TL_Enforce_Exception_Occured
-
 	
 #if !defined(TL_HELP_MESSAGE)
     #define TL_HELP_MESSAGE "\nUsage: %s [-file <filename>] [-double <arg>] [-int <arg>] [-flag]\n",TL_ProgName
 #endif
-	
+			
 #define TL_PARSEARGS_START(Enforce)								\
 	EnforceParsing=Enforce;										\
 	TL_Initial_Argc = argc;										\
@@ -250,13 +253,15 @@ int TL_Default_Set_Array_j;
 		if(!strcmp(*argv, "--help") || !strcmp(*argv, "/?")){	\
 			argv++; argc--; TL_HELP=TRUE; TL_PARSEARGS_OCCURED=TRUE;								\
 		}														\
-		if(!strcmp(*argv, "--enable-debugging") || !strcmp(*argv, "--debug")){	\
+		else if(!strcmp(*argv, "--enable-debugging") || !strcmp(*argv, "--debug")){	\
 			argv++; argc--; TL_DEBUGGING=TRUE; TL_PARSEARGS_OCCURED=TRUE;								\
 		}														\
-		if(!strcmp(*argv, "--enable-logging") || !strcmp(*argv, "--log")){	\
+		else if(!strcmp(*argv, "--enable-logging") || !strcmp(*argv, "--log")){	\
 			argv++; argc--; TL_LOGGING=TRUE; TL_PARSEARGS_OCCURED=TRUE;								\
 		}
 
+#define TL_MACROS_STRINGIFICATION(value)	#value
+		
 #define TL_PARSEARGS_STOP													\
 		else {													\
           if(EnforceParsing==TRUE){				\
@@ -269,6 +274,14 @@ int TL_Default_Set_Array_j;
 	} 														\
 	if(TL_HELP){   \
 		fprintf(stdout, TL_HELP_MESSAGE);    \
+		if(TL_FILE_CHECK_EXISTS(TL_HELP_MESSAGE_OUTPUT)==0){\
+			printf("\n\nREADME.txt was created!");\
+			sprintf(TL_HELP_MESSAGE_BUFFER[0],"%s",TL_HELP_MESSAGE);\
+			TL_FILE_OPEN_WRITE_RET_VAL_HELP=open("README.txt", TL_FILE_FLAGS_OPEN_WRITE_NEWFILE, 0644);\
+			write(TL_FILE_OPEN_WRITE_RET_VAL_HELP, TL_HELP_MESSAGE_BUFFER[0], strlen(TL_HELP_MESSAGE_BUFFER[0]));\
+			close(TL_FILE_OPEN_WRITE_RET_VAL_HELP);\
+			TL_2D_Char_Array_FREE(TL_HELP_MESSAGE_BUFFER);\
+		}				\
 		return EXIT_FAILURE;                                       \
 	}														\
 	TL_DEBUG("[DEBUGGING] %i Arguments passed",TL_Initial_Argc-1);	\
