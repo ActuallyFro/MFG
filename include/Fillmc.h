@@ -15,10 +15,6 @@
 #define NoBaseOffset 0
 #define NoCeilingCap 0
 
-#define PI 3.14159265
-#define Sqrt_2 1.41421356
-#define Sqrt_2_over_2 0.70710678
-
 #define initVars() 								\
 	int x=COORD_MAX; 							\
 	int y=HEIGHT_MIN-1;							\
@@ -41,15 +37,6 @@
 	int OutputToFile = -1;						\
 	int Height=0
 
-//	int Direction_NorthSouth;	
-//	int Direction_WestEast;		
-//	int EdgesOnly=0;
-//	int HeightOffsetStart=0;
-//	int HeightOffsetStop=0;		
-//	int MaxHeight=HEIGHT_MAX;
-//	int MinHeight=0;			
-
-
 int getHollow(int * hollow, int * hollow_wall_width){
 	if(*hollow==-1){
 		do{
@@ -67,8 +54,6 @@ int getHollow(int * hollow, int * hollow_wall_width){
 				printf("\nHow wide shall the wall of the hollowed the shape be?: ");
 				scanf("%i",hollow_wall_width);
 			}while(*hollow_wall_width<1);
-		
-			//*hollow_wall_width*=2;
 		}
 		if(*hollow_wall_width>WIDTH_MAX){
 			printf("\n[WARNING] Given value, %i, is larger than the typical maximum view distance (%i)!\n",*hollow_wall_width/2,WIDTH_MAX);
@@ -78,19 +63,13 @@ int getHollow(int * hollow, int * hollow_wall_width){
 }
 
 int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, int * Height, int * Depth, int * Width, int Direction){
-	//printf("\n[DEBUGGING] Hollow is true! Hollow Width: %i", Hollow_wall_width);
-
 	if(shapeType==1){ //Square
-		//Width
 		*Width-=(Hollow_wall_width*2);
 		*x+=Hollow_wall_width;
 		*y+=Hollow_wall_width;
 		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==2){ //Rectangle
-		//Height
-		//Depth
-		//Width
 		*Height-=(Hollow_wall_width*2);
 		*Depth-=(Hollow_wall_width*2);
 		*Width-=(Hollow_wall_width*2);		
@@ -99,8 +78,6 @@ int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, i
 		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==3){ //Triangular Prism
-		//Depth
-		//Width
 		if(Direction==1){//N/S
 			*Depth-=(Hollow_wall_width*2);
 			*Width-=(Hollow_wall_width*2+2);
@@ -117,49 +94,36 @@ int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, i
 		}
 	}
 	else if(shapeType==4){ //Pyramid
-		//Width
 		*Width-=(Hollow_wall_width*2);		
 		*x+=Hollow_wall_width;
 		*y+=Hollow_wall_width;
 		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==5){ //Sphere
-		//Width
 		*Width-=(Hollow_wall_width*2);		
-//		*x+=Hollow_wall_width;
 		*y+=Hollow_wall_width;
-//		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==6){ //Cylinder
-		//Height
-		//Width
 		*Height-=(Hollow_wall_width*2);
 		*Width-=(Hollow_wall_width*2);		
-//		*x+=Hollow_wall_width;
 		*y+=Hollow_wall_width;
-//		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==7){ //Diamond
-		//Width
 		*Width-=(Hollow_wall_width*2);		
 		*x+=Hollow_wall_width;
 		*y+=Hollow_wall_width;
 		*z-=Hollow_wall_width;
 	}
 	else if(shapeType==8){ //
-		//Width
 		*Height-=(Hollow_wall_width*2);
 		*Width-=(Hollow_wall_width*2);		
-//		*x+=Hollow_wall_width;
 		*y+=Hollow_wall_width;
-//		*z-=Hollow_wall_width;
 	}	
 	return EXIT_SUCCESS;
 }
 	
 int getShape(int *Type, int TotalShapes, int Args_Parsed){
 	int shape=*Type;
-//	printf("\n\n[DEBUGGING] shape:%i Total shapes:%i\n",shape,TotalShapes);
 	if(shape<1 || shape>TotalShapes){
 		printf("\n");
 		printf("\n[1] Square");
@@ -192,13 +156,6 @@ int getStartCoords(int *x,int *y,int *z, int Args_Parsed){
 	int val_y=*y;
 	int val_z=*z;
 
-	/*
-	if(Args_Parsed==TRUE && val_x!=COORD_MAX){
-		if(val_x>WIDTH_MAX){
-			printf("\n[WARNING] x (%i) is larger than the typical maximum view distance (%i)!\n",val_x,WIDTH_MAX);
-		}
-	}
-	*/
 	if(val_x==COORD_MAX){
 		printf("\nPlease enter a value for x: ");
 		scanf("%i",x);
@@ -210,17 +167,12 @@ int getStartCoords(int *x,int *y,int *z, int Args_Parsed){
 			val_y=(HEIGHT_MIN-1);
 		}
 	}
+
 	if(val_y==(HEIGHT_MIN-1)){
 		printf("\nPlease enter a value for y: ");
 		scanf("%i",y);
 	}
-	/*
-	if(Args_Parsed==TRUE && val_z!=COORD_MAX){
-		if(val_z>WIDTH_MAX){
-			printf("\n[WARNING] z (%i) is larger than the typical maximum view distance (%i)!\n",val_z,WIDTH_MAX);
-		}
-	}
-	*/
+
 	if(val_z==COORD_MAX){
 		printf("\nPlease enter a value for z: ");
 		scanf("%i",z);
@@ -424,7 +376,6 @@ int createTriangularPrism(int consoleORchat, int x, int y, int z, char buildingM
 	int xStop,yStop,zStop;
 	int i,Height;
 	Height=Width/2+1;
-	//These Never Change
 	
 	TL_FILE_IO_INSTALL_NAMED(FILE1);
 	if(OutputToFile==TRUE){
@@ -770,14 +721,7 @@ int createCone(int consoleORchat, int x, int y, int z, char buildingMaterial[], 
 		//Radius*sin(acos(((double)Radius-(double)j)/(double)Radius));
 		//The following should be the same code as the cylinder maker... yet, the sphere radius changes with height the DiskLayer radius will change accordingly:
 		for(i=0;i<=ConeRadius;i++){
-			/*
-			if(i==0){//This is the MIDDLE row of the circle
-				ConeDiskLayerRadius=ConeRadius;
-			}
-			else{
-			*/
 			ConeDiskLayerRadius=ConeRadius*sin(acos((double)i/(double)ConeRadius)); 
-//			}
 			residue=(int)(ConeDiskLayerRadius);
 
 			if((ConeDiskLayerRadius-residue)>0.000000 && (ConeDiskLayerRadius-residue)<1.000000){ // (less than 1 but greater than 0) round up!
@@ -841,14 +785,9 @@ int createCone(int consoleORchat, int x, int y, int z, char buildingMaterial[], 
 }
 
 int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int OutputToFile, char OutputFileName[]){
-//example call: MFG.exe -x 0 -y 100 -z 0 --console -m glowstone -nhw -nf -s 7 -w 10
-
-	//int Width, Depth, Height;
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i;//,j,k;
-//	int residue;
-//	int offset;
 
 	xStart=x+(Width/2);
 	yStart=y;
@@ -861,34 +800,11 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	else{
 		printf("\n\nCopy and paste this into your console/chat:");
 	}
-	
-/*
-	do{
-		printf("\n\nPlease Enter a Sphere Diameter (Width): ");
-		scanf("%i",&Width);
-		//Width++;//Need to account for exception handling of sin/cos predictions
-		if((Width*2)>=LAYER_MAX_SIZE){
-			printf("\n[WARNING] The Diameter of the Sphere is out of bounds! Radius*2=%i > 2^15",Width*Width);
-		}
 
-		if((Width*2+y)> HEIGHT_MAX){
-			printf("\n[ERROR] The Height of the Sphere is out of the map! Forcing Width to be: %i",HEIGHT_MAX-y);
-			Width=HEIGHT_MAX-y;
-		}
-
-		if(Width*2>WIDTH_MAX){
-			printf("\n[WARNING] Your shape is very long and may not render!");
-		}
-
-	}while((Width*2)>=LAYER_MAX_SIZE);
-*/
-
-//	for(i=0;i<Width;i++){
 	i=Width%2;
 	if(i==0){i=2;}
 
 	do{//First Half Going Vertical; Increasing Width
-		//printf("\n%i <%i,%i,%i> to <%i,%i,%i> ",i,xStart,yStart,zStart,xStart+i-1,yStart,zStart-i+1);
 		xStop=xStart+i-1;
 		yStop=yStart;
 		zStop=zStart-i+1;
@@ -916,7 +832,6 @@ int createDiamond(int consoleORchat, int x, int y, int z, char buildingMaterial[
 	}while((i+=2)<Width);
 
 	do{//Second Half Going Vertical; Decreasing Width
-		//printf("\n%i <%i,%i,%i> to <%i,%i,%i> ",i,xStart,yStart,zStart,xStart+i-1,yStart,zStart-i+1);
 		xStop=xStart+i-1;
 		yStop=yStart;
 		zStop=zStart-i+1;
@@ -957,7 +872,6 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 	int xStop,yStop,zStop;
 	int i,j;//,k;
 	int residue;
-	//int offset;
 
 	xStart=x;
 	yStart=y;
@@ -973,10 +887,8 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 	
 	double Radius;
 	Radius=(double)(Width)/2.0;
-	double LayerRadius;//,LayerRadius2;
-//	double LayerDiameter;
-//	int voxelDiameter;
-
+	double LayerRadius;
+	
 	int startPosition;
 	startPosition=0;
 
@@ -984,24 +896,15 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 		for(i=(0+heightStart);i<=(Width-heightStop-startPosition)/2;i++){ //Round up in C == Add the divisor less one
 		if(i==0){
 			LayerRadius=Radius;
-			//LayerRadius2=1;
 		}
 		else{
 			LayerRadius=Radius*cos(asin((double)i/Radius));
-			//LayerRadius2=Radius*sin(PI*(double)i/(double)Width);
 		}
-		//LayerDiameter=LayerRadius*2;
 		residue=(int)(LayerRadius);
-		//printf("\n\n\n[DEBUGGING] Radius-i: %f",(Radius-i));
-		//		printf("\n\n\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
 
-//		offset=0;
 		if((LayerRadius-residue)>0.000000 && (LayerRadius-residue)<1.000000){ // ANY residue rounds up!
-//			offset=1;
-			//			printf("\n[DEBUGGING] \tResidue(%f - %i): %f present!",LayerRadius,residue,LayerRadius-residue);
 			LayerRadius+=1.0;
 		}
-		//		printf("\n[DEBUGGING] Point[%i]: %f,%f (%i,%i), Degrees: %f",i,LayerRadius,LayerRadius2,(int)LayerRadius,(int)LayerRadius2,180.0*(double)i/((double)Width));
 		xStart=x+i;
 		yStart=y+j; //goes up for 'height' ONLY
 		zStart=z-((int)LayerRadius-1)*Direction_NorthSouth;//-(int)LayerRadius;
@@ -1029,7 +932,6 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 			}
 		}
 		if(Width%2==0){//if EVEN Width 
-			//printf("\n\n[DEBUGGING] EVEN WIDTH!\n");
 			xStart=x-i-1; //-(int)LayerRadius;	
 			xStop=x-i-1;  //+(int)LayerRadius*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 			if(consoleORchat==0){
@@ -1086,24 +988,3 @@ int createCylinder(int consoleORchat, int x, int y, int z, char buildingMaterial
 
 	return EXIT_SUCCESS;
 }
-//
-// 
-//
-// 
-//
-// 
-//
-// 
-//
-// 
-//
-// 
-//
-// 
-//
-// 
-//
-// 
-//
-// 
-//

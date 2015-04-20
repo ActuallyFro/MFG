@@ -20,7 +20,6 @@
 #include "include/TL_0_01d.h"
 #include "include/Fillmc.h"
 
-/** The main fucntion needs these default cases of argc and argv for TL_PARSING*/
 int main(int argc, char **argv){
 	TL_TIME_INIT();
 	TL_TIME_INIT_STRING_FULL_SAFE_ARRAY();
@@ -29,9 +28,6 @@ int main(int argc, char **argv){
 	TL_TIME_CONVERT_STRING_FULL_SAFE();
 	TL_TIME_CONVERT_STRING_USECS();
 	
-//	int	Rotate=0;
-//	int	MODE=0;
-	/** Start or install default variables.*/
 	initVars();
 
 	TL_PARSEARGS_INSTALL();
@@ -71,9 +67,6 @@ int main(int argc, char **argv){
 		TL_PARSEARGS_ADD_FLAG("--rotate", RotationOrientation, WEST)
 		TL_PARSEARGS_ADD_FLAG("-r", RotationOrientation, WEST)
 	TL_PARSEARGS_STOP;
-//		TL_PARSEARGS_ENFORCE_EXCEPTION_ARGC_GREATER_THAN_N(2)
-//		TL_PARSEARGS_ADD_INT("-dy1",HeightOffsetStart)
-//		TL_PARSEARGS_ADD_INT("-dy2",HeightOffsetStop)
 
 	if(quiet!=TRUE){
 		printBanner();
@@ -149,7 +142,6 @@ int main(int argc, char **argv){
 		}
 	}
 	else if(shapeType==5){
-//		getHeight("Sphere",&Height);
 		getWidth("Sphere",&Width,TL_PARSEARGS_OCCURED);
 		createSphere(consoleORchat,x, y, z, buildingMaterial, RotationOrientation, EAST, NoBaseOffset, NoCeilingCap, Width, OutputToFile, OutputFileName);
 		if(Hollow==TRUE){
@@ -184,9 +176,6 @@ int main(int argc, char **argv){
 		}
 	}
 	printf("\n\n");
-	
-	
-	//Play with Named File
 	
 	return EXIT_SUCCESS;
 }
