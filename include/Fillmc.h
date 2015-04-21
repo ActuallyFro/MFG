@@ -94,10 +94,10 @@ int setHollowWidth(int shapeType, int Hollow_wall_width, int *x,int *y,int *z, i
 		}
 	}
 	else if(shapeType==4){ //Pyramid
-		*Width-=(Hollow_wall_width*2);		
-		*x+=Hollow_wall_width;
+		*Width-=(Hollow_wall_width+1)*2;		
+		*x+=Hollow_wall_width*2;
 		*y+=Hollow_wall_width;
-		*z-=Hollow_wall_width;
+		*z-=Hollow_wall_width*2;
 	}
 	else if(shapeType==5){ //Sphere
 		*Width-=(Hollow_wall_width*2);		
@@ -320,7 +320,7 @@ int createSquare(int consoleORchat, int x, int y, int z, char buildingMaterial[]
 	return EXIT_SUCCESS;
 }
 
-int createRectangle(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Width, int Depth, int Height, int OutputToFile, char OutputFileName[]){
+int createRectangle(int consoleORchat, int x, int y, int z, char buildingMaterial[], int Direction_NorthSouth, int Direction_WestEast, int heightStart, int heightStop, int Height, int Depth, int Width, int OutputToFile, char OutputFileName[]){
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i;
@@ -341,9 +341,9 @@ int createRectangle(int consoleORchat, int x, int y, int z, char buildingMateria
 	for(i=(0+heightStart);i<(Height-heightStop);i++){
 		yStart=i+y;
 
-		xStop=xStart+(Width-1)*Direction_NorthSouth;
+		xStop=xStart+Width*Direction_NorthSouth;
 		yStop=yStart;
-		zStop=zStart-(Depth-1)*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
+		zStop=zStart-Depth*Direction_WestEast; //f'd up due to coords flipped: http://codeschool.org/3d-transformations-transcript/
 
 		if(consoleORchat==0){
 			if(OutputToFile==TRUE){
@@ -375,6 +375,7 @@ int createTriangularPrism(int consoleORchat, int x, int y, int z, char buildingM
 	int xStart,yStart,zStart;
 	int xStop,yStop,zStop;
 	int i,Height;
+	Depth--;//Correction?
 	Height=Width/2+1;
 	
 	TL_FILE_IO_INSTALL_NAMED(FILE1);
