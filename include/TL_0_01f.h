@@ -37,7 +37,6 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
-	#include <time.h>
 	#include <sys/types.h>	// Needed for system defined identifiers.
 	#include <sys/stat.h>
 	#include <sys/timeb.h>	// Needed for ftime() and timeb structure
@@ -45,12 +44,14 @@
 #if WINDOWS
 	#include <windows.h>
 	#include <conio.h>
+	#include <time.h>
 	#define TL_ENTER	13
 	#define TL_BACKSPACE	8
 	#define TL_ESCAPE	27
 #elif NOTWINDOWS
 	#include <termios.h>
 	#include <unistd.h>	// for read()
+	#include <sys/time.h>
 
 	#include <netinet/in.h>	// Needed for internet address structure.
 	#include <sys/socket.h>	// Needed for socket(), bind(), etc...
