@@ -56,12 +56,12 @@ the shapes have a 'Start' orientation from where they are measured/placed.
 ###X/Z Centering Math
 1. Square (Find SW Corner)
 2. Rectangle (Find SW Corner)
-3. Triangular Prism* (Find SW Corner, Subtract Width/2 from X, Add Depth/2 to Z)
-3. Triangular Prism Rotated (Find NW Corner, Subtract Width/2 from Z, Subtract Depth/2 to X)
-4. Pyramid (Find Desired Center: Subtract Width/2 from X, Add Width/2 to Z)
+3. Tri-Prism* (Find SW Corner, Subtract Width/2 from X, Add Depth/2 to Z)
+3. Tri-Prism Rotated (Find NW Corner, Subtract Width/2 from Z, Subtract Depth/2 deom X)
+4. Pyramid (Find Center: Subtract Width/2 from X, Add Width/2 to Z)
 5. Sphere (Not Needed)
 6. Cylinder (Not Needed)
-7. Diamond (Find Desired Center: Subtract Width/2 from X, Add Width/2 to Z)
+7. Diamond (Find Center: Subtract Width/2 from X, Add Width/2 to Z)
 8. Cone (Not Needed)
 
 ###Y Centering Math
@@ -86,7 +86,7 @@ Use at your own risk: [Cheatsheet](http://minecraft-ids.grahamedgecombe.com/)
 
 Files
 -----
-The ability to output the fill commands to a fille has been added due to the
+The ability to output the fill commands to a file has been added due to the
 complexity of the shapes (from poorly optimized area calculations). This allows
 for the file to be accessed for a simple copy/paste of the fill commands.
 
@@ -131,7 +131,7 @@ on the generated commands.
 - --chat: Prints commands with the leading '/' 
 
 
-Rotation*
+Rotation
 ---------
 Rotation is currently only implemented with the Triangular Prism*. 
 The default orientation is the 'print' South to North while facing
@@ -139,35 +139,45 @@ the end showing the triangle. This will rotate the fill to from West to East.
 
 - --rotate: Turns the shape generation by 90 degrees clockwise.
 
+Protips
+--------
+- Server.properties: max-tick-time=#00...00 -- this allows for massive lag
+- Windows CMD: Alt+Space, E, P -- Pastes the buffer to the command line
+- Windows CMD: Alt+Space, E, S, Enter -- Copy the command line to the clipboard
+- Always output __shapes with circles__ to FILE!
+- Use a server to start a single player world as to use the command line
+- When you mess up: find and replace all ID's with 'air' to 'delete' the blocks
+
+
 Command Line Execution Examples
 -------------------------------
-###Mossy Stone Cone having a diameter of 10, and height of 5 @ <286,3,-277>: 
-%s -m minecraft:mossy_cobblestone -s 8 -x 286 -y 3 -z -277 --height 5 --width 10 -nf -nhw --console
+###Nether Brick Cone having a diameter of 10, and height of 5 @ <286,3,-277>: 
+MFG -m double_stone_slab:6 -s 8 -x 286 -y 3 -z -277 --height 5 --width 10 -nf -nhw --console
 
 ###Quartz Cylinder (diameter of 5, height of 50 @ <286,7,-277>) with a file: 
-%s -m minecraft:quartz_block -s 6 -x 286 -y 7 -z -277 -h 50 -w 5 --console -O -nhw
+MFG -m minecraft:quartz_block -s 6 -x 286 -y 7 -z -277 -h 50 -w 5 --console -O -nhw
 
 ###Brick Diamond  having a width of 10@ <276,14,-267> (center at 286,25,-277): 
-%s -m minecraft:brick_block -s 7 -x 276 -y 14 -z -267 -w 20 -hw -wh 1 --console -nf
+MFG -m minecraft:brick_block -s 7 -x 276 -y 14 -z -267 -w 20 -hw -wh 1 --console -nf
 
 ###Glowstone 'Rectangle', manually hollowed out (width of 21/19@) <276,24,-267>: 
-%s -m glowstone -s 2 -x 276 -y 24 -z -267 -w 21 -d 21 -h 1 --console -nf -nhw
-%s -m air -s 2 -x 277 -y24 -z -268 -w 19 -d 19 -h 1 --console -nf -nhw
+MFG -m glowstone -s 2 -x 276 -y 24 -z -267 -w 21 -d 21 -h 1 --console -nf -nhw
+MFG -m air -s 2 -x 277 -y24 -z -268 -w 19 -d 19 -h 1 --console -nf -nhw
 
-###Glowstone Tri-Prism having a width of 1@ <281,22,-276>: 
-%s -m glowstone -s 3 -x 281 -y 22 -z -276 -w 10 -d 3 --console -nf -nhw
+###Glowstone Tri-Prism having a depth of 3@ <281,22,-276>: 
+MFG -m glowstone -s 3 -x 281 -y 22 -z -276 -w 10 -d 3 --console -nf -nhw
 
-###Glowstone Tri-Prism having a width of 1@ <281,22,-277>: 
-%s -m glowstone -s 3 -x 286 -y 22 -z -282 -w 10 -d 1 --console -nf -nhw --rotate
-
-###Nether Brick Cone having a diameter of 10, and height of 3 @ <0,100,0>: 
-%s -m double_stone_slab:6 -s 6 -x 0 -y 100 -z 0 -h 3 -w 10 -nf -nhw --console
+###Glowstone Tri-Prism having a depth of 1@ <281,22,-277>: 
+MFG -m glowstone -s 3 -x 286 -y 22 -z -282 -w 10 -d 1 --console -nf -nhw --rotate
 
 ###Lava Sphere having a diameter of 100@ <0,100,0> with a default file: 
-%s -m glass -s 5 -x 286 -y 105 -z -277 -w 100 -hw -wh 1 --console -O
+MFG -m glass -s 5 -x 286 -y 105 -z -277 -w 100 -hw -wh 1 --console -O
 *Just open the file, find an replace 'air' with lava.*
 
 ###Diamond Pyramid having a width of 50@ <0,100,0> with a default file: 
-%s -m diamond_block -s 4 -x 236 -y 130 -z -227 -w 50 -hw -wh 1 --console -O
+MFG -m diamond_block -s 4 -x 261 -y 191 -z -252 -w 50 -nhw --console -O
+
+###Because, Science:
+/fill 286 155 -277 286 155 -277 beacon
 
 

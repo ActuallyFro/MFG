@@ -57,12 +57,12 @@
 \r\n###X/Z Centering Math\
 \r\n1. Square (Find SW Corner)\
 \r\n2. Rectangle (Find SW Corner)\
-\r\n3. Triangular Prism* (Find SW Corner, Subtract Width/2 from X, Add Depth/2 to Z)\
-\r\n3. Triangular Prism Rotated (Find NW Corner, Subtract Width/2 from Z, Subtract Depth/2 to X)\
-\r\n4. Pyramid (Find Desired Center: Subtract Width/2 from X, Add Width/2 to Z)\
+\r\n3. Tri-Prism* (Find SW Corner, Subtract Width/2 from X, Add Depth/2 to Z)\
+\r\n3. Tri-Prism Rotated (Find NW Corner, Subtract Width/2 from Z, Subtract Depth/2 deom X)\
+\r\n4. Pyramid (Find Center: Subtract Width/2 from X, Add Width/2 to Z)\
 \r\n5. Sphere (Not Needed)\
 \r\n6. Cylinder (Not Needed)\
-\r\n7. Diamond (Find Desired Center: Subtract Width/2 from X, Add Width/2 to Z)\
+\r\n7. Diamond (Find Center: Subtract Width/2 from X, Add Width/2 to Z)\
 \r\n8. Cone (Not Needed)\
 \r\n\
 \r\n###Y Centering Math\
@@ -87,7 +87,7 @@
 \r\n\
 \r\nFiles\
 \r\n-----\
-\r\nThe ability to output the fill commands to a fille has been added due to the\
+\r\nThe ability to output the fill commands to a file has been added due to the\
 \r\ncomplexity of the shapes (from poorly optimized area calculations). This allows\
 \r\nfor the file to be accessed for a simple copy/paste of the fill commands.\
 \r\n\
@@ -132,7 +132,7 @@
 \r\n- --chat: Prints commands with the leading '/' \
 \r\n\
 \r\n\
-\r\nRotation*\
+\r\nRotation\
 \r\n---------\
 \r\nRotation is currently only implemented with the Triangular Prism*. \
 \r\nThe default orientation is the 'print' South to North while facing\
@@ -140,10 +140,20 @@
 \r\n\
 \r\n- --rotate: Turns the shape generation by 90 degrees clockwise.\
 \r\n\
+\r\nProtips\
+\r\n--------\
+\r\n- Server.properties: max-tick-time=#00...00 -- this allows for massive lag\
+\r\n- Windows CMD: Alt+Space, E, P -- Pastes the buffer to the command line\
+\r\n- Windows CMD: Alt+Space, E, S, Enter -- Copy the command line to the clipboard\
+\r\n- Always output __shapes with circles__ to FILE!\
+\r\n- Use a server to start a single player world as to use the command line\
+\r\n- When you mess up: find and replace all ID's with 'air' to 'delete' the blocks\
+\r\n\
+\r\n\
 \r\nCommand Line Execution Examples\
 \r\n-------------------------------\
-\r\n###Mossy Stone Cone having a diameter of 10, and height of 5 @ <286,3,-277>: \
-\r\nMFG -m minecraft:mossy_cobblestone -s 8 -x 286 -y 3 -z -277 --height 5 --width 10 -nf -nhw --console\
+\r\n###Nether Brick Cone having a diameter of 10, and height of 5 @ <286,3,-277>: \
+\r\nMFG -m double_stone_slab:6 -s 8 -x 286 -y 3 -z -277 --height 5 --width 10 -nf -nhw --console\
 \r\n\
 \r\n###Quartz Cylinder (diameter of 5, height of 50 @ <286,7,-277>) with a file: \
 \r\nMFG -m minecraft:quartz_block -s 6 -x 286 -y 7 -z -277 -h 50 -w 5 --console -O -nhw\
@@ -155,24 +165,23 @@
 \r\nMFG -m glowstone -s 2 -x 276 -y 24 -z -267 -w 21 -d 21 -h 1 --console -nf -nhw\
 \r\nMFG -m air -s 2 -x 277 -y24 -z -268 -w 19 -d 19 -h 1 --console -nf -nhw\
 \r\n\
-\r\n###Glowstone Tri-Prism having a width of 1@ <281,22,-276>: \
+\r\n###Glowstone Tri-Prism having a depth of 3@ <281,22,-276>: \
 \r\nMFG -m glowstone -s 3 -x 281 -y 22 -z -276 -w 10 -d 3 --console -nf -nhw\
 \r\n\
-\r\n###Glowstone Tri-Prism having a width of 1@ <281,22,-277>: \
+\r\n###Glowstone Tri-Prism having a depth of 1@ <281,22,-277>: \
 \r\nMFG -m glowstone -s 3 -x 286 -y 22 -z -282 -w 10 -d 1 --console -nf -nhw --rotate\
-\r\n\
-\r\n###Nether Brick Cone having a diameter of 10, and height of 3 @ <0,100,0>: \
-\r\nMFG -m double_stone_slab:6 -s 6 -x 0 -y 100 -z 0 -h 3 -w 10 -nf -nhw --console\
 \r\n\
 \r\n###Lava Sphere having a diameter of 100@ <0,100,0> with a default file: \
 \r\nMFG -m glass -s 5 -x 286 -y 105 -z -277 -w 100 -hw -wh 1 --console -O\
 \r\n*Just open the file, find an replace 'air' with lava.*\
 \r\n\
 \r\n###Diamond Pyramid having a width of 50@ <0,100,0> with a default file: \
-\r\nMFG -m diamond_block -s 4 -x 211 -y 130 -z -202 -w 50 -hw -wh 1 --console -O\
+\r\nMFG -m diamond_block -s 4 -x 261 -y 191 -z -252 -w 50 -nhw --console -O\
+\r\n\
+\r\n###Because, Science:\
+\r\n/fill 286 155 -277 286 155 -277 beacon\
 \r\n\
 \r\n\r\n"
-
 
 
 #include "include/TL_0_01f.h"
