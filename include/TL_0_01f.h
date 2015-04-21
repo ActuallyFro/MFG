@@ -196,13 +196,13 @@ else{												\
 	NAME = malloc( rows_##NAME * sizeof(TYPE *));							\
 	if(NAME == NULL){									\
 		TL_DEBUGF(stderr,"\n[TL_ERROR] out of memory to create Array NAME");		\
-		exit;										\
+		return EXIT_FAILURE;										\
 	}											\
 	for( TL_i_##NAME = 0; TL_i_##NAME < rows_##NAME; TL_i_##NAME++){				\
 		NAME[TL_i_##NAME] = malloc( cols_##NAME * sizeof(TYPE));				\
 		if( NAME[TL_i_##NAME] == NULL){							\
 			TL_DEBUGF(stderr,"\n[TL_ERROR] out of memory to create Array NAME");	\
-			exit;									\
+			return EXIT_FAILURE;									\
 		}										\
 	}
 
@@ -232,6 +232,7 @@ int TL_Default_Set_Array_j;
 	int EnforceParsing;										\
 	char TL_ProgName[500];									\
 	int TL_Initial_Argc = 0;								\
+	char **TL_Initial_Argv;									\
 	int TL_FILE_OPEN_WRITE_RET_VAL_HELP;					\
 	int TL_PARSEARGS_OCCURED=FALSE;							\
 	char TL_HELP_MESSAGE_OUTPUT[11]="README.txt";			\
@@ -252,6 +253,7 @@ int TL_Default_Set_Array_j;
 #define TL_PARSEARGS_START(Enforce)								\
 	EnforceParsing=Enforce;										\
 	TL_Initial_Argc = argc;										\
+	TL_Initial_Argv = argv;									\
 	strcpy(TL_ProgName,argv[0]);								\
 	argc--; argv++;												\
 	while(argc > 0){											\
@@ -292,7 +294,7 @@ int TL_Default_Set_Array_j;
 	TL_DEBUG("[DEBUGGING] %i Arguments passed",TL_Initial_Argc-1);	\
 	if(TL_PARSEARGS_OCCURED==FALSE){\
 		argc=TL_Initial_Argc;	\
-		argv-=TL_Initial_Argc;	\
+		argv=TL_Initial_Argv;	\
 	}
 
 #define TL_PARSEARGS_ADD_INT(x,y)					\
@@ -687,9 +689,8 @@ int TL_Default_Set_Array_j;
 
 #if WINDOWS
 	#define TL_IPv4_INIT()                      \
-		WORD wVersionRequested = MAKEWORD(1,1);	\
 		WSADATA wsaData;						\
-		WSAStartup(wVersionRequested, &wsaData)
+		WSAStartup(MAKEWORD(2,2), &wsaData)
 #elif NOTWINDOWS
 	#define TL_IPv4_INIT()	;
 #endif
@@ -1401,40 +1402,9 @@ int TL_FILE_CHECK_EXISTS(char * fileName){
 	if(TL_LOGGING==TRUE)\
 		close( TL_LOGFILE_WRITE_RET_VAL )
 
-//XOR Code -- NEEDS TO BE FINISHED
-/*
-//Example Invocation:
-	char string[11]="A nice cat";
-	char key[11]="JIHGFEDCBA";
-	char key2[5]="ABCD";
-	int x;
-	TL_XOR_INIT();
-
-	printf("Key\n----\nASCII: ");
-	for(x=0; x<10; x++){
-		printf("%c",key[x]);
-	}
-	printf("\nBinary: ");
-
-	for(x=0; x<10; x++){
-		printf("%s ",TL_XOR_Convert_CHAR_TO_BIN_STRING((int)key[x]));
-	}
-	printf("\n\n");
-
-	printf("Encoded Line\n------------\nASCII: %s\nBinary: \n",string);
-
-	for(x=0; x<10; x++){
-		printf("%s ",TL_XOR_Convert_CHAR_TO_BIN_STRING((int)string[x]));
-	}
-	
-	TL_XOR_STRING_WITH_KEY(string,string,key);
-	printf("\n\nXOR'ed ASCII: %s\nBinary: \n",string);
-
-
-*/
-//NEEDS TL_ENABLE_XOR 1 to be defined before invoking calls for 
+//NEEDS TL_ENABLE_XOR 1 to be defined before invoking calls for:
 #if defined (TL_ENABLE_XOR)
-const char *TL_XOR_Convert_CHAR_TO_BIN_STRING(int x){
+const char *TL_SEC_XOR_Convert_CHAR_TO_BIN_STRING(int x){
     static char b[9];
     b[0] = '\0';
     int z;
@@ -1446,17 +1416,26 @@ const char *TL_XOR_Convert_CHAR_TO_BIN_STRING(int x){
 }
 #endif
 
-#define TL_XOR_INIT()		\
-	int TL_XOR_COUNTER=0;	\
-	int TL_XOR_KEY_LEN
+#define TL_SEC_XOR_INIT()		\
+	int TL_SEC_XOR_COUNTER=0;	\
+	int TL_SEC_XOR_KEY_LEN
 
-#define TL_XOR_STRING_WITH_KEY(STRINGFROM,STRINGTO,KEY)													\
-	TL_XOR_KEY_LEN = strlen( KEY );																			\
+#define TL_SEC_XOR_STRING_WITH_KEY(STRINGFROM,STRINGTO,KEY)													\
+	TL_SEC_XOR_KEY_LEN = strlen( KEY );																			\
 	if(strlen(STRINGFROM)<=strlen(STRINGTO)){															\
-		for(TL_XOR_COUNTER=0; TL_XOR_COUNTER<strlen(STRINGFROM); TL_XOR_COUNTER++){						\
-			STRINGTO[TL_XOR_COUNTER]=STRINGFROM[TL_XOR_COUNTER]^KEY[TL_XOR_COUNTER%TL_XOR_KEY_LEN];		\
+		for(TL_SEC_XOR_COUNTER=0; TL_SEC_XOR_COUNTER<strlen(STRINGFROM); TL_SEC_XOR_COUNTER++){						\
+			STRINGTO[TL_SEC_XOR_COUNTER]=STRINGFROM[TL_SEC_XOR_COUNTER]^KEY[TL_SEC_XOR_COUNTER%TL_SEC_XOR_KEY_LEN];		\
 		}																								\
 	}																									\
 	else {																								\
 		printf("\n[TL ERROR] XOR destination buffer is TOO SMALL!");											\
 	}
+
+
+#define TL_SEC_GHMAC_MAX 65535
+
+#define TL_SEC_GHMAC_INIT()		\
+	srand(time(NULL));			\
+	unsigned int TL_SEC_GHMAC_HIDE_INT;	\
+	unsigned int TL_SEC_GHMAC_FOUND_INT;	\
+	unsigned int TL_SEC_GHMAC_KEY_INT
