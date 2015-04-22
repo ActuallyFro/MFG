@@ -43,7 +43,7 @@ the shapes have a 'Start' orientation from where they are measured/placed.
 
 - --shape (-s) \<1-8>: Select a shape from the shape ID's.
 
-###Current Shape List
+### Current Shape List
 1. Square (Dimensions: Width; Start: Bottom, SW Corner)
 2. Rectangle (Dimensions: Height, Width, Depth; Start: Bottom, SW Corner)
 3. Triangular Prism* (Dimensions:Width, Depth; Start: Bottom, SW Corner)
@@ -53,7 +53,7 @@ the shapes have a 'Start' orientation from where they are measured/placed.
 7. Diamond (Dimension: Width; Start: Bottom, SW Corner)
 8. Cone (Dimensions: Height, Width; Start: Center)
 
-###X/Z Centering Math
+### X/Z Centering Math
 1. Square (Find SW Corner)
 2. Rectangle (Find SW Corner)
 3. Tri-Prism* (Find SW Corner, Subtract Width/2 from X, Add Depth/2 to Z)
@@ -64,7 +64,7 @@ the shapes have a 'Start' orientation from where they are measured/placed.
 7. Diamond (Find Center: Subtract Width/2 from X, Add Width/2 to Z)
 8. Cone (Not Needed)
 
-###Y Centering Math
+### Y Centering Math
 1. Square (Find Center: Subtract Height/2 from y)
 2. Rectangle (Find Center: Subtract Height/2 from y)
 3. Triangular Prism*  (Find Center: Subtract Height/2 from y)
@@ -81,7 +81,7 @@ The material can be ANY minecraft ID that is in vanilla minecraft.
 
 - --material(-m) \<minecraft name id>: any block ID.
 
-###Random ID Listing Website
+### Random ID Listing Website
 Use at your own risk: [Cheatsheet](http://minecraft-ids.grahamedgecombe.com/)
 
 Files
@@ -151,33 +151,33 @@ Protips
 
 Command Line Execution Examples
 -------------------------------
-###Nether Brick Cone having a diameter of 10, and height of 5 @ <286,3,-277>: 
+### Nether Brick Cone having a diameter of 10, and height of 5 @ <286,3,-277>: 
 MFG -m double_stone_slab:6 -s 8 -x 286 -y 3 -z -277 --height 5 --width 10 -nf -nhw --console
 
-###Quartz Cylinder (diameter of 5, height of 50 @ <286,7,-277>) with a file: 
+### Quartz Cylinder (diameter of 5, height of 50 @ <286,7,-277>) with a file: 
 MFG -m minecraft:quartz_block -s 6 -x 286 -y 7 -z -277 -h 50 -w 5 --console -O -nhw
 
-###Brick Diamond  having a width of 10@ <276,14,-267> (center at 286,25,-277): 
+### Brick Diamond  having a width of 10@ <276,14,-267> (center at 286,25,-277): 
 MFG -m minecraft:brick_block -s 7 -x 276 -y 14 -z -267 -w 20 -hw -wh 1 --console -nf
 
-###Glowstone 'Rectangle', manually hollowed out (width of 21/19@) <276,24,-267>: 
+### Glowstone 'Rectangle', manually hollowed out (width of 21/19@) <276,24,-267>: 
 MFG -m glowstone -s 2 -x 276 -y 24 -z -267 -w 21 -d 21 -h 1 --console -nf -nhw
 MFG -m air -s 2 -x 277 -y24 -z -268 -w 19 -d 19 -h 1 --console -nf -nhw
 
-###Glowstone Tri-Prism having a depth of 3@ <281,22,-276>: 
+### Glowstone Tri-Prism having a depth of 3@ <281,22,-276>: 
 MFG -m glowstone -s 3 -x 281 -y 22 -z -276 -w 10 -d 3 --console -nf -nhw
 
-###Glowstone Tri-Prism having a depth of 1@ <281,22,-277>: 
+### Glowstone Tri-Prism having a depth of 1@ <281,22,-277>: 
 MFG -m glowstone -s 3 -x 286 -y 22 -z -282 -w 10 -d 1 --console -nf -nhw --rotate
 
-###Lava Sphere having a diameter of 100@ <0,100,0> with a default file: 
+### Lava Sphere having a diameter of 100@ <0,100,0> with a default file: 
 MFG -m glass -s 5 -x 286 -y 105 -z -277 -w 100 -hw -wh 1 --console -O
 *Just open the file, find an replace 'air' with lava.*
 
-###Diamond Pyramid having a width of 50@ <0,100,0> with a default file: 
+### Diamond Pyramid having a width of 50@ <0,100,0> with a default file: 
 MFG -m diamond_block -s 4 -x 261 -y 191 -z -252 -w 50 -nhw --console -O
 
-###Because, Science:
+### Because, Science:
 /fill 286 155 -277 286 155 -277 beacon
 
 
